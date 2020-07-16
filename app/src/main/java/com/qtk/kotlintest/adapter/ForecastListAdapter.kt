@@ -1,14 +1,10 @@
-package com.qtk.kotlintest
+package com.qtk.kotlintest.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.qtk.kotlintest.activities.BaseAdapter
-import com.qtk.kotlintest.activities.BaseViewHolder
+import com.qtk.kotlintest.R
 import com.qtk.kotlintest.domain.model.Forecast
-import com.qtk.kotlintest.extensions.ctx
 import com.qtk.kotlintest.extensions.textColor
 import com.qtk.kotlintest.extensions.toDateString
 import com.squareup.picasso.Picasso
@@ -19,9 +15,15 @@ import kotlinx.android.synthetic.main.item_forecast.*
 on 2020-06-15.
  */
 class ForecastListAdapter(dailyForecast:List<Forecast>?, itemClick : (Forecast) -> Unit) :
-    BaseAdapter<ForecastListAdapter.ViewHolder, Forecast>(dailyForecast, itemClick, R.layout.item_forecast) {
+    BaseAdapter<ForecastListAdapter.ViewHolder, Forecast>(dailyForecast, itemClick,
+        R.layout.item_forecast
+    ) {
 
-    override fun initViewHolder(view: View, itemClick: (Forecast) -> Unit): ViewHolder = ViewHolder(view, itemClick)
+    override fun initViewHolder(view: View, itemClick: (Forecast) -> Unit): ViewHolder =
+        ViewHolder(
+            view,
+            itemClick
+        )
 
     val forecast get() = items
 

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.qtk.kotlintest.DetailViewModel
+import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.domain.command.RequestDayForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast

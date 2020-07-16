@@ -3,6 +3,8 @@ package com.qtk.kotlintest
 import android.app.Application
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
+import com.qtk.kotlintest.view_model.DetailViewModel
+import com.qtk.kotlintest.view_model.MainViewModel
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor

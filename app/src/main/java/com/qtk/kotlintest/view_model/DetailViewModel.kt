@@ -1,4 +1,4 @@
-package com.qtk.kotlintest
+package com.qtk.kotlintest.view_model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

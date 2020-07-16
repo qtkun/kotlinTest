@@ -1,10 +1,9 @@
-package com.qtk.kotlintest
+package com.qtk.kotlintest.view_model
 
 import androidx.lifecycle.*
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.domain.model.ForecastList
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {

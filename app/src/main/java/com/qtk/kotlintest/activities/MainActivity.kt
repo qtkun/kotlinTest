@@ -11,18 +11,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qtk.kotlintest.ForecastListAdapter
+import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.MainViewModel
+import com.qtk.kotlintest.view_model.MainViewModel
+import com.qtk.kotlintest.adapter.update
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.IntentMethod
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,12 +47,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
         return Observer { result ->
             city = result.city
             if (adapter == null) {
-                adapter = ForecastListAdapter(result.dailyForecast) {
-                    ctx.startActivity<DetailActivity>(
-                        DetailActivity.ID to it.id,
-                        DetailActivity.CITY_NAME to city
-                    )
-                }
+                adapter =
+                    ForecastListAdapter(result.dailyForecast) {
+                        ctx.startActivity<DetailActivity>(
+                            DetailActivity.ID to it.id,
+                            DetailActivity.CITY_NAME to city
+                        )
+                    }
                 forecast_list.adapter = adapter
             } else {
                 adapter?.update(result.dailyForecast)
@@ -92,12 +90,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
         val result = RequestForecastCommand(zipCode).execute()
         city = result.city
         if (adapter == null) {
-            adapter = ForecastListAdapter(result.dailyForecast) {
-                ctx.startActivity<DetailActivity>(
-                    DetailActivity.ID to it.id,
-                    DetailActivity.CITY_NAME to city
-                )
-            }
+            adapter =
+                ForecastListAdapter(result.dailyForecast) {
+                    ctx.startActivity<DetailActivity>(
+                        DetailActivity.ID to it.id,
+                        DetailActivity.CITY_NAME to city
+                    )
+                }
             forecast_list.adapter = adapter
         } else {
             adapter?.update(result.dailyForecast)

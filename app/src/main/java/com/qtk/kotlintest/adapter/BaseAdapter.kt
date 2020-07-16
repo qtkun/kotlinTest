@@ -1,4 +1,4 @@
-package com.qtk.kotlintest.activities
+package com.qtk.kotlintest.adapter
 
 import android.view.LayoutInflater
 import android.view.View
