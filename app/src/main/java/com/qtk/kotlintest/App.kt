@@ -4,6 +4,7 @@ import android.app.Application
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
 import com.qtk.kotlintest.view_model.DetailViewModel
+import com.qtk.kotlintest.view_model.GoodsViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
@@ -29,6 +30,7 @@ class App : Application(){
     private val viewModelModule = module {
         viewModel { MainViewModel() }
         viewModel { DetailViewModel() }
+        viewModel { GoodsViewModel() }
     }
 
     override fun onCreate() {

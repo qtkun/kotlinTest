@@ -18,9 +18,9 @@ var TextView.textSize : Float
     set(value) = setTextSize(TypedValue.COMPLEX_UNIT_SP, value)
 
 fun View.slideExit() {
-    if (translationY == 0f) animate().translationY(-height.toFloat())
+    if (translationY == 0f) animate().translationY(-height.toFloat()).duration = 100
 }
 
 fun View.slideEnter() {
-    if (translationY < 0f) animate().translationY(0f)
+    if (translationY < 0f) animate().translationY(0f).duration = 100
 }

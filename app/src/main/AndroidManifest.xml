@@ -41,6 +41,7 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             />
+        <activity android:name=".activities.GoodsActivity" />
     </application>
 
 </manifest>

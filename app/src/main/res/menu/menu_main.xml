@@ -13,4 +13,9 @@
         android:orderInCategory="100"
         android:title="@string/flutter"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_goods"
+        android:orderInCategory="100"
+        android:title="@string/goods"
+        app:showAsAction="never"/>
 </menu>

@@ -2,5 +2,7 @@
     <string name="app_name">WeatherApp</string>
     <string name="settings">Settings</string>
     <string name="flutter">Flutter</string>
+    <string name="goods">Goods</string>
     <string name="city_zipcode">City ZipCode</string>
+    <string name="reload">reload</string>
 </resources>

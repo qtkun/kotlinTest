@@ -39,6 +39,7 @@ interface ToolbarManager {
                         .build(toolbar.ctx))*/
                     activity.startActivityForResult<FA>(IntentMethod.RequestCode)
                 }
+                R.id.action_goods -> toolbar.ctx.startActivity<GoodsActivity>()
                 else -> App.instance.toast("Unknown option")
             }
             true
