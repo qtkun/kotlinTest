@@ -27,16 +27,16 @@ class GoodsActivity : AppCompatActivity(R.layout.activity_goods_list), ToolbarMa
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter.withLoadStateFooter(LoadMoreAdapter {
-            adapter.retry()
-        })
-        mViewModel.getGoods().observe(this, Observer {
+        mViewModel.getGoods(0, "1", "createtime")
+            .observe(this, Observer {
             lifecycleScope.launchWhenCreated {
                 adapter.submitData(it)
             }
         })
         initToolbar()
-        goods_list.adapter = adapter
+        goods_list.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
+            adapter.retry()
+        })
         goods_list.layoutManager = LinearLayoutManager(this)
         attachToScroll(goods_list)
         toolbarTitle = "Goods"

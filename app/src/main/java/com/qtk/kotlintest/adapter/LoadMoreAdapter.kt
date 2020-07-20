@@ -19,7 +19,7 @@ class LoadMoreAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadMore
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadMoreView {
         val view = LayoutInflater.from(parent.ctx).inflate(R.layout.item_load_more, parent, false)
-        return LoadMoreView(view, loadState, retry)
+        return LoadMoreView(view, loadState) { retry }
     }
 }
 
