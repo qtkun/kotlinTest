@@ -49,7 +49,9 @@ class App : Application(){
     private fun initFE1() {
         fE1 = FlutterEngine(this)
         //可设置初始路由
-        fE1.navigationChannel.setInitialRoute("route?{\"desc\":\"点击按钮\"}")
+//        fE1.navigationChannel.setInitialRoute("route?{\"desc\":\"点击按钮\"}")
+        fE1.navigationChannel.setInitialRoute("route2")
+//        fE1.navigationChannel.setInitialRoute("route3")
         fE1.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
         FlutterEngineCache
             .getInstance()

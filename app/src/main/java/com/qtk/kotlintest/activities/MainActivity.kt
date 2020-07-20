@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
         return Observer { result ->
             city = result.city
             if (adapter == null) {
-                val daily = result.dailyForecast.flatMap { listOf(it, it) }
+                val daily = result.dailyForecast
                 adapter = ForecastListAdapter(daily) {
                         ctx.startActivity<DetailActivity>(
                             DetailActivity.ID to it.id,
