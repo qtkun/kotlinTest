@@ -23,10 +23,11 @@ on 2020-06-16.
 class App : Application(){
     companion object {
         var instance : App by DelegatesExt.notNullSingleValue()
-        fun instance() = instance
     }
 
     lateinit var fE1 : FlutterEngine
+    lateinit var fE2 : FlutterEngine
+    lateinit var fE3 : FlutterEngine
     private val viewModelModule = module {
         viewModel { MainViewModel() }
         viewModel { DetailViewModel() }
@@ -36,7 +37,7 @@ class App : Application(){
     override fun onCreate() {
         super.onCreate()
         instance = this
-        initFE1()
+        initFE()
         ToastMethod.registerWith(this)
         startKoin {
             androidLogger()
@@ -46,15 +47,18 @@ class App : Application(){
         }
     }
 
-    private fun initFE1() {
-        fE1 = FlutterEngine(this)
+    private fun initFE() {
+        fE1 = initEngine("route?{\"desc\":\"点击按钮\"}", "test")
+        fE2 = initEngine("route2", "test2")
+        fE3 = initEngine("route3", "test3")
+    }
+
+    private fun initEngine(route : String, engineId : String) : FlutterEngine{
+        val fE = FlutterEngine(this)
         //可设置初始路由
-//        fE1.navigationChannel.setInitialRoute("route?{\"desc\":\"点击按钮\"}")
-        fE1.navigationChannel.setInitialRoute("route2")
-//        fE1.navigationChannel.setInitialRoute("route3")
-        fE1.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
-        FlutterEngineCache
-            .getInstance()
-            .put("test", fE1)
+        fE.navigationChannel.setInitialRoute(route)
+        fE.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
+        FlutterEngineCache.getInstance().put(engineId, fE)
+        return fE
     }
 }

@@ -37,7 +37,22 @@ interface ToolbarManager {
                     /*toolbar.ctx.startActivity(FlutterActivity
                         .withCachedEngine("test")
                         .build(toolbar.ctx))*/
-                    activity.startActivityForResult<FA>(IntentMethod.RequestCode)
+                    activity.startActivityForResult<FA>(
+                        IntentMethod.RequestCode,
+                        "engine" to "test"
+                    )
+                }
+                R.id.action_flutter2 -> {
+                    activity.startActivityForResult<FA>(
+                        IntentMethod.RequestCode,
+                        "engine" to "test2"
+                    )
+                }
+                R.id.action_flutter3 -> {
+                    activity.startActivityForResult<FA>(
+                        IntentMethod.RequestCode,
+                        "engine" to "test3"
+                    )
                 }
                 R.id.action_goods -> toolbar.ctx.startActivity<GoodsActivity>()
                 else -> App.instance.toast("Unknown option")

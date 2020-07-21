@@ -14,11 +14,16 @@ import org.jetbrains.anko.startActivityForResult
 class IntentMethod(private val activity: Activity) : MethodChannel.MethodCallHandler {
     companion object{
         const val RequestCode = 0x01
-        val channel = MethodChannel(App.instance.fE1.dartExecutor, "intent_plugin")
+        lateinit var channel : MethodChannel
 
         @JvmStatic
-        fun registerWith(activity: Activity) {
+        fun registerWith(activity: Activity, engineId : String) {
             val intentMethod = IntentMethod(activity)
+            when (engineId) {
+                "test" -> channel = MethodChannel(App.instance.fE1.dartExecutor, "intent_plugin")
+                "test2" -> channel = MethodChannel(App.instance.fE2.dartExecutor, "intent_plugin")
+                "test3" -> channel = MethodChannel(App.instance.fE3.dartExecutor, "intent_plugin")
+            }
             channel.setMethodCallHandler(intentMethod)
         }
     }

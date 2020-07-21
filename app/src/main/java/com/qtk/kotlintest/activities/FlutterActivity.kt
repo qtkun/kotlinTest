@@ -14,9 +14,11 @@ class FlutterActivity : AppCompatActivity(R.layout.activity_flutter) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        flutterFragment = FlutterFragment.withCachedEngine("test").build()
-        supportFragmentManager.beginTransaction().add(R.id.fragment_layout, flutterFragment).commit()
-        IntentMethod.registerWith(this)
+        intent.getStringExtra("engine")?.let {
+            flutterFragment = FlutterFragment.withCachedEngine(it).build()
+            supportFragmentManager.beginTransaction().add(R.id.fragment_layout, flutterFragment).commit()
+            IntentMethod.registerWith(this, it)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

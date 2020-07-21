@@ -1,18 +1,18 @@
 package com.qtk.kotlintest.method
 
 import android.content.Context
-import com.qtk.kotlintest.App
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.jetbrains.anko.toast
 
 class ToastMethod (private val context: Context) : MethodChannel.MethodCallHandler {
     companion object{
-        private val channel = MethodChannel(App.instance.fE1.dartExecutor, "toast_plugin")
 
         @JvmStatic
         fun registerWith(context: Context) {
             val toastMethod = ToastMethod(context)
+            val channel = MethodChannel(FlutterEngine(context).dartExecutor, "toast_plugin")
             channel.setMethodCallHandler(toastMethod)
         }
     }
