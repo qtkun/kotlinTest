@@ -24,43 +24,43 @@ class _MyHomePageState2 extends State<MyHomePage2> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TextSizeModel>.value(
-      value: textSize,
-      child: ChangeNotifierProvider<CounterModel>.value(
-        value: counter,
-        child: Scaffold(
-          body: PageTransitionSwitcher(
-            transitionBuilder: (
-                Widget child,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-                ) {
-              return FadeThroughTransition(
-                animation: animation,
-                secondaryAnimation: secondaryAnimation,
-                child: child,
-              );
-            },
-            child: pageList[pageIndex],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: pageIndex,
-            onTap: (int newValue) {
-              setState(() {
-                pageIndex = newValue;
-              });
-            },
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.photo_library),
-                title: Text('Albums'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.photo),
-                title: Text('Photos'),
-              ),
-            ],
-          ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: textSize),
+        ChangeNotifierProvider.value(value: counter)
+      ],
+      child: Scaffold(
+        body: PageTransitionSwitcher(
+          transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              ) {
+            return FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: pageList[pageIndex],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: pageIndex,
+          onTap: (int newValue) {
+            setState(() {
+              pageIndex = newValue;
+            });
+          },
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.photo_library),
+              title: Text('Albums'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.photo),
+              title: Text('Photos'),
+            ),
+          ],
         ),
       ),
     );

@@ -24,46 +24,44 @@ class _MyHomePageState3 extends State<MyHomePage3> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ChangeNotifierProvider<TextSizeModel>.value(
-        value: textSize,
-        child: ChangeNotifierProvider<CounterModel>.value(
-          value: counter,
-          child: Scaffold(
-            body: PageTransitionSwitcher(
-              transitionBuilder: (
-                  Widget child,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                  ) {
-                return SharedAxisTransition(
-                  child: child,
-                  animation: animation,
-                  transitionType: SharedAxisTransitionType.vertical,
-                  secondaryAnimation: secondaryAnimation,
-                );
-              },
-              child: pageList[pageIndex],
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: textSize),
+        ChangeNotifierProvider.value(value: counter)
+      ],
+      child: Scaffold(
+        body: PageTransitionSwitcher(
+          transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              ) {
+            return SharedAxisTransition(
+              child: child,
+              animation: animation,
+              transitionType: SharedAxisTransitionType.vertical,
+              secondaryAnimation: secondaryAnimation,
+            );
+          },
+          child: pageList[pageIndex],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: pageIndex,
+          onTap: (int newValue) {
+            setState(() {
+              pageIndex = newValue;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+                title: Text('首页'),
+                icon: Icon(Icons.home)
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: pageIndex,
-              onTap: (int newValue) {
-                setState(() {
-                  pageIndex = newValue;
-                });
-              },
-              items: const [
-                BottomNavigationBarItem(
-                    title: Text('首页'),
-                    icon: Icon(Icons.home)
-                ),
-                BottomNavigationBarItem(
-                    title: Text('我的'),
-                    icon: Icon(Icons.perm_identity)
-                ),
-              ],
+            BottomNavigationBarItem(
+                title: Text('我的'),
+                icon: Icon(Icons.perm_identity)
             ),
-          ),
+          ],
         ),
       ),
     );
