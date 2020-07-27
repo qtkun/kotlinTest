@@ -42,10 +42,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        mViewModel.data.observe(this, observer())
         initToolbar()
         forecast_list.layoutManager = LinearLayoutManager(this)
         attachToScroll(forecast_list)
+        lifecycleScope.launchWhenCreated {
+//            mViewModel.setData2(zipCode).observe(this@MainActivity, observer())
+            mViewModel.data.observe(this@MainActivity, observer())
+        }
     }
 
     private fun observer(): Observer<ForecastList> {
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
 
     override fun onResume() {
         super.onResume()
-        load3()
+        load()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

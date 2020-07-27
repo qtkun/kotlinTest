@@ -3,6 +3,10 @@ package com.qtk.kotlintest.domain.command
 import com.qtk.kotlintest.domain.datasource.ForecastProvider
 import com.qtk.kotlintest.domain.model.ForecastList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 /**
@@ -19,5 +23,10 @@ class RequestForecastCommand(private val zipCode: Long,
     override suspend fun execute(): ForecastList = withContext(Dispatchers.IO) {
         forecastProvider.requestByZipCode(zipCode, DAYS)
     }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun execute2(): Flow<ForecastList> = flow {
+        emit(forecastProvider.requestByZipCode(zipCode, DAYS))
+    }.flowOn(Dispatchers.IO)
 
 }
