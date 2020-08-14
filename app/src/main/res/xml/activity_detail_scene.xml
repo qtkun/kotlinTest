@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <Constraint android:id="@+id/icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        <Constraint android:id="@+id/weatherDescription"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+        <Constraint android:id="@+id/maxTemperature"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/minTemperature"
+            app:layout_constraintTop_toBottomOf="@+id/icon"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+        <Constraint android:id="@+id/minTemperature"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/maxTemperature"
+            app:layout_constraintTop_toBottomOf="@+id/icon"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <Constraint android:id="@+id/icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/minTemperature"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        <Constraint android:id="@+id/weatherDescription"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintBottom_toBottomOf="@+id/icon"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin" />
+        <Constraint android:id="@+id/maxTemperature"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/minTemperature"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+        <Constraint android:id="@+id/minTemperature"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/maxTemperature"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start"
+        app:duration="5000"
+        app:motionInterpolator="bounce">
+
+        <!--<OnSwipe
+            app:targetId="@+id/toolbar"
+            app:touchAnchorSide="bottom"
+            app:dragDirection="dragDown"
+            app:onTouchUp="decelerateAndComplete"/>-->
+
+        <OnClick
+            app:targetId="@+id/icon"
+            app:clickAction="toggle"/>
+
+        <KeyFrameSet>
+            <KeyPosition
+            app:motionTarget="@+id/icon"
+            app:framePosition="10"
+            app:keyPositionType="pathRelative"
+            app:percentY="0.1"
+            app:percentX="0.1"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="20"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.1"
+                app:percentX="0.2"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="30"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.08"
+                app:percentX="0.30"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="40"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.08"
+                app:percentX="0.4"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="50"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.06"
+                app:percentX="0.50"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="60"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.06"
+                app:percentX="0.6"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="70"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.04"
+                app:percentX="0.7"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="80"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.04"
+                app:percentX="0.8"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/icon"
+                app:framePosition="90"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.02"
+                app:percentX="0.9"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="10"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.1"
+                app:percentX="0.1"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="20"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.1"
+                app:percentX="0.2"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="30"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.08"
+                app:percentX="0.30"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="40"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.08"
+                app:percentX="0.4"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="50"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.06"
+                app:percentX="0.50"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="60"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.06"
+                app:percentX="0.6"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="70"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.04"
+                app:percentX="0.7"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="80"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.04"
+                app:percentX="0.8"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/weatherDescription"
+                app:framePosition="90"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.02"
+                app:percentX="0.9"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/maxTemperature"
+                app:framePosition="20"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.45"
+                app:percentX="0.5"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/maxTemperature"
+                app:framePosition="40"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.2"
+                app:percentX="0.6"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/maxTemperature"
+                app:framePosition="60"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.2"
+                app:percentX="0.8"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/maxTemperature"
+                app:framePosition="80"
+                app:keyPositionType="pathRelative"
+                app:percentY="0.03"
+                app:percentX="0.9"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/minTemperature"
+                app:framePosition="20"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.45"
+                app:percentX="0.5"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/minTemperature"
+                app:framePosition="40"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.2"
+                app:percentX="0.6"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/minTemperature"
+                app:framePosition="60"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.2"
+                app:percentX="0.8"/>
+
+            <KeyPosition
+                app:motionTarget="@+id/minTemperature"
+                app:framePosition="80"
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.03"
+                app:percentX="0.9"/>
+        </KeyFrameSet>
+
+    </Transition>
+</MotionScene>

@@ -14,7 +14,6 @@ import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.view_model.GoodsViewModel
 import kotlinx.android.synthetic.main.activity_goods_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.anko.find
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
