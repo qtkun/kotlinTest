@@ -88,7 +88,7 @@ object Manager {
             val httpUrl =
                 originRequest.url.newBuilder()
                     .addQueryParameter("clienttype", "bandroid")
-                    .addQueryParameter("token", "b2e07509e7c140ebxBBYLtcRcEAojWixylVMieI3lGNqp3vfBZuKzhwGVQiKvNbOdM2gM+k0eHRDCWuKXJTEdFbwo4KoVXp91zTA65sqkLFxEogoZ47fQ8HgMBKBSlcwO8jdc9sLTMcqtRyv")
+                    .addQueryParameter("token", "75b43cd1b5ba47464gQQ10jb2vUJWHeCPmJWKTvhc1toKipTIUFSv2/KdCua5+ijXMh7zEmmR3WvSHsbZQ9JTRo379BKq2p2vWl3j2ZNGGbFYWzvqTaX4M48zzTVCUNW4aU/WxzQnGD1KeAj")
                     .build()
             request = originRequest.newBuilder().url(httpUrl).build()
             it.proceed(request)

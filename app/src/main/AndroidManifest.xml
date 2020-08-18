@@ -42,6 +42,7 @@
             android:windowSoftInputMode="adjustResize"
             />
         <activity android:name=".activities.GoodsActivity" />
+        <activity android:name=".activities.MotionActivity" />
     </application>
 
 </manifest>

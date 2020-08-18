@@ -54,7 +54,7 @@ interface ToolbarManager {
                         "engine" to "test3"
                     )
                 }
-                R.id.action_goods -> toolbar.ctx.startActivity<GoodsActivity>()
+                R.id.action_goods -> toolbar.ctx.startActivity<MotionActivity>()
                 else -> App.instance.toast("Unknown option")
             }
             true

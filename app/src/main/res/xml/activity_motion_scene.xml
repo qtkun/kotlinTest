@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@id/background"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+            <CustomAttribute
+                app:attributeName="crossfade"
+                app:customFloatValue="0"/>
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp">
+            <CustomAttribute
+                app:attributeName="colorFilter"
+                app:customColorValue="@android:color/white"/>
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="110dp">
+            <CustomAttribute
+                app:attributeName="textColor"
+                app:customColorValue="@android:color/white"/>
+            <CustomAttribute
+                app:attributeName="textSize"
+                app:customFloatValue="22"/>
+        </Constraint>
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint android:id="@id/background"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+            <CustomAttribute
+                app:attributeName="crossfade"
+                app:customFloatValue="1" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/background"
+            android:layout_marginStart="15dp">
+            <CustomAttribute
+                app:attributeName="colorFilter"
+                app:customColorValue="@android:color/black"/>
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/background">
+            <CustomAttribute
+                app:attributeName="textColor"
+                app:customColorValue="@android:color/black"/>
+            <CustomAttribute
+                app:attributeName="textSize"
+                app:customFloatValue="18"/>
+        </Constraint>
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start"
+        app:duration="1000"
+        app:motionInterpolator="linear">
+
+        <OnSwipe
+            app:dragDirection="dragUp"
+            app:touchAnchorId="@+id/goods_refresh"
+            app:touchAnchorSide="top" />
+
+        <!--<OnClick app:clickAction="toggle"
+            app:targetId="@+id/back"/>-->
+
+    </Transition>
+</MotionScene>
