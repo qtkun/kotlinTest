@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/activity_detail_scene"
-    app:showPaths="true">
+    app:layoutDescription="@xml/activity_detail_scene">
 
     <include layout="@layout/toolbar" />
 

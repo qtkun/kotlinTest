@@ -55,6 +55,7 @@ interface ToolbarManager {
                     )
                 }
                 R.id.action_goods -> toolbar.ctx.startActivity<MotionActivity>()
+                R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()
                 else -> App.instance.toast("Unknown option")
             }
             true

@@ -1,9 +1,7 @@
-package com.qtk.kotlintest.activities
+package com.qtk.kotlintest.fragment
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -12,34 +10,27 @@ import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.GoodsAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.view_model.GoodsViewModel
-import kotlinx.android.synthetic.main.activity_goods_list.*
+import kotlinx.android.synthetic.main.fragment_goods_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.jetbrains.anko.find
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class GoodsActivity : AppCompatActivity(R.layout.activity_goods_list), ToolbarManager {
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override val activity: Activity by lazy { this }
+class GoodsFragment : Fragment(R.layout.fragment_goods_list) {
     private val mViewModel by viewModel<GoodsViewModel>()
     private var adapter: GoodsAdapter = GoodsAdapter { }
 
     @ExperimentalCoroutinesApi
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         mViewModel.getGoods(0, "1", "createtime")
             .observe(this, Observer {
             lifecycleScope.launchWhenCreated {
                 adapter.submitData(it)
             }
         })
-        initToolbar()
         goods_list.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
             adapter.retry()
         })
-        goods_list.layoutManager = LinearLayoutManager(this)
-        attachToScroll(goods_list)
-        toolbarTitle = "Goods"
-        enableHomeAsUp { onBackPressed() }
+        goods_list.layoutManager = LinearLayoutManager(context)
 
         lifecycleScope.launchWhenCreated {
             /*adapter.loadStateFlow.collectLatest {

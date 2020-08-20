@@ -98,11 +98,11 @@
         app:duration="5000"
         app:motionInterpolator="bounce">
 
-        <!--<OnSwipe
+        <OnSwipe
             app:targetId="@+id/toolbar"
             app:touchAnchorSide="bottom"
             app:dragDirection="dragDown"
-            app:onTouchUp="decelerateAndComplete"/>-->
+            app:onTouchUp="decelerateAndComplete"/>
 
         <OnClick
             app:targetId="@+id/icon"

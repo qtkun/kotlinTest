@@ -41,8 +41,8 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             />
-        <activity android:name=".activities.GoodsActivity" />
         <activity android:name=".activities.MotionActivity" />
+        <activity android:name=".activities.ViewPagerActivity" />
     </application>
 
 </manifest>
