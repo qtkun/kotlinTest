@@ -33,4 +33,9 @@
         android:orderInCategory="100"
         android:title="@string/viewpager"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_camera"
+        android:orderInCategory="100"
+        android:title="@string/cameraX"
+        app:showAsAction="never"/>
 </menu>
