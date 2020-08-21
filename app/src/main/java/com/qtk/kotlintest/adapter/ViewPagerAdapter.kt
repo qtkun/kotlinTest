@@ -1,4 +1,4 @@
-package com.qtk.kotlintest.activities
+package com.qtk.kotlintest.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

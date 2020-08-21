@@ -19,6 +19,13 @@
         app:drawableStartCompat="@mipmap/image_add"
         app:drawableTint="@android:color/white" />
 
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/image_arrow_start"
+        android:layout_marginStart="10dp"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="wrap_content"

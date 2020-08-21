@@ -42,6 +42,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
     private var imageCapture: ImageCapture? = null//拍照用例
     private var videoCapture: VideoCapture? = null//录像用例
     private var record : Boolean = false
+    private var flash : Boolean = false
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
@@ -73,6 +74,12 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
             startCamera()
+        }
+        btnFlash.setOnClickListener {
+            camera?.let {
+                flash = !flash
+                it.cameraControl.enableTorch(flash)
+            }
         }
     }
 
@@ -207,7 +214,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = output.savedUri
+                    val savedUri = file.toURI()
                     val msg = "Photo capture succeeded: $savedUri"
                     toast(msg)
                     Log.d("qtk", msg)

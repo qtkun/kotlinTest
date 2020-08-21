@@ -36,11 +36,6 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
 
-            ndk {
-                //选择要添加的对应 cpu 类型的 .so 库。
-                abiFilters 'x86', 'x86_64'
-            }
-
         }
         release {
             signingConfig signingConfigs.release
