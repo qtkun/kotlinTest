@@ -6,6 +6,7 @@ import com.qtk.kotlintest.method.ToastMethod
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.GoodsViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
+import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -20,6 +21,7 @@ import org.koin.dsl.module
  * Created by qtkun
 on 2020-06-16.
  */
+@HiltAndroidApp
 class App : Application(){
     companion object {
         var instance : App by DelegatesExt.notNullSingleValue()
@@ -31,7 +33,6 @@ class App : Application(){
     private val viewModelModule = module {
         viewModel { MainViewModel() }
         viewModel { DetailViewModel() }
-        viewModel { GoodsViewModel() }
     }
 
     override fun onCreate() {

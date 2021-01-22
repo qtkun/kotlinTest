@@ -1,58 +1,69 @@
-package com.qtk.kotlintest.retrofit.manager
+package com.qtk.kotlintest.utils
 
+import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
-import com.qtk.kotlintest.App
-import com.qtk.kotlintest.retrofit.service.Service
-import com.qtk.kotlintest.utils.isConnected
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.*
 import okhttp3.Interceptor.Companion.invoke
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
-
-object Manager {
-    private const val BASE_URL = "http://weshoptest.graspyun.com:5000"
-
-    //创建Cache
-    private val httpCacheDirectory = File(App.instance.applicationContext.cacheDir, "OkHttpCache")
-    private val cache: Cache = Cache(httpCacheDirectory, 10 * 1024 * 1024)
-    private val cookieJar = object : CookieJar {
-        val cookieStore: HashMap<HttpUrl, List<Cookie>> = HashMap()
-
-        override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
-            val cookies = cookieStore[url] //取出cookie
-            return cookies as MutableList<Cookie>? ?: mutableListOf()
-        }
-
-        override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-            cookieStore[url] = cookies;//保存cookie
-        }
+@Module
+@InstallIn(ApplicationComponent::class)
+class NetworkModule {
+    companion object {
+        const val BASE_URL = "http://weshoptest.graspyun.com:5000"
     }
 
-    private val client: OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(getRequestHeader())
-        .addInterceptor(getHttpLoggingInterceptor())
-        .addInterceptor(commonParamsInterceptor())
-        .cache(cache)
-        .cookieJar(cookieJar)
-        .addNetworkInterceptor(getCacheInterceptor())
-        .addInterceptor(getCacheInterceptor())
-        .build()
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        //创建Cache
+        val httpCacheDirectory = File(context.cacheDir, "OkHttpCache")
+        val cache = Cache(httpCacheDirectory, 10 * 1024 * 1024)
+        val cookieJar = object : CookieJar {
+            val cookieStore: HashMap<HttpUrl, List<Cookie>> = HashMap()
 
-    val retrofit: Retrofit = Retrofit.Builder()
-        .client(client)
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+            override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
+                val cookies = cookieStore[url] //取出cookie
+                return cookies as MutableList<Cookie>? ?: mutableListOf()
+            }
+
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+                cookieStore[url] = cookies;//保存cookie
+            }
+        }
+        return OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(getRequestHeader())
+            .addInterceptor(getHttpLoggingInterceptor())
+            .addInterceptor(commonParamsInterceptor())
+            .cache(cache)
+            .cookieJar(cookieJar)
+            .addNetworkInterceptor(getCacheInterceptor())
+            .addInterceptor(getCacheInterceptor())
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
     private fun getRequestHeader(): Interceptor {
         return invoke {
@@ -64,8 +75,8 @@ object Manager {
                 builder.method(originalRequest.method, originalRequest.body)
             val request: Request = requestBuilder.build()
             it.proceed(request).apply {
-                header("time")?.let {
-                    Log.i("qtk", "响应时间：$it")
+                header("time")?.let { time ->
+                    Log.i("qtk", "响应时间：$time")
                 }
             }
         }

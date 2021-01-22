@@ -7,8 +7,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ViewPagerAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_viewpager2.*
 
+@AndroidEntryPoint
 class ViewPagerActivity : AppCompatActivity(R.layout.activity_viewpager2) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,5 +43,8 @@ class ViewPagerActivity : AppCompatActivity(R.layout.activity_viewpager2) {
                 }
             }
         })
+        back.setOnClickListener {
+            finish()
+        }
     }
 }

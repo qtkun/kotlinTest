@@ -3,6 +3,7 @@ package com.qtk.kotlintest.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,11 +11,13 @@ import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.GoodsAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.view_model.GoodsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_motion.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class MotionActivity : AppCompatActivity(R.layout.activity_motion) {
-    private val mViewModel by viewModel<GoodsViewModel>()
+    private val mViewModel by lazy { ViewModelProvider(this).get(GoodsViewModel::class.java) }
     private var adapter: GoodsAdapter = GoodsAdapter { }
 
     override fun onCreate(savedInstanceState: Bundle?) {

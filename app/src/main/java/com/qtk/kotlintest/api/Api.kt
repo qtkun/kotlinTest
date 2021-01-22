@@ -1,9 +1,15 @@
 package com.qtk.kotlintest.api
 
+import com.qtk.kotlintest.extensions.createBody
 import com.qtk.kotlintest.retrofit.data.GoodsBean
-import com.qtk.kotlintest.retrofit.manager.Manager
+import com.qtk.kotlintest.retrofit.service.Service
+import retrofit2.Retrofit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object Api {
+@Singleton
+class Api @Inject constructor(val retrofit: Retrofit){
+
     suspend fun getGoods(page : Int, size : Int, state : Int, orderType :String, orderField : String) : List<GoodsBean>{
         val map : Map<String, Any> = mapOf(
             "pageindex" to page,
@@ -13,6 +19,6 @@ object Api {
             "ordertype" to orderType,
             "orderfield" to orderField
         )
-        return Manager.service.getGoods(Manager.createBody(map)).data
+        return retrofit.create(Service::class.java).getGoods(createBody(map)).data
     }
 }

@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.view_model
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -9,9 +10,9 @@ import androidx.paging.cachedIn
 import com.qtk.kotlintest.paging.CommonRepository
 import com.qtk.kotlintest.retrofit.data.GoodsBean
 
-class GoodsViewModel : ViewModel() {
+class GoodsViewModel @ViewModelInject constructor(private val commonRepository: CommonRepository) : ViewModel() {
 
     fun getGoods(state : Int, orderType : String, orderField : String) : LiveData<PagingData<GoodsBean>>{
-        return CommonRepository.getGoodsData(state, orderType, orderField).cachedIn(viewModelScope).asLiveData()
+        return commonRepository.getGoodsData(state, orderType, orderField).cachedIn(viewModelScope).asLiveData()
     }
 }
