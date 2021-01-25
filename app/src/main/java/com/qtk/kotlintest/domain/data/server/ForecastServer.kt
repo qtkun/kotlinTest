@@ -17,6 +17,6 @@ class ForecastServer(
         return forecastDb.requestForecastByZipCode(zipCode, date)
     }
 
-    override suspend fun requestDayForecast(id: Long): Forecast? = throw UnsupportedOperationException()
+    override suspend fun requestDayForecast(id: Long): Forecast = throw UnsupportedOperationException()
 
 }

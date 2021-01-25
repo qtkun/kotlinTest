@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.databinding.ItemGoodsBinding
 import com.qtk.kotlintest.extensions.ctx
 import com.qtk.kotlintest.retrofit.data.GoodsBean
 import com.qtk.kotlintest.utils.CircleCornerForm
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_forecast.icon
-import kotlinx.android.synthetic.main.item_goods.*
 
 class GoodsAdapter(private val itemClick : (GoodsBean) -> Unit) :
     PagingDataAdapter<GoodsBean, ViewHolder>(object : DiffUtil.ItemCallback<GoodsBean>(){
@@ -39,14 +38,14 @@ class GoodsAdapter(private val itemClick : (GoodsBean) -> Unit) :
 @SuppressLint("SetTextI18n")
 class ViewHolder(containerView: View, itemClick: (GoodsBean) -> Unit)
     : BaseViewHolder<GoodsBean>(containerView, itemClick) {
-
+    private val binding = ItemGoodsBinding.bind(containerView)
     override fun bind(t: GoodsBean) {
         with(t){
-            Picasso.get().load(goodsimage.url).transform(CircleCornerForm()).into(icon)
-            title_tv.text = name
-            code_tv.text = "编号：$code"
-            price_tv.text = "价格：￥$pricemin~￥$pricemax"
-            stock_tv.text = "库存：$stock"
+            Picasso.get().load(goodsimage.url).transform(CircleCornerForm()).into(binding.icon)
+            binding.titleTv.text = name
+            binding.codeTv.text = "编号：$code"
+            binding.priceTv.text = "价格：￥$pricemin~￥$pricemax"
+            binding.stockTv.text = "库存：$stock"
         }
     }
 

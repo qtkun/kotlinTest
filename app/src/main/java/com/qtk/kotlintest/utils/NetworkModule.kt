@@ -2,6 +2,8 @@ package com.qtk.kotlintest.utils
 
 import android.content.Context
 import android.util.Log
+import com.qtk.kotlintest.retrofit.adapter.ApiException
+import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,9 +12,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.*
 import okhttp3.Interceptor.Companion.invoke
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -48,10 +53,11 @@ class NetworkModule {
             .addInterceptor(getRequestHeader())
             .addInterceptor(getHttpLoggingInterceptor())
             .addInterceptor(commonParamsInterceptor())
+            .addInterceptor(getErrorInterceptor())
+            .addInterceptor(getCacheInterceptor())
+            .addNetworkInterceptor(getCacheInterceptor())
             .cache(cache)
             .cookieJar(cookieJar)
-            .addNetworkInterceptor(getCacheInterceptor())
-            .addInterceptor(getCacheInterceptor())
             .build()
     }
 
@@ -61,6 +67,7 @@ class NetworkModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
+            .addCallAdapterFactory(ApiResultCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -136,6 +143,47 @@ class NetworkModule {
                     .build()
             }
             response
+        }
+    }
+
+    /**
+     * 业务错误 Interceptor
+     * 对于request: 无
+     * 对于response:负责解析业务错误（在http status 成功的前提下）
+     */
+    private fun getErrorInterceptor() :Interceptor {
+        return invoke {
+            val response = it.proceed(it.request())
+            //http status不是成功的情况下，我们不处理
+            if (!response.isSuccessful){
+                return@invoke response
+            }
+
+            //因为response.body().string() 只能调用一次，所以这里读取responseBody不使用response.body().string()，原因：https://juejin.im/post/6844903545628524551
+            //以下读取resultString的代码节选自
+            //https://github.com/square/okhttp/blob/master/okhttp-logging-interceptor/src/main/kotlin/okhttp3/logging/HttpLoggingInterceptor.kt
+
+            val responseBody = response.body!!
+            val source = responseBody.source()
+            source.request(Long.MAX_VALUE) // Buffer the entire body.
+            val buffer = source.buffer
+            val contentType = responseBody.contentType()
+            val charset: Charset = contentType?.charset(UTF_8) ?: UTF_8
+            val resultString = buffer.clone().readString(charset)
+
+
+            val jsonObject = JSONObject(resultString)
+            if (!jsonObject.has("code")) {
+                return@invoke response
+            }
+
+            val errorCode = jsonObject.optInt("code")
+            val errorMsg = jsonObject.optString("msg")
+            //对于业务成功的情况不做处理
+            if (errorCode == 0) {
+                return@invoke response
+            }
+            throw ApiException(errorCode, errorMsg)
         }
     }
 }
