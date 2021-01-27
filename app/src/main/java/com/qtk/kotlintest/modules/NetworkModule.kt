@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.modules
 
 import android.content.Context
+import com.google.gson.Gson
 import com.qtk.kotlintest.contant.BASE_URL
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
@@ -22,21 +23,6 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
-        //创建Cache
-        val httpCacheDirectory = File(context.cacheDir, "OkHttpCache")
-        val cache = Cache(httpCacheDirectory, 10 * 1024 * 1024)
-        val cookieJar = object : CookieJar {
-            val cookieStore: HashMap<HttpUrl, List<Cookie>> = HashMap()
-
-            override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
-                val cookies = cookieStore[url] //取出cookie
-                return cookies as MutableList<Cookie>? ?: mutableListOf()
-            }
-
-            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-                cookieStore[url] = cookies;//保存cookie
-            }
-        }
         return OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -46,7 +32,7 @@ class NetworkModule {
             .addInterceptor(getHttpLoggingInterceptor())
             .addInterceptor(getCacheInterceptor())
             .addNetworkInterceptor(getCacheInterceptor())
-            .cache(cache)
+            .cache(getCache(context))
             .cookieJar(cookieJar)
             .build()
     }
@@ -67,4 +53,8 @@ class NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideGson(): Gson = Gson()
 }

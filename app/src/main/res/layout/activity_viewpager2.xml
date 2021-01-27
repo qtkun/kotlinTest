@@ -38,13 +38,13 @@
             android:id="@+id/item1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="商品档案"/>
+            android:text="列表1"/>
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/item2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="套餐档案"/>
+            android:text="列表2"/>
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -52,7 +52,7 @@
         android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="商品档案"
+        android:text="列表1"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
 

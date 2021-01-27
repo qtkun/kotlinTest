@@ -1,17 +1,34 @@
 package com.qtk.kotlintest.modules
 
+import android.content.Context
 import android.util.Log
 import com.qtk.kotlintest.retrofit.adapter.ApiException
 import com.qtk.kotlintest.utils.isConnected
-import okhttp3.CacheControl
-import okhttp3.Interceptor
+import okhttp3.*
 import okhttp3.Interceptor.Companion.invoke
-import okhttp3.Request
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
+import java.io.File
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+
+fun getCache(context: Context) : Cache{
+    val httpCacheDirectory = File(context.cacheDir, "OkHttpCache")
+    return Cache(httpCacheDirectory, 10 * 1024 * 1024)
+}
+
+val cookieJar = object : CookieJar {
+    val cookieStore: HashMap<HttpUrl, List<Cookie>> = HashMap()
+
+    override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
+        val cookies = cookieStore[url] //取出cookie
+        return cookies as MutableList<Cookie>? ?: mutableListOf()
+    }
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookieStore[url] = cookies;//保存cookie
+    }
+}
 
 fun getRequestHeader(): Interceptor {
     return invoke {
@@ -44,11 +61,6 @@ fun commonInterceptor(): Interceptor {
         val request: Request
         val httpUrl =
             originRequest.url.newBuilder()
-                .addQueryParameter("clienttype", "bandroid")
-                .addQueryParameter(
-                    "token",
-                    "75b43cd1b5ba47464gQQ10jb2vUJWHeCPmJWKTvhc1toKipTIUFSv2/KdCua5+ijXMh7zEmmR3WvSHsbZQ9JTRo379BKq2p2vWl3j2ZNGGbFYWzvqTaX4M48zzTVCUNW4aU/WxzQnGD1KeAj"
-                )
                 .build()
         request = originRequest.newBuilder().url(httpUrl).build()
         val response = it.proceed(request)

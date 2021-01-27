@@ -93,7 +93,7 @@
 
         <OnSwipe
             app:dragDirection="dragUp"
-            app:touchAnchorId="@+id/goods_refresh"
+            app:touchAnchorId="@+id/pokemon_refresh"
             app:touchAnchorSide="top" />
 
         <!--<OnClick app:clickAction="toggle"

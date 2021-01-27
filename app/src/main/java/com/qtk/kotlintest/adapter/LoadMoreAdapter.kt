@@ -8,9 +8,9 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.databinding.ItemLoadMoreBinding
 import com.qtk.kotlintest.extensions.ctx
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_load_more.*
 
 class LoadMoreAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadMoreView>() {
     override fun onBindViewHolder(holder: LoadMoreView, loadState: LoadState) {
@@ -27,13 +27,13 @@ class LoadMoreView(
     override val containerView: View,
     private val retry: () -> Unit
 ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-
+    private val binding = ItemLoadMoreBinding.bind(containerView)
     private val loading = ObservableBoolean()
 
     fun bindState(loadState: LoadState) {
         loading.set(loadState is LoadState.Loading)
-        loading_progress.visibility = if (loading.get()) View.VISIBLE else View.GONE
-        btn_reload.visibility = if (loading.get()) View.GONE else View.VISIBLE
-        itemView.setOnClickListener { retry }
+        binding.loadingProgress.visibility = if (loading.get()) View.VISIBLE else View.GONE
+        binding.btnReload.visibility = if (loading.get()) View.GONE else View.VISIBLE
+        binding.btnReload.setOnClickListener { retry }
     }
 }

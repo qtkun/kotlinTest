@@ -2,15 +2,21 @@ package com.qtk.kotlintest.paging
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.map
 import com.qtk.kotlintest.api.Api
+import com.qtk.kotlintest.contant.pagingConfig
+import com.qtk.kotlintest.retrofit.data.getImageUrl
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CommonRepository @Inject constructor(private val api: Api) {
-    fun getGoodsData(
-        state : Int,
-        orderType : String,
-        orderField : String
-    ) = Pager(PagingConfig(pageSize = 10, initialLoadSize = 10)){
-        GoodsDataSource(state, orderType, orderField, api)
-    }.flow
+    fun getPokemon() = Pager(pagingConfig){
+        PokemonDataSource(api)
+    }.flow.map {
+        it.map { pokemon ->
+            pokemon.apply {
+                url = getImageUrl(pokemon.url)
+            }
+        }
+    }
 }

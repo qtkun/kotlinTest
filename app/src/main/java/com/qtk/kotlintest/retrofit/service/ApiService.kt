@@ -1,13 +1,11 @@
 package com.qtk.kotlintest.retrofit.service
 
-import com.qtk.kotlintest.retrofit.data.ApiResult
-import com.qtk.kotlintest.retrofit.data.GoodsBean
-import com.qtk.kotlintest.retrofit.data.ResponseResult
-import com.qtk.kotlintest.retrofit.data.ResponseResultList
-import okhttp3.RequestBody
+import com.qtk.kotlintest.retrofit.data.*
 import retrofit2.http.*
 
 interface ApiService {
-    @POST("/goods/list")
-    suspend fun getGoods(@Body body: RequestBody) : ApiResult<ResponseResultList<GoodsBean>>
+    @GET("pokemon")
+    suspend fun getPokemonList(
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0): ApiResult<PokemonListBean>
 }

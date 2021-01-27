@@ -18,15 +18,15 @@ class ViewPagerActivity : AppCompatActivity(R.layout.activity_viewpager2) {
         TabLayoutMediator(tab_layout, view_pager
         ) { tab, position -> // Styling each tab here
             when(position){
-                0 -> tab.text = "商品档案"
-                1 -> tab.text = "套餐档案"
+                0 -> tab.text = "列表1"
+                1 -> tab.text = "列表2"
             }
         }.attach()
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when(tab?.position){
-                    0 -> title_tv.text = "商品档案"
-                    1 -> title_tv.text = "套餐档案"
+                    0 -> title_tv.text = "列表1"
+                    1 -> title_tv.text = "列表2"
                 }
             }
 
@@ -38,8 +38,8 @@ class ViewPagerActivity : AppCompatActivity(R.layout.activity_viewpager2) {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 when(position){
-                    0 -> title_tv.text = "商品档案"
-                    1 -> title_tv.text = "套餐档案"
+                    0 -> title_tv.text = "列表1"
+                    1 -> title_tv.text = "列表2"
                 }
             }
         })

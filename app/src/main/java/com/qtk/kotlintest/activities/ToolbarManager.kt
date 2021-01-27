@@ -1,7 +1,6 @@
 package com.qtk.kotlintest.activities
 
 import android.app.Activity
-import android.view.View
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +10,6 @@ import com.qtk.kotlintest.extensions.ctx
 import com.qtk.kotlintest.extensions.slideEnter
 import com.qtk.kotlintest.extensions.slideExit
 import com.qtk.kotlintest.method.IntentMethod
-import io.flutter.embedding.android.FlutterActivity
 import com.qtk.kotlintest.activities.FlutterActivity as FA
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -54,7 +52,7 @@ interface ToolbarManager {
                         "engine" to "test3"
                     )
                 }
-                R.id.action_goods -> toolbar.ctx.startActivity<MotionActivity>()
+                R.id.action_pokemon -> toolbar.ctx.startActivity<MotionActivity>()
                 R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()
                 R.id.action_camera -> toolbar.ctx.startActivity<CameraActivity>()
                 else -> App.instance.toast("Unknown option")

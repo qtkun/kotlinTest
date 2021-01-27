@@ -3,7 +3,7 @@ package com.qtk.kotlintest.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.qtk.kotlintest.fragment.GoodsFragment
+import com.qtk.kotlintest.fragment.PokemonFragment
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
@@ -12,6 +12,6 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
     }
 
     override fun createFragment(position: Int): Fragment {
-        return GoodsFragment()
+        return PokemonFragment()
     }
 }

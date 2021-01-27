@@ -5,9 +5,6 @@ import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
 import com.qtk.kotlintest.modules.appModule
 import com.qtk.kotlintest.modules.viewModelModule
-import com.qtk.kotlintest.view_model.DetailViewModel
-import com.qtk.kotlintest.view_model.GoodsViewModel
-import com.qtk.kotlintest.view_model.MainViewModel
 import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
@@ -15,9 +12,7 @@ import io.flutter.embedding.engine.dart.DartExecutor
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
 
 /**
  * Created by qtkun
