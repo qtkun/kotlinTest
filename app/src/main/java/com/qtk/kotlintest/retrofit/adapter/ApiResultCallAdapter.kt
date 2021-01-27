@@ -1,7 +1,9 @@
 package com.qtk.kotlintest.retrofit.adapter
 
+import com.qtk.kotlintest.contant.BASE_URL
 import com.qtk.kotlintest.retrofit.data.ApiError
 import com.qtk.kotlintest.retrofit.data.ApiResult
+import com.qtk.kotlintest.modules.NetworkModule
 import okhttp3.Request
 import okio.IOException
 import okio.Timeout
@@ -29,13 +31,21 @@ class ApiResultCall<T>(private val delegate: Call<T>) : Call<ApiResult<T>> {
                     //这里担心response.body()可能会为null(还没有测到过这种情况)，所以做了一下这种情况的处理，
                     // 处理了这种情况后还有一个好处是我们就能保证我们传给ApiResult.Success的对象就不是null，这样外面用的时候就不用判空了
                     val apiResult = if (response.body() == null) {
-                        ApiResult.Failure(ApiError.dataIsNull.errorCode, ApiError.dataIsNull.errorMsg)
+                        ApiResult.Failure(
+                            ApiError.dataIsNull.errorCode,
+                            ApiError.dataIsNull.errorMsg,
+                            BASE_URL
+                        )
                     } else {
                         ApiResult.Success(response.body()!!)
                     }
                     callback.onResponse(this@ApiResultCall, Response.success(apiResult))
                 } else {//http status错误
-                    val failureApiResult = ApiResult.Failure(ApiError.httpStatusCodeError.errorCode, ApiError.httpStatusCodeError.errorMsg)
+                    val failureApiResult = ApiResult.Failure(
+                        ApiError.httpStatusCodeError.errorCode,
+                        ApiError.httpStatusCodeError.errorMsg,
+                        BASE_URL
+                    )
                     callback.onResponse(this@ApiResultCall, Response.success(failureApiResult))
                 }
 
@@ -47,11 +57,16 @@ class ApiResultCall<T>(private val delegate: Call<T>) : Call<ApiResult<T>> {
              * 对于网络请求成功，但是业务失败的情况，我们也会在对应的Interceptor中抛出异常，这种情况也会回调该方法
              */
             override fun onFailure(call: Call<T>, t: Throwable) {
-                val failureApiResult = if (t is ApiException) {//Interceptor里会通过throw ApiException 来直接结束请求 同时ApiException里会包含错误信息
-                    ApiResult.Failure(t.errorCode, t.errorMsg)
-                } else {
-                    ApiResult.Failure(ApiError.unknownException.errorCode, ApiError.unknownException.errorMsg)
-                }
+                val failureApiResult =
+                    if (t is ApiException) {//Interceptor里会通过throw ApiException 来直接结束请求 同时ApiException里会包含错误信息
+                        ApiResult.Failure(t.errorCode, t.errorMsg, t.url)
+                    } else {
+                        ApiResult.Failure(
+                            ApiError.unknownException.errorCode,
+                            ApiError.unknownException.errorMsg,
+                            BASE_URL
+                        )
+                    }
 
                 callback.onResponse(this@ApiResultCall, Response.success(failureApiResult))
             }
@@ -96,7 +111,11 @@ class ApiResultCallAdapter<T>(private val type: Type) : CallAdapter<T, Call<ApiR
 }
 
 class ApiResultCallAdapterFactory : CallAdapter.Factory() {
-    override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *> {
+    override fun get(
+        returnType: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit
+    ): CallAdapter<*, *> {
         /*凡是检测不通过的，直接抛异常，提示使用者返回值类型格式不对
         因为ApiResultCallAdapterFactory是使用者显式设置使用的*/
 
@@ -120,4 +139,4 @@ class ApiResultCallAdapterFactory : CallAdapter.Factory() {
 
 }
 
-class ApiException(val errorCode:Int,val errorMsg:String): IOException()
+class ApiException(val errorCode: Int, val errorMsg: String, val url: String) : IOException()

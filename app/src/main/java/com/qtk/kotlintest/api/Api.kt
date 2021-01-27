@@ -4,13 +4,12 @@ import com.qtk.kotlintest.extensions.createBody
 import com.qtk.kotlintest.retrofit.data.ApiResult
 import com.qtk.kotlintest.retrofit.data.GoodsBean
 import com.qtk.kotlintest.retrofit.data.ResponseResultList
-import com.qtk.kotlintest.retrofit.service.Service
-import retrofit2.Retrofit
+import com.qtk.kotlintest.retrofit.service.ApiService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class Api @Inject constructor(val retrofit: Retrofit){
+class Api @Inject constructor(private val service: ApiService){
 
     suspend fun getGoods(page : Int, size : Int, state : Int, orderType :String, orderField : String) : ApiResult<ResponseResultList<GoodsBean>>{
         val map : Map<String, Any> = mapOf(
@@ -21,6 +20,6 @@ class Api @Inject constructor(val retrofit: Retrofit){
             "ordertype" to orderType,
             "orderfield" to orderField
         )
-        return retrofit.create(Service::class.java).getGoods(createBody(map))
+        return service.getGoods(map.createBody())
     }
 }

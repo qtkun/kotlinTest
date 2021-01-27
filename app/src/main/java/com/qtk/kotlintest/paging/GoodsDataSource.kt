@@ -29,7 +29,7 @@ class GoodsDataSource constructor(
                     )
                 }
                 is ApiResult.Failure -> {
-                    LoadResult.Error(ApiException(result.errorCode, result.errorMsg))
+                    LoadResult.Error(ApiException(result.errorCode, result.errorMsg, result.url))
                 }
             }
         } catch (e : Exception) {

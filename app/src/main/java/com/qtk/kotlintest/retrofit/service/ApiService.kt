@@ -7,7 +7,7 @@ import com.qtk.kotlintest.retrofit.data.ResponseResultList
 import okhttp3.RequestBody
 import retrofit2.http.*
 
-interface Service {
+interface ApiService {
     @POST("/goods/list")
     suspend fun getGoods(@Body body: RequestBody) : ApiResult<ResponseResultList<GoodsBean>>
 }

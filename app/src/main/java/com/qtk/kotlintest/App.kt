@@ -3,6 +3,8 @@ package com.qtk.kotlintest
 import android.app.Application
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
+import com.qtk.kotlintest.modules.appModule
+import com.qtk.kotlintest.modules.viewModelModule
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.GoodsViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
@@ -30,10 +32,6 @@ class App : Application(){
     lateinit var fE1 : FlutterEngine
     lateinit var fE2 : FlutterEngine
     lateinit var fE3 : FlutterEngine
-    private val viewModelModule = module {
-        viewModel { MainViewModel() }
-        viewModel { DetailViewModel() }
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +43,7 @@ class App : Application(){
             androidContext(this@App)
             androidFileProperties()
             modules(listOf(viewModelModule))
+            modules(listOf(appModule))
         }
     }
 

@@ -2,16 +2,13 @@ package com.qtk.kotlintest.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Service
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.R
@@ -20,13 +17,13 @@ import com.qtk.kotlintest.adapter.update
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.DelegatesExt
+import com.qtk.kotlintest.extensions.toPx
 import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.test.Truck
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,8 +41,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
     @Inject
     lateinit var truck: Truck
 
-    @Inject
-    lateinit var retrofit: Retrofit
+    private val dialog: Dialog by lazy {
+        Dialog(this).apply {
+            setContentView(R.layout.loading_dialog)
+            setCanceledOnTouchOutside(false)
+            window?.also {
+                it.setBackgroundDrawableResource(R.drawable.loading_bg)
+                it.setGravity(Gravity.CENTER)
+                it.setLayout(150.0.toPx(), 100.0.toPx())
+            }
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +59,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
         initToolbar()
         forecast_list.layoutManager = LinearLayoutManager(this)
         attachToScroll(forecast_list)
-        adapter = ForecastListAdapter(mViewModel.data.value?.dailyForecast) {
+        adapter = ForecastListAdapter(mViewModel.forecastList.value?.dailyForecast) {
             ctx.startActivity<DetailActivity>(
                 DetailActivity.ID to it.id,
                 DetailActivity.CITY_NAME to city
@@ -61,8 +67,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
         }
         forecast_list.adapter = adapter
         lifecycleScope.launchWhenCreated {
-//            mViewModel.setData2(zipCode).observe(this@MainActivity, observer())
-            mViewModel.data.observe(this@MainActivity, observer())
+            mViewModel.forecastList.observe(this@MainActivity, observer())
+            mViewModel.loading.observe(this@MainActivity, Observer {
+                if (it) {
+                    dialog.show()
+                } else {
+                    if (dialog.isShowing) dialog.dismiss()
+                }
+            })
             truck.deliver()
         }
     }
@@ -90,7 +102,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) , ToolbarManager 
     //协程对liveCycle
     private fun load() = lifecycleScope.launchWhenResumed {
         if (lifecycle.currentState != Lifecycle.State.DESTROYED){
-            mViewModel.setData(zipCode)
+            mViewModel.setData2(zipCode)
         }
     }
 

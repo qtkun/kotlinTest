@@ -17,6 +17,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @AndroidEntryPoint
 class MotionActivity : AppCompatActivity(R.layout.activity_motion) {
+    //通过koin注入
+//    private val mViewModel by viewModel<GoodsViewModel>()
+    //通过hilt注入
     private val mViewModel by lazy { ViewModelProvider(this).get(GoodsViewModel::class.java) }
     private var adapter: GoodsAdapter = GoodsAdapter { }
 

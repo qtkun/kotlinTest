@@ -1,14 +1,10 @@
 package com.qtk.kotlintest.retrofit.manager
 
 import android.util.Log
-import com.google.gson.Gson
 import com.qtk.kotlintest.App
-import com.qtk.kotlintest.retrofit.service.Service
 import com.qtk.kotlintest.utils.isConnected
 import okhttp3.*
 import okhttp3.Interceptor.Companion.invoke
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

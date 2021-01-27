@@ -10,11 +10,11 @@ import javax.inject.Qualifier
 class Truck @Inject constructor(private val driver: Driver) {
     @BindGasEngine
     @Inject
-    lateinit var gasEngine: GasEngine
+    lateinit var gasEngine: Engine
 
     @BindElectricEngine
     @Inject
-    lateinit var electricEngine: ElectricEngine
+    lateinit var electricEngine: Engine
 
     fun deliver() {
         gasEngine.start()
@@ -59,11 +59,11 @@ class ElectricEngine @Inject constructor() : Engine {
 abstract class EngineModule {
     @BindGasEngine
     @Binds
-    abstract fun bindGasEngine(gasEngine: GasEngine) : GasEngine
+    abstract fun bindGasEngine(gasEngine: GasEngine) : Engine
 
     @BindElectricEngine
     @Binds
-    abstract fun bindElectricEngine(electricEngine: ElectricEngine) : ElectricEngine
+    abstract fun bindElectricEngine(electricEngine: ElectricEngine) : Engine
 }
 
 @Qualifier
