@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
 import com.qtk.kotlintest.extensions.ctx
@@ -41,7 +43,11 @@ class ViewHolder(containerView: View, itemClick: (PokemonBean) -> Unit)
     private val binding = ItemPokemonBinding.bind(containerView)
     override fun bind(t: PokemonBean) {
         with(t){
-            Picasso.get().load(url).transform(CircleCornerForm()).into(binding.icon)
+            Glide.with(containerView.context)
+                .load(url)
+                .transform(RoundedCorners(5))
+                .override(100, 100)
+                .into(binding.icon)
             binding.titleTv.text = name
         }
     }

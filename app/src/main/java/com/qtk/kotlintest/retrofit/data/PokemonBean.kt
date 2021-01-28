@@ -1,9 +1,11 @@
 package com.qtk.kotlintest.retrofit.data
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class PokemonListBean(
     val count: Int,
     val next: String?,
@@ -12,6 +14,7 @@ data class PokemonListBean(
 ): Parcelable
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class PokemonBean(
     val name: String = "",
     var url: String = ""

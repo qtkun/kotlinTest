@@ -6,15 +6,16 @@ import androidx.lifecycle.*
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.domain.model.ForecastList
+import com.qtk.kotlintest.extensions.toJson
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+class MainViewModel @ViewModelInject constructor(val moshi: Moshi) : ViewModel() {
     private val data = MutableLiveData<ForecastList>()
     val forecastList : LiveData<ForecastList> = data
     private val _loading = MutableLiveData<Boolean>()
@@ -26,7 +27,6 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             val result = RequestForecastCommand(zipCode).execute()
             data.postValue(result)
-            print(data.value.toString())
         }
     }
 
@@ -44,6 +44,7 @@ class MainViewModel : ViewModel() {
                 _loading.postValue(false)
             }
             .collectLatest {
+                print(toJson(it, moshi))
                 data.postValue(it)
             }
     }

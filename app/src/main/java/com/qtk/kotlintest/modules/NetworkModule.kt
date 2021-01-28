@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.qtk.kotlintest.contant.BASE_URL
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -44,7 +46,7 @@ class NetworkModule {
             .client(okHttpClient)
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(ApiResultCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
 
@@ -57,4 +59,8 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideGson(): Gson = Gson()
+
+    @Singleton
+    @Provides
+    fun provideMoshi(): Moshi = Moshi.Builder().build()
 }

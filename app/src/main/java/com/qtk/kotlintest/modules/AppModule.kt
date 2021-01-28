@@ -9,16 +9,18 @@ import com.qtk.kotlintest.retrofit.service.ApiService
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
+import com.squareup.moshi.Moshi
 import okhttp3.*
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 
 val viewModelModule = module {
-    viewModel { MainViewModel() }
+    viewModel { MainViewModel(get()) }
     viewModel { DetailViewModel() }
     viewModel { PokemonViewModel(get()) }
 }
@@ -43,7 +45,7 @@ val appModule = module {
             .client(get())
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(ApiResultCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
     single {
@@ -56,4 +58,5 @@ val appModule = module {
         get<Retrofit>().create(ApiService::class.java)
     }
     single { Gson() }
+    single { Moshi.Builder().build() }
 }

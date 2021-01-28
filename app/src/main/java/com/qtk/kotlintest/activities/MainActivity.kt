@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)
         adapter = ForecastListAdapter(mViewModel.forecastList.value?.dailyForecast) {
-            ctx.startActivity<DetailActivity>(
+            this.startActivity<DetailActivity>(
                 DetailActivity.ID to it.id,
                 DetailActivity.CITY_NAME to city
             )
