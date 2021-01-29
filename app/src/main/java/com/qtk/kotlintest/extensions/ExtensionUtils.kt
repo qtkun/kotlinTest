@@ -1,14 +1,23 @@
 package com.qtk.kotlintest.extensions
 
 import android.util.TypedValue
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.preferencesKey
 import com.google.gson.Gson
 import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okio.IOException
 import java.lang.reflect.Type
 import java.text.DateFormat
 import java.util.*
@@ -83,4 +92,42 @@ inline fun <reified T> toJsonList(t: List<T>, moshi: Moshi): String {
 inline fun <reified K, reified V> toJsonMap(t: Map<K, V>, moshi: Moshi): String {
     val jsonAdapter: JsonAdapter<Map<K, V>> = buildMapJsonAdapter(moshi)
     return jsonAdapter.toJson(t)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun<T> findDataStore(dataStore: DataStore<Preferences>, name: String, default: T): Flow<T> {
+    return dataStore.data
+        .catch {
+            if (it is IOException) {
+                it.printStackTrace()
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {
+            when(default){
+                is Long -> it[preferencesKey<Long>(name)] ?: default
+                is String -> it[preferencesKey<String>(name)] ?: default
+                is Int -> it[preferencesKey<Int>(name)] ?: default
+                is Float -> it[preferencesKey<Float>(name)] ?: default
+                is Boolean -> it[preferencesKey<Boolean>(name)] ?: default
+                else -> throw IllegalArgumentException(
+                    "This type can be saved into Preferences")
+            } as T
+        }
+}
+
+suspend fun<T> putDataStore(dataStore: DataStore<Preferences>, name: String, value: T) = with(dataStore) {
+    edit {
+        when(value){
+            is Long -> it[preferencesKey<Long>(name)] = value as Long
+            is String -> it[preferencesKey<String>(name)] = value as String
+            is Int -> it[preferencesKey<Int>(name)] = value as Int
+            is Float -> it[preferencesKey<Float>(name)] = value as Float
+            is Boolean -> it[preferencesKey<Boolean>(name)] = value as Boolean
+            else -> throw IllegalArgumentException(
+                "This type can be saved into Preferences")
+        }
+    }
 }

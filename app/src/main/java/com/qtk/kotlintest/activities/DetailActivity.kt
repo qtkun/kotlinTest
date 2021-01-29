@@ -14,6 +14,7 @@ import com.qtk.kotlintest.databinding.ActivityDetailBinding
 import com.qtk.kotlintest.domain.command.RequestDayForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.extensions.color
+import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.textColor
 import com.qtk.kotlintest.extensions.toDateString
 import com.squareup.picasso.Picasso
@@ -28,15 +29,14 @@ class DetailActivity :AppCompatActivity(), ToolbarManager {
         const val CITY_NAME = "DetailActivity:cityName"
     }
 
-    override val toolbar by lazy<Toolbar> { find(R.id.toolbar) }
+    override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     private val detailViewModel by viewModel<DetailViewModel>()
-    private val binding by lazy { ActivityDetailBinding.inflate(layoutInflater) }
+    private val binding by inflate<ActivityDetailBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        detailViewModel.detail.observe(this, Observer { bindForecast(it) })
+        detailViewModel.detail.observe(this, { bindForecast(it) })
         initToolbar()
         toolbarTitle = intent.getStringExtra(CITY_NAME) ?: ""
         enableHomeAsUp { onBackPressed() }

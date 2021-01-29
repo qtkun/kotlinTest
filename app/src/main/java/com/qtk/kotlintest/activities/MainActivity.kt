@@ -20,6 +20,7 @@ import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.DelegatesExt
+import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.toPx
 import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.test.Truck
@@ -31,7 +32,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() , ToolbarManager {
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     var zipCode : Long by DelegatesExt.preference(this,
         SettingsActivity.ZIP_CODE,
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     /*@Inject
     lateinit var gson: Gson*/
 
-    val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    val binding by inflate<ActivityMainBinding>()
 
     private val dialog: Dialog by lazy {
         Dialog(this).apply {
@@ -66,7 +67,6 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
         initToolbar()
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)

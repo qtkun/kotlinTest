@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
+import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.toJson
 import com.qtk.kotlintest.extensions.toJsonList
 import com.qtk.kotlintest.view_model.PokemonViewModel
@@ -27,13 +28,12 @@ class MotionActivity : AppCompatActivity() {
         Log.i("MotionActivity", toJson(it, moshi))
     }
 
-    private val binding by lazy { ActivityMotionBinding.inflate(layoutInflater) }
+    private val binding by inflate<ActivityMotionBinding>()
 
     private val moshi by inject<Moshi>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
         mViewModel.getPokemon().observe(this, {
                 lifecycleScope.launchWhenCreated {
                     adapter.submitData(it)

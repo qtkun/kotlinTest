@@ -5,46 +5,52 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ViewPagerAdapter
+import com.qtk.kotlintest.databinding.ActivityViewpager2Binding
+import com.qtk.kotlintest.extensions.inflate
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_viewpager2.*
 
 @AndroidEntryPoint
-class ViewPagerActivity : AppCompatActivity(R.layout.activity_viewpager2) {
+class ViewPagerActivity : AppCompatActivity() {
+    private val binding by inflate<ActivityViewpager2Binding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        view_pager.adapter = ViewPagerAdapter(this)
-        TabLayoutMediator(tab_layout, view_pager
-        ) { tab, position -> // Styling each tab here
-            when(position){
-                0 -> tab.text = "列表1"
-                1 -> tab.text = "列表2"
-            }
-        }.attach()
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.position){
-                    0 -> title_tv.text = "列表1"
-                    1 -> title_tv.text = "列表2"
+        binding.viewPager.adapter = ViewPagerAdapter(this@ViewPagerActivity)
+        with(binding){
+            viewPager.adapter = ViewPagerAdapter(this@ViewPagerActivity)
+            TabLayoutMediator(
+                tabLayout, viewPager
+            ) { tab, position -> // Styling each tab here
+                when (position) {
+                    0 -> tab.text = "列表1"
+                    1 -> tab.text = "列表2"
                 }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                when(position){
-                    0 -> title_tv.text = "列表1"
-                    1 -> title_tv.text = "列表2"
+            }.attach()
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    when (tab?.position) {
+                        0 -> titleTv.text = "列表1"
+                        1 -> titleTv.text = "列表2"
+                    }
                 }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        0 -> titleTv.text = "列表1"
+                        1 -> titleTv.text = "列表2"
+                    }
+                }
+            })
+            back.setOnClickListener {
+                finish()
             }
-        })
-        back.setOnClickListener {
-            finish()
         }
     }
 }

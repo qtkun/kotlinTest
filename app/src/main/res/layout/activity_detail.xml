@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/activity_detail_scene">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 
     <ImageView
         android:id="@+id/icon"

@@ -3,7 +3,6 @@ package com.qtk.kotlintest.extensions
 import android.content.Context
 import android.content.SharedPreferences
 import java.lang.IllegalStateException
-import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class NotNullSingleValueVar<T> {
@@ -42,8 +41,7 @@ class Preference<T>(private val context: Context, val name: String, private val 
             is Int -> getInt(name, default)
             is Float -> getFloat(name, default)
             is Boolean -> getBoolean(name, default)
-            else -> throw IllegalArgumentException(
-                "This type can be saved into Preferences")
+            else -> throw IllegalArgumentException("This type can be saved into Preferences")
         }
         res as T
     }

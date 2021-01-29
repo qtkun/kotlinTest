@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
+import com.qtk.kotlintest.extensions.bindItemView
 import com.qtk.kotlintest.extensions.ctx
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.utils.CircleCornerForm
@@ -40,15 +41,17 @@ class PokemonAdapter(private val itemClick : (PokemonBean) -> Unit) :
 @SuppressLint("SetTextI18n")
 class ViewHolder(containerView: View, itemClick: (PokemonBean) -> Unit)
     : BaseViewHolder<PokemonBean>(containerView, itemClick) {
-    private val binding = ItemPokemonBinding.bind(containerView)
+    private val binding by bindItemView<ItemPokemonBinding>(containerView)
     override fun bind(t: PokemonBean) {
         with(t){
-            Glide.with(containerView.context)
-                .load(url)
-                .transform(RoundedCorners(5))
-                .override(100, 100)
-                .into(binding.icon)
-            binding.titleTv.text = name
+            with(binding){
+                Glide.with(containerView.context)
+                    .load(url)
+                    .transform(RoundedCorners(5))
+                    .override(100, 100)
+                    .into(icon)
+                titleTv.text = name
+            }
         }
     }
 

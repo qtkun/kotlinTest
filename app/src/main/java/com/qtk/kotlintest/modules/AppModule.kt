@@ -1,5 +1,7 @@
 package com.qtk.kotlintest.modules
 
+import android.app.Application
+import androidx.datastore.preferences.createDataStore
 import com.google.gson.Gson
 import com.qtk.kotlintest.api.Api
 import com.qtk.kotlintest.contant.BASE_URL
@@ -14,7 +16,6 @@ import okhttp3.*
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -59,4 +60,5 @@ val appModule = module {
     }
     single { Gson() }
     single { Moshi.Builder().build() }
+    single { get<Application>().createDataStore(name = "DataStore") }
 }

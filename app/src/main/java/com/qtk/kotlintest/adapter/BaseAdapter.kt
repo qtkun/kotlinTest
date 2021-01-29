@@ -3,8 +3,6 @@ package com.qtk.kotlintest.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.extensions.ctx
 import kotlinx.android.extensions.LayoutContainer
@@ -39,11 +37,6 @@ abstract class BaseViewHolder<T : Any>(
     }
 
     abstract fun bind(t: T)
-
-    inline fun <reified T : ViewDataBinding> viewHolderBinding(view: View): Lazy<T> =
-        lazy(LazyThreadSafetyMode.NONE) {
-            requireNotNull(DataBindingUtil.bind<T>(view)) { "cannot find the layout file" }
-        }
 }
 
 fun <VH : BaseViewHolder<T>, T : Any> BaseAdapter<VH, T>.update(newItems: List<T>) {

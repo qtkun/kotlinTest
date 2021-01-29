@@ -10,5 +10,6 @@
         android:clipToPadding="false"
         android:paddingTop="?attr/actionBarSize"/>
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 </FrameLayout>

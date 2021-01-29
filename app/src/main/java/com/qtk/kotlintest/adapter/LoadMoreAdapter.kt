@@ -9,6 +9,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.ItemLoadMoreBinding
+import com.qtk.kotlintest.extensions.bindItemView
 import com.qtk.kotlintest.extensions.ctx
 import kotlinx.android.extensions.LayoutContainer
 
@@ -27,7 +28,7 @@ class LoadMoreView(
     override val containerView: View,
     private val retry: () -> Unit
 ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-    private val binding = ItemLoadMoreBinding.bind(containerView)
+    private val binding by bindItemView<ItemLoadMoreBinding>(containerView)
     private val loading = ObservableBoolean()
 
     fun bindState(loadState: LoadState) {

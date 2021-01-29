@@ -1,6 +1,9 @@
 package com.qtk.kotlintest.modules
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.createDataStore
 import com.google.gson.Gson
 import com.qtk.kotlintest.contant.BASE_URL
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
@@ -63,4 +66,9 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().build()
+
+    @Singleton
+    @Provides
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.createDataStore(name = "DataStore")
 }
