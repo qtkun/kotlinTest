@@ -8,6 +8,11 @@ const val URL = "https://api.openweathermap.org/data/2.5/" +
         "forecast/daily?mode=json&units=metric&cnt=7"
 const val COMPLETE_URL = "$URL&APPID=$APP_ID&q="
 
+
+const val DATA_STORE_NAME = "KotlinTest"
+const val ZIP_CODE = "zipCode"
+const val DEFAULT_ZIP = 94043L
+
 val pagingConfig = PagingConfig(
     // 每页显示的数据的大小
     pageSize = 20,

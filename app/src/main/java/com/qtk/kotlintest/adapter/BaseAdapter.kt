@@ -44,7 +44,7 @@ fun <VH : BaseViewHolder<T>, T : Any> BaseAdapter<VH, T>.update(newItems: List<T
     notifyDataSetChanged()
 }
 
-inline fun <VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.update(up: () -> Unit) {
-    up()
+inline fun <reified VH : BaseViewHolder<T>, T : Any> BaseAdapter<VH, T>.update2(newItems: List<T>) {
+    items = newItems
     notifyDataSetChanged()
 }

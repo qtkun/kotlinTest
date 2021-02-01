@@ -95,8 +95,8 @@ inline fun <reified K, reified V> toJsonMap(t: Map<K, V>, moshi: Moshi): String 
 }
 
 @Suppress("UNCHECKED_CAST")
-fun<T> findDataStore(dataStore: DataStore<Preferences>, name: String, default: T): Flow<T> {
-    return dataStore.data
+fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
+    return this.data
         .catch {
             if (it is IOException) {
                 it.printStackTrace()
@@ -111,6 +111,7 @@ fun<T> findDataStore(dataStore: DataStore<Preferences>, name: String, default: T
                 is String -> it[preferencesKey<String>(name)] ?: default
                 is Int -> it[preferencesKey<Int>(name)] ?: default
                 is Float -> it[preferencesKey<Float>(name)] ?: default
+                is Double -> it[preferencesKey<Double>(name)] ?: default
                 is Boolean -> it[preferencesKey<Boolean>(name)] ?: default
                 else -> throw IllegalArgumentException(
                     "This type can be saved into Preferences")
@@ -118,13 +119,14 @@ fun<T> findDataStore(dataStore: DataStore<Preferences>, name: String, default: T
         }
 }
 
-suspend fun<T> putDataStore(dataStore: DataStore<Preferences>, name: String, value: T) = with(dataStore) {
+suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(this) {
     edit {
         when(value){
             is Long -> it[preferencesKey<Long>(name)] = value as Long
             is String -> it[preferencesKey<String>(name)] = value as String
             is Int -> it[preferencesKey<Int>(name)] = value as Int
             is Float -> it[preferencesKey<Float>(name)] = value as Float
+            is Double -> it[preferencesKey<Double>(name)] = value as Double
             is Boolean -> it[preferencesKey<Boolean>(name)] = value as Boolean
             else -> throw IllegalArgumentException(
                 "This type can be saved into Preferences")

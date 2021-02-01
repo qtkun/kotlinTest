@@ -6,9 +6,7 @@ import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -16,38 +14,37 @@ import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.adapter.update
+import com.qtk.kotlintest.contant.DEFAULT_ZIP
+import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
-import com.qtk.kotlintest.extensions.DelegatesExt
-import com.qtk.kotlintest.extensions.inflate
-import com.qtk.kotlintest.extensions.toPx
+import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.test.Truck
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() , ToolbarManager {
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
-    var zipCode : Long by DelegatesExt.preference(this,
-        SettingsActivity.ZIP_CODE,
-        SettingsActivity.DEFAULT_ZIP
-    )
+    var zipCode : Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
     private var adapter : ForecastListAdapter? = null
     lateinit var city : String
     //koin依赖注入
     private val mViewModel by viewModel<MainViewModel>()
-    val gson by inject<Gson>()
+    private val gson by inject<Gson>()
 
     //hilt依赖注入
-    @Inject
-    lateinit var truck: Truck
     /*@Inject
+    lateinit var truck: Truck
+    @Inject
     lateinit var gson: Gson*/
 
     val binding by inflate<ActivityMainBinding>()
@@ -77,6 +74,10 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
             )
         }
         binding.forecastList.adapter = adapter
+        business()
+    }
+
+    private fun business() {
         lifecycleScope.launchWhenCreated {
             mViewModel.forecastList.observe(this@MainActivity, observer())
             mViewModel.loading.observe(this@MainActivity, Observer {
@@ -86,22 +87,19 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
-            truck.deliver()
+
+            /*mViewModel.getZipCode().observe(this@MainActivity, Observer {
+                lifecycleScope.launchWhenResumed {
+                    mViewModel.setData2(it)
+                }
+            })*/
         }
     }
 
-    private fun observer(): Observer<ForecastList> {
-        return Observer { result ->
-            city = result.city
-            adapter?.update(result.dailyForecast)
-            toolbarTitle = "${result.city} (${result.country})"
-            Log.i("qtk", gson.toJson(result))
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        load()
+    private fun observer(): Observer<ForecastList> = Observer { result ->
+        city = result.city
+        adapter?.update(result.dailyForecast)
+        toolbarTitle = "${result.city} (${result.country})"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,26 +117,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     }
 
     //协程对liveData
-    private fun load3() = liveData {
+    private fun load2() = liveData {
         emit(RequestForecastCommand(zipCode).execute())
     }.observe(this, observer())
-
-    private fun load2() = lifecycleScope.launchWhenResumed {
-        val result = RequestForecastCommand(zipCode).execute()
-        city = result.city
-        if (adapter == null) {
-            adapter =
-                ForecastListAdapter(result.dailyForecast) {
-                    ctx.startActivity<DetailActivity>(
-                        DetailActivity.ID to it.id,
-                        DetailActivity.CITY_NAME to city
-                    )
-                }
-            binding.forecastList.adapter = adapter
-        } else {
-            adapter?.update(result.dailyForecast)
-//                adapter?.update() { adapter?.items = result.dailyForecast}
-        }
-        toolbarTitle = "${result.city} (${result.country})"
-    }
 }

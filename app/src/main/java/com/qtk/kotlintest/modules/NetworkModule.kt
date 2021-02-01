@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.createDataStore
 import com.google.gson.Gson
 import com.qtk.kotlintest.contant.BASE_URL
+import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
 import com.squareup.moshi.Moshi
@@ -70,5 +71,5 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.createDataStore(name = "DataStore")
+        context.createDataStore(name = DATA_STORE_NAME)
 }

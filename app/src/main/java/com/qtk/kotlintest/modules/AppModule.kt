@@ -5,6 +5,7 @@ import androidx.datastore.preferences.createDataStore
 import com.google.gson.Gson
 import com.qtk.kotlintest.api.Api
 import com.qtk.kotlintest.contant.BASE_URL
+import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.paging.CommonRepository
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit
 
 
 val viewModelModule = module {
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
     viewModel { DetailViewModel() }
     viewModel { PokemonViewModel(get()) }
 }
@@ -60,5 +61,5 @@ val appModule = module {
     }
     single { Gson() }
     single { Moshi.Builder().build() }
-    single { get<Application>().createDataStore(name = "DataStore") }
+    single { get<Application>().createDataStore(name = DATA_STORE_NAME) }
 }
