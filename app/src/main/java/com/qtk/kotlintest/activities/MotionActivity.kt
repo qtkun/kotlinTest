@@ -25,7 +25,7 @@ class MotionActivity : AppCompatActivity() {
     //通过hilt注入
 //    private val mViewModel by lazy { ViewModelProvider(this).get(PokemonViewModel::class.java) }
     private val adapter: PokemonAdapter = PokemonAdapter {
-        Log.i("MotionActivity", toJson(it, moshi))
+        Log.i("MotionActivity", moshi.toJson(it))
     }
 
     private val binding by inflate<ActivityMotionBinding>()
@@ -55,7 +55,7 @@ class MotionActivity : AppCompatActivity() {
         }
 
         binding.pokemonRefresh.setOnRefreshListener {
-            Log.i("MotionActivity", toJsonList(adapter.snapshot(), moshi))
+            Log.i("MotionActivity", moshi.toJsonList(adapter.snapshot()))
             adapter.refresh()
         }
 

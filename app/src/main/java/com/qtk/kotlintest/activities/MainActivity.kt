@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.adapter.ForecastListAdapter2
+import com.qtk.kotlintest.adapter.addAll
+import com.qtk.kotlintest.adapter.remove
 import com.qtk.kotlintest.view_model.MainViewModel
-import com.qtk.kotlintest.adapter.update
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivityMainBinding
@@ -35,7 +37,14 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     var zipCode : Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
-    private var adapter : ForecastListAdapter? = null
+    private val adapter : ForecastListAdapter2 by lazy {
+        ForecastListAdapter2(mViewModel.forecastList.value?.dailyForecast) {
+            this.startActivity<DetailActivity>(
+                DetailActivity.ID to it.id,
+                DetailActivity.CITY_NAME to city
+            )
+        }
+    }
     lateinit var city : String
     //koin依赖注入
     private val mViewModel by viewModel<MainViewModel>()
@@ -67,12 +76,6 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
         initToolbar()
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)
-        adapter = ForecastListAdapter(mViewModel.forecastList.value?.dailyForecast) {
-            this.startActivity<DetailActivity>(
-                DetailActivity.ID to it.id,
-                DetailActivity.CITY_NAME to city
-            )
-        }
         binding.forecastList.adapter = adapter
         business()
     }
@@ -98,7 +101,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
 
     private fun observer(): Observer<ForecastList> = Observer { result ->
         city = result.city
-        adapter?.update(result.dailyForecast)
+        adapter.addAll(result.dailyForecast)
         toolbarTitle = "${result.city} (${result.country})"
     }
 
@@ -112,7 +115,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     //协程对liveCycle
     private fun load() = lifecycleScope.launchWhenResumed {
         if (lifecycle.currentState != Lifecycle.State.DESTROYED){
-            mViewModel.setData2(zipCode)
+            mViewModel.setData(zipCode)
         }
     }
 

@@ -13,10 +13,7 @@ import com.qtk.kotlintest.extensions.getData
 import com.qtk.kotlintest.extensions.toJson
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -56,7 +53,7 @@ class MainViewModel @ViewModelInject constructor(val moshi: Moshi, private val d
                 _loading.postValue(false)
             }
             .collectLatest {
-                print(toJson(it, moshi))
+                print(moshi.toJson(it))
                 forecast.postValue(it)
             }
     }

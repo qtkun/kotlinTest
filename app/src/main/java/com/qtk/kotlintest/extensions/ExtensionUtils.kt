@@ -11,9 +11,8 @@ import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -57,40 +56,40 @@ inline fun <reified T> T.dpToPx(): Int {
     ).toInt()
 }
 
-inline fun <reified T> buildJsonAdapter(moshi: Moshi): JsonAdapter<T> = moshi.adapter(T::class.java)
+inline fun <reified T> Moshi.buildJsonAdapter(): JsonAdapter<T> = this.adapter(T::class.java)
 
-inline fun <reified T> buildListJsonAdapter(moshi: Moshi): JsonAdapter<List<T>> {
+inline fun <reified T> Moshi.buildListJsonAdapter(): JsonAdapter<List<T>> {
     val type: Type = Types.newParameterizedType(List::class.java, T::class.java)
-    return moshi.adapter(type)
+    return this.adapter(type)
 }
 
-inline fun <reified K, reified V> buildMapJsonAdapter(moshi: Moshi): JsonAdapter<Map<K, V>> {
+inline fun <reified K, reified V> Moshi.buildMapJsonAdapter(): JsonAdapter<Map<K, V>> {
     val type: Type = Types.newParameterizedType(Map::class.java, K::class.java, V::class.java)
-    return moshi.adapter(type)
+    return this.adapter(type)
 }
 
-inline fun <reified T> fromJson(json: String, moshi: Moshi): T? {
-    val jsonAdapter: JsonAdapter<T> = buildJsonAdapter(moshi)
+inline fun <reified T> Moshi.fromJson(json: String): T? {
+    val jsonAdapter: JsonAdapter<T> = buildJsonAdapter()
     return jsonAdapter.fromJson(json)
 }
 
-inline fun <reified T> fromJsonList(json: String, moshi: Moshi): List<T>? {
-    val jsonAdapter: JsonAdapter<List<T>> = buildListJsonAdapter(moshi)
+inline fun <reified T> Moshi.fromJsonList(json: String): List<T>? {
+    val jsonAdapter: JsonAdapter<List<T>> = buildListJsonAdapter()
     return jsonAdapter.fromJson(json)
 }
 
-inline fun <reified T> toJson(t: T, moshi: Moshi): String {
-    val jsonAdapter: JsonAdapter<T> = buildJsonAdapter(moshi)
+inline fun <reified T> Moshi.toJson(t: T): String {
+    val jsonAdapter: JsonAdapter<T> = buildJsonAdapter()
     return jsonAdapter.toJson(t)
 }
 
-inline fun <reified T> toJsonList(t: List<T>, moshi: Moshi): String {
-    val jsonAdapter: JsonAdapter<List<T>> = buildListJsonAdapter(moshi)
+inline fun <reified T> Moshi.toJsonList(t: List<T>): String {
+    val jsonAdapter: JsonAdapter<List<T>> = buildListJsonAdapter()
     return jsonAdapter.toJson(t)
 }
 
-inline fun <reified K, reified V> toJsonMap(t: Map<K, V>, moshi: Moshi): String {
-    val jsonAdapter: JsonAdapter<Map<K, V>> = buildMapJsonAdapter(moshi)
+inline fun <reified K, reified V> Moshi.toJsonMap(t: Map<K, V>): String {
+    val jsonAdapter: JsonAdapter<Map<K, V>> = buildMapJsonAdapter()
     return jsonAdapter.toJson(t)
 }
 
@@ -133,3 +132,7 @@ suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(thi
         }
     }
 }
+
+fun <T> (suspend() -> T).asFlow(): Flow<T> = flow {
+    emit(this@asFlow())
+}.flowOn(Dispatchers.IO)
