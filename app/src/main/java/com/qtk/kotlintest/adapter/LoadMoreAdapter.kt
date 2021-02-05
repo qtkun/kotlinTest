@@ -33,8 +33,10 @@ class LoadMoreView(
 
     fun bindState(loadState: LoadState) {
         loading.set(loadState is LoadState.Loading)
-        binding.loadingProgress.visibility = if (loading.get()) View.VISIBLE else View.GONE
-        binding.btnReload.visibility = if (loading.get()) View.GONE else View.VISIBLE
-        binding.btnReload.setOnClickListener { retry }
+        with(binding) {
+            loadingProgress.visibility = if (loading.get()) View.VISIBLE else View.GONE
+            btnReload.visibility = if (loading.get()) View.GONE else View.VISIBLE
+            btnReload.setOnClickListener { retry }
+        }
     }
 }

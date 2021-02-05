@@ -3,7 +3,9 @@ package com.qtk.kotlintest.adapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.base.BaseAdapter
 import com.qtk.kotlintest.databinding.ItemForecastBinding
 import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.extensions.bindItemView
@@ -16,27 +18,9 @@ import com.squareup.picasso.Picasso
 on 2020-06-15.
  */
 class ForecastListAdapter(dailyForecast:List<Forecast>?, itemClick : (Forecast) -> Unit) :
-    BaseAdapter<ForecastListAdapter.ViewHolder, Forecast>(dailyForecast, itemClick, R.layout.item_forecast) {
-    override fun initViewHolder(view: View, itemClick: (Forecast) -> Unit): ViewHolder =
-        ViewHolder(view, itemClick)
-
-    @SuppressLint("SetTextI18n")
-    class ViewHolder(containerView: View, itemClick: (Forecast) -> Unit)
-        : BaseViewHolder<Forecast>(containerView, itemClick) {
-        private val binding by bindItemView<ItemForecastBinding>(containerView)
-        override fun bind(t: Forecast) {
-            with(t){
-                with(binding){
-                    Picasso.get().load(iconUrl).into(binding.icon)
-                    dateText.text = date.toDateString()
-                    descriptionText.text = description
-                    descriptionText.textColor = Color.RED
-                    descriptionText.textSize = 16f
-                    maxTemperature.text = "${high}º"
-                    minTemperature.text = "${low}º"
-                }
-            }
-        }
-
+    BaseAdapter<Forecast>(dailyForecast, itemClick, R.layout.item_forecast) {
+    override fun onBind(binding: ViewDataBinding, item: Forecast) {
+        TODO("Not yet implemented")
     }
+
 }

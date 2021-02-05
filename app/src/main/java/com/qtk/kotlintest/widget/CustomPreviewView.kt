@@ -1,4 +1,4 @@
-package com.qtk.kotlintest.activities
+package com.qtk.kotlintest.widget
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.widget.CustomTouchListener
 import kotlinx.android.synthetic.main.activity_camera.*
 import org.jetbrains.anko.toast
 import java.io.File

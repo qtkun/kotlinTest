@@ -16,11 +16,15 @@ data class PokemonListBean(
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class PokemonBean(
+    var id: String = "",
     val name: String = "",
     var url: String = ""
 ): Parcelable
 
 fun getImageUrl(url: String): String {
-    val index = url.split("/".toRegex()).dropLast(1).last()
-    return "https://pokeres.bastionbot.org/images/pokemon/$index.png"
+    return "https://pokeres.bastionbot.org/images/pokemon/${getId(url)}.png"
+}
+
+fun getId(url: String): String {
+    return url.split("/".toRegex()).dropLast(1).last()
 }

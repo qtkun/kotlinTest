@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
+import com.qtk.kotlintest.base.BaseActivity
+import com.qtk.kotlintest.base.initLoading
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.toJson
@@ -19,7 +22,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @AndroidEntryPoint
-class MotionActivity : AppCompatActivity() {
+class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_motion) {
     //通过koin注入
     private val mViewModel by viewModel<PokemonViewModel>()
     //通过hilt注入
@@ -27,8 +30,6 @@ class MotionActivity : AppCompatActivity() {
     private val adapter: PokemonAdapter = PokemonAdapter {
         Log.i("MotionActivity", moshi.toJson(it))
     }
-
-    private val binding by inflate<ActivityMotionBinding>()
 
     private val moshi by inject<Moshi>()
 
@@ -39,26 +40,36 @@ class MotionActivity : AppCompatActivity() {
                     adapter.submitData(it)
                 }
             })
-        binding.pokemonList.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
-            adapter.retry()
-        })
-        binding.pokemonList.layoutManager = LinearLayoutManager(this)
+        with(binding) {
+            motion = MotionPresenter()
+            pokemon = mViewModel
 
-        lifecycleScope.launchWhenCreated {
-            adapter.addLoadStateListener {
-                when (it.refresh) {
-                    is LoadState.Error -> binding.pokemonRefresh.isRefreshing = false
-                    is LoadState.Loading -> binding.pokemonRefresh.isRefreshing = true
-                    is LoadState.NotLoading -> binding.pokemonRefresh.isRefreshing = false
+            pokemonList.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
+                adapter.retry()
+            })
+            pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
+
+            lifecycleScope.launchWhenCreated {
+                adapter.addLoadStateListener {
+                    mViewModel.refreshListener(it)
                 }
             }
+
+            /*pokemonRefresh.setOnRefreshListener {
+                adapter.refresh()
+            }*/
         }
 
-        binding.pokemonRefresh.setOnRefreshListener {
-            Log.i("MotionActivity", moshi.toJsonList(adapter.snapshot()))
+//        binding.back.setOnClickListener { finish() }
+    }
+
+    inner class MotionPresenter {
+        fun back() {
+            finish()
+        }
+
+        fun refresh() {
             adapter.refresh()
         }
-
-        binding.back.setOnClickListener { finish() }
     }
 }

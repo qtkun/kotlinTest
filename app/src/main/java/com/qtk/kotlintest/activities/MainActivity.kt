@@ -10,11 +10,9 @@ import android.view.Gravity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastListAdapter2
-import com.qtk.kotlintest.adapter.addAll
-import com.qtk.kotlintest.adapter.remove
+import com.qtk.kotlintest.base.update
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
@@ -23,13 +21,11 @@ import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
-import com.qtk.kotlintest.test.Truck
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -101,7 +97,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
 
     private fun observer(): Observer<ForecastList> = Observer { result ->
         city = result.city
-        adapter.addAll(result.dailyForecast)
+        adapter.update(result.dailyForecast)
         toolbarTitle = "${result.city} (${result.country})"
     }
 
