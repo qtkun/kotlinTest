@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
+import com.qtk.kotlintest.BR
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.LoadingDialogBinding
 import com.qtk.kotlintest.extensions.toPx
@@ -50,6 +51,7 @@ open class BaseActivity<VDB : ViewDataBinding>(@LayoutRes val contentLayoutId: I
 }
 
 inline fun <reified VM: BaseViewModel> BaseActivity<*>.initLoading(lifecycleOwner: LifecycleOwner, vm: VM){
+    binding.setVariable(BR.viewModel, vm)
     vm.loading.observe(lifecycleOwner) {
         if (it) {
             showLoading()

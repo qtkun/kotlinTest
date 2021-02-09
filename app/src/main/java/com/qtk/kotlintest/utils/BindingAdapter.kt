@@ -20,7 +20,7 @@ fun loadListImage(view: ImageView, url: String, drawable: Drawable) {
 }
 
 @BindingAdapter("imageUrl", "placeholder")
-fun loadImage(view: ImageView, url: String, drawable: Drawable) {
+fun loadImage(view: ImageView, url: String?, drawable: Drawable) {
     Glide.with(view.context)
         .load(url)
         .placeholder(drawable)

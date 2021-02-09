@@ -17,22 +17,26 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class MainViewModel @ViewModelInject constructor(val moshi: Moshi, private val dataStore: DataStore<Preferences>) : ViewModel() {
+class MainViewModel @ViewModelInject constructor(
+    val moshi: Moshi,
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
     private val forecast = MediatorLiveData<ForecastList>()
-    val forecastList : LiveData<ForecastList> = forecast
+    val forecastList: LiveData<ForecastList> = forecast
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
         get() = _loading
 
     init {
-        forecast.addSource(getZipCode()){
+        forecast.addSource(getZipCode()) {
             setData2(it)
         }
     }
 
-    fun getZipCode(): LiveData<Long> = dataStore.getData(ZIP_CODE, DEFAULT_ZIP).asLiveData(viewModelScope.coroutineContext)
+    fun getZipCode(): LiveData<Long> =
+        dataStore.getData(ZIP_CODE, DEFAULT_ZIP).asLiveData(viewModelScope.coroutineContext)
 
-    suspend fun setData(zipCode : Long) {
+    suspend fun setData(zipCode: Long) {
         //协程对viewModel
         viewModelScope.launch {
             val result = RequestForecastCommand(zipCode).execute()
@@ -58,7 +62,12 @@ class MainViewModel @ViewModelInject constructor(val moshi: Moshi, private val d
             }
     }
 
-    fun getItem(position : Int) : Forecast {
+    fun setData3(): LiveData<ForecastList> =
+        dataStore.getData(ZIP_CODE, DEFAULT_ZIP).map {
+            RequestForecastCommand(it).execute()
+        }.asLiveData()
+
+    fun getItem(position: Int): Forecast {
         return forecast.value!![position]
     }
 }
