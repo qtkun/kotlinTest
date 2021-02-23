@@ -28,8 +28,10 @@ class MainViewModel @ViewModelInject constructor(
         get() = _loading
 
     init {
-        forecast.addSource(getZipCode()) {
-            setData2(it)
+        viewModelScope.launch {
+            forecast.addSource(getZipCode()) {
+                setData2(it)
+            }
         }
     }
 

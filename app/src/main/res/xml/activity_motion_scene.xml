@@ -65,7 +65,7 @@
             android:layout_marginStart="15dp">
             <CustomAttribute
                 app:attributeName="colorFilter"
-                app:customColorValue="@android:color/black"/>
+                app:customColorValue="@android:color/white"/>
         </Constraint>
 
         <Constraint
@@ -78,7 +78,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/background">
             <CustomAttribute
                 app:attributeName="textColor"
-                app:customColorValue="@android:color/black"/>
+                app:customColorValue="@android:color/white"/>
             <CustomAttribute
                 app:attributeName="textSize"
                 app:customFloatValue="18"/>

@@ -22,7 +22,7 @@ class ForecastDbRoom(
         }
     }
 
-    override suspend fun requestDayForecast(id: Long): Forecast? {
+    override suspend fun requestDayForecast(id: Long): Forecast {
         return withContext(Dispatchers.IO) {
             AppDatabase.getInstance(App.instance.applicationContext).getForecastDao()
                 .getDayForecast(id).let { dataMapper.convertDayToDomain(it) }

@@ -10,6 +10,7 @@ import android.view.Gravity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastListAdapter2
 import com.qtk.kotlintest.base.update
@@ -86,6 +87,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
+            App.instance.loadImage()
 
             /*mViewModel.getZipCode().observe(this@MainActivity, Observer {
                 lifecycleScope.launchWhenResumed {
@@ -103,8 +105,20 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == IntentMethod.RequestCode) {
-            data?.getStringExtra("toast")?.let { toast(it) }
+        if (resultCode == Activity.RESULT_OK) {
+            when(requestCode) {
+                IntentMethod.RequestCode -> data?.getStringExtra("toast")?.let { toast(it) }
+                PICK_FILE -> {
+                    if (resultCode == Activity.RESULT_OK && data != null) {
+                        val uri = data.data
+                        if (uri != null) {
+                            val inputStream = contentResolver.openInputStream(uri)
+                            // 执行文件读取操作
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -119,4 +133,15 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     private fun load2() = liveData {
         emit(RequestForecastCommand(zipCode).execute())
     }.observe(this, observer())
+
+    fun pickFile() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "*/*"
+        startActivityForResult(intent, PICK_FILE)
+    }
+
+    companion object {
+        const val PICK_FILE = 0x99
+    }
 }

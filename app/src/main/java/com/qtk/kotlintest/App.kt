@@ -1,6 +1,14 @@
 package com.qtk.kotlintest
 
 import android.app.Application
+import android.content.ContentUris
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import com.qtk.kotlintest.domain.data.room.AppDatabase
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
 import com.qtk.kotlintest.modules.appModule
@@ -9,24 +17,30 @@ import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import java.io.*
+import kotlin.concurrent.thread
 
 /**
  * Created by qtkun
 on 2020-06-16.
  */
 @HiltAndroidApp
-class App : Application(){
+class App : Application() {
     companion object {
-        var instance : App by DelegatesExt.notNullSingleValue()
+        var instance: App by DelegatesExt.notNullSingleValue()
     }
 
-    lateinit var fE1 : FlutterEngine
-    lateinit var fE2 : FlutterEngine
-    lateinit var fE3 : FlutterEngine
+    lateinit var fE1: FlutterEngine
+    lateinit var fE2: FlutterEngine
+    lateinit var fE3: FlutterEngine
+
+//    val catalogue = getExternalFilesDir("file")
 
     override fun onCreate() {
         super.onCreate()
@@ -48,12 +62,126 @@ class App : Application(){
         fE3 = initEngine("route3", "test3")
     }
 
-    private fun initEngine(route : String, engineId : String) : FlutterEngine{
+    private fun initEngine(route: String, engineId: String): FlutterEngine {
         val fE = FlutterEngine(this)
         //可设置初始路由
         fE.navigationChannel.setInitialRoute(route)
         fE.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
         FlutterEngineCache.getInstance().put(engineId, fE)
         return fE
+    }
+
+    override fun onTerminate() {
+        AppDatabase.destroyInstance()
+        super.onTerminate()
+    }
+
+    //读取图片文件
+    suspend fun loadImage(): ArrayList<Uri> = withContext(Dispatchers.IO) {
+        arrayListOf<Uri>().apply {
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null,
+                null,
+                null,
+                "${MediaStore.MediaColumns.DATE_ADDED} desc"
+            )?.use {
+                while (it.moveToNext()) {
+                    val id = it.getLong(it.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
+                    val uri =
+                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    add(uri)
+                    println("image uri is $uri")
+                }
+            }
+        }
+    }
+
+    //添加图片到相册
+    fun writeInputStreamToAlbum(inputStream: InputStream, displayName: String, mimeType: String) {
+        thread {
+            val values = ContentValues()
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
+            } else {
+                values.put(
+                    MediaStore.MediaColumns.DATA,
+                    "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName"
+                )
+            }
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                ?.let { uri ->
+                    BufferedInputStream(inputStream).use { bis ->
+                        contentResolver.openOutputStream(uri).use {
+                            it?.let {
+                                val bos = BufferedOutputStream(it)
+                                val buffer = ByteArray(1024)
+                                var bytes = bis.read(buffer)
+                                while (bytes >= 0) {
+                                    bos.write(buffer, 0, bytes)
+                                    bos.flush()
+                                    bytes = bis.read(buffer)
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    //添加图片到相册
+    fun addBitmapToAlbum(
+        bitmap: Bitmap,
+        displayName: String,
+        mimeType: String,
+        compressFormat: Bitmap.CompressFormat
+    ) {
+        thread {
+            val values = ContentValues()
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
+            } else {
+                values.put(
+                    MediaStore.MediaColumns.DATA,
+                    "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName"
+                )
+            }
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                ?.let { uri ->
+                    contentResolver.openOutputStream(uri).use {
+                        it?.let {
+                            bitmap.compress(compressFormat, 100, it)
+                        }
+                    }
+                }
+        }
+    }
+
+    //复制文件到应用程序的关联目录并返回绝对路径
+    fun copyUriToExternalFilesDir(uri: Uri, fileName: String): String? {
+        val inputStream = contentResolver.openInputStream(uri)
+        val tempDir = getExternalFilesDir("temp")
+        if (inputStream != null && tempDir != null) {
+            val file = File("$tempDir/$fileName")
+            FileOutputStream(file).use { fos ->
+                BufferedInputStream(inputStream).use { bis ->
+                    BufferedOutputStream(fos).use {
+                        val byteArray = ByteArray(1024)
+                        var bytes = bis.read(byteArray)
+                        while (bytes > 0) {
+                            it.write(byteArray, 0, bytes)
+                            it.flush()
+                            bytes = bis.read(byteArray)
+                        }
+                    }
+                }
+            }
+            return file.absolutePath
+        }
+        return null
     }
 }

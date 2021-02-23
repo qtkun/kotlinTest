@@ -18,7 +18,8 @@ data class PokemonListBean(
 data class PokemonBean(
     var id: String = "",
     val name: String = "",
-    var url: String = ""
+    var url: String = "",
+    var like: Boolean = false
 ): Parcelable
 
 fun getImageUrl(url: String): String {

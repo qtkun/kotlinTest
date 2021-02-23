@@ -22,6 +22,13 @@ class LoadMoreAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadMore
         val view = LayoutInflater.from(parent.ctx).inflate(R.layout.item_load_more, parent, false)
         return LoadMoreView(view) { retry }
     }
+
+    override fun displayLoadStateAsItem(loadState: LoadState): Boolean {
+        if (loadState.endOfPaginationReached) {
+            return true
+        }
+        return super.displayLoadStateAsItem(loadState)
+    }
 }
 
 class LoadMoreView(

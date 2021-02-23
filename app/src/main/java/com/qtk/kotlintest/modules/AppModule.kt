@@ -2,6 +2,7 @@ package com.qtk.kotlintest.modules
 
 import android.app.Application
 import androidx.datastore.preferences.createDataStore
+import androidx.room.Room
 import com.google.gson.Gson
 import com.qtk.kotlintest.api.Api
 import com.qtk.kotlintest.contant.BASE_URL
@@ -9,6 +10,7 @@ import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.paging.CommonRepository
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
+import com.qtk.kotlintest.room.PokemonDataBase
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
@@ -62,4 +64,10 @@ val appModule = module {
     single { Gson() }
     single { Moshi.Builder().build() }
     single { get<Application>().createDataStore(name = DATA_STORE_NAME) }
+    single {
+        Room.databaseBuilder(get<Application>(), PokemonDataBase::class.java, "pokemon.db")
+        .fallbackToDestructiveMigration()
+        .build()
+    }
+    single { get<PokemonDataBase>().getPokemonDao() }
 }

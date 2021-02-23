@@ -13,10 +13,10 @@ interface ForecastDao {
     @Query("select * from day_forecast where cityId = :id and date >= :date")
     suspend fun getDayForecasts(id : Long, date : Long) : List<DayForecastRoom>?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCityForecast(cityForecasts: CityForecastRoom)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDayForecast(dayForecastR: List<DayForecastRoom>)
 
     @Query("delete from city_forecast")

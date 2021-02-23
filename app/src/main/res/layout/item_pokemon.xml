@@ -24,6 +24,14 @@
             android:background="@android:color/white">
 
             <ImageView
+                android:id="@+id/like"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@{item.like ? @android:drawable/btn_star_big_on : @android:drawable/btn_star_big_off}"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"/>
+
+            <ImageView
                 android:id="@+id/icon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

@@ -15,6 +15,7 @@ import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.toJson
 import com.qtk.kotlintest.extensions.toJsonList
+import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,12 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
     //通过hilt注入
 //    private val mViewModel by lazy { ViewModelProvider(this).get(PokemonViewModel::class.java) }
     private val adapter: PokemonAdapter = PokemonAdapter {
-        Log.i("MotionActivity", moshi.toJson(it))
+        like(it)
+    }
+
+    private fun like(pokemonBean: PokemonBean) {
+        pokemonBean.like = !pokemonBean.like
+        adapter.notifyItemChanged(pokemonBean.id.toInt() - 1)
     }
 
     private val moshi by inject<Moshi>()
@@ -48,6 +54,7 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
                 adapter.retry()
             })
             pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
+            pokemonList.itemAnimator?.changeDuration = 0
 
             lifecycleScope.launchWhenCreated {
                 adapter.addLoadStateListener {

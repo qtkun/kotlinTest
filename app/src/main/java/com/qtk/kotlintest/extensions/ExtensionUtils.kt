@@ -132,7 +132,3 @@ suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(thi
         }
     }
 }
-
-fun <T> (suspend() -> T).asFlow(): Flow<T> = flow {
-    emit(this@asFlow())
-}.flowOn(Dispatchers.IO)
