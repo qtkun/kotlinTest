@@ -12,6 +12,7 @@ const val COMPLETE_URL = "$URL&APPID=$APP_ID&q="
 const val DATA_STORE_NAME = "KotlinTest"
 const val ZIP_CODE = "zipCode"
 const val DEFAULT_ZIP = 94043L
+const val BITMAP_ID = "bitmapId"
 
 val pagingConfig = PagingConfig(
     // 每页显示的数据的大小

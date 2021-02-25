@@ -138,27 +138,25 @@ class App : Application() {
         mimeType: String,
         compressFormat: Bitmap.CompressFormat
     ) {
-        thread {
-            val values = ContentValues()
-            values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
-            } else {
-                values.put(
-                    MediaStore.MediaColumns.DATA,
-                    "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName"
-                )
-            }
-            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-                ?.let { uri ->
-                    contentResolver.openOutputStream(uri).use {
-                        it?.let {
-                            bitmap.compress(compressFormat, 100, it)
-                        }
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
+        } else {
+            values.put(
+                MediaStore.MediaColumns.DATA,
+                "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_DCIM}/$displayName"
+            )
+        }
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            ?.let { uri ->
+                contentResolver.openOutputStream(uri).use {
+                    it?.let {
+                        bitmap.compress(compressFormat, 100, it)
                     }
                 }
-        }
+            }
     }
 
     //复制文件到应用程序的关联目录并返回绝对路径

@@ -4,16 +4,21 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.*
 import com.google.gson.Gson
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastListAdapter2
 import com.qtk.kotlintest.base.update
+import com.qtk.kotlintest.contant.BITMAP_ID
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
@@ -22,19 +27,23 @@ import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
+import com.qtk.kotlintest.work.SaveImageWorker
+import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() , ToolbarManager {
+class MainActivity : AppCompatActivity(), ToolbarManager {
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
-    var zipCode : Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
-    private val adapter : ForecastListAdapter2 by lazy {
+    var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
+    private val adapter: ForecastListAdapter2 by lazy {
         ForecastListAdapter2(mViewModel.forecastList.value?.dailyForecast) {
             this.startActivity<DetailActivity>(
                 DetailActivity.ID to it.id,
@@ -42,7 +51,8 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
             )
         }
     }
-    lateinit var city : String
+    lateinit var city: String
+
     //koin依赖注入
     private val mViewModel by viewModel<MainViewModel>()
     private val gson by inject<Gson>()
@@ -87,7 +97,23 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
-            App.instance.loadImage()
+            WorkManager.getInstance(this@MainActivity)
+                .beginWith(saveImageWorkRequest)
+                .then(testWorkRequest).
+                enqueue()
+
+            WorkManager.getInstance(this@MainActivity)
+                .getWorkInfoByIdLiveData(saveImageWorkRequest.id)
+                .observe(this@MainActivity, Observer {
+                    when(it.state){
+                        WorkInfo.State.ENQUEUED -> toast("开始保存")
+                        WorkInfo.State.RUNNING -> toast("正在保存中")
+                        WorkInfo.State.SUCCEEDED -> toast("保存成功")
+                        WorkInfo.State.FAILED -> toast("保存失败")
+                        WorkInfo.State.BLOCKED -> toast("挂起")
+                        WorkInfo.State.CANCELLED -> toast("取消保存")
+                    }
+                })
 
             /*mViewModel.getZipCode().observe(this@MainActivity, Observer {
                 lifecycleScope.launchWhenResumed {
@@ -96,6 +122,28 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
             })*/
         }
     }
+
+    private val constraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
+
+    val data = workDataOf(
+        BITMAP_ID to R.mipmap.image_bg
+    )
+
+    private val saveImageWorkRequest: OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<SaveImageWorker>()
+            .setInputData(data)
+            .build()
+
+    private val testWorkRequest: OneTimeWorkRequest = OneTimeWorkRequestBuilder<TestWork>()
+        .setInitialDelay(10, TimeUnit.SECONDS)
+        .build()
+
+    private val testWorkRequest2: WorkRequest =
+        PeriodicWorkRequestBuilder<TestWork>(15, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
 
     private fun observer(): Observer<ForecastList> = Observer { result ->
         city = result.city
@@ -106,7 +154,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+            when (requestCode) {
                 IntentMethod.RequestCode -> data?.getStringExtra("toast")?.let { toast(it) }
                 PICK_FILE -> {
                     if (resultCode == Activity.RESULT_OK && data != null) {
@@ -124,7 +172,7 @@ class MainActivity : AppCompatActivity() , ToolbarManager {
 
     //协程对liveCycle
     private fun load() = lifecycleScope.launchWhenResumed {
-        if (lifecycle.currentState != Lifecycle.State.DESTROYED){
+        if (lifecycle.currentState != Lifecycle.State.DESTROYED) {
             mViewModel.setData(zipCode)
         }
     }
