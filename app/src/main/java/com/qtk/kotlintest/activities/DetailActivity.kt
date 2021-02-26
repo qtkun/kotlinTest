@@ -2,11 +2,10 @@ package com.qtk.kotlintest.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.R
@@ -16,12 +15,9 @@ import com.qtk.kotlintest.databinding.ActivityDetailBinding
 import com.qtk.kotlintest.domain.command.RequestDayForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.extensions.color
-import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.textColor
 import com.qtk.kotlintest.extensions.toDateString
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
-import org.jetbrains.anko.find
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.DateFormat
 
@@ -34,6 +30,7 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     private val detailViewModel by viewModel<DetailViewModel>()
+    private lateinit var textAnim: AnimatedVectorDrawable
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +42,12 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
         })
         initToolbar()
         toolbarTitle = intent.getStringExtra(CITY_NAME) ?: ""
-        enableHomeAsUp { onBackPressed() }
+        enableHomeAsUp {
+            onBackPressed()
+        }
+        toolbar.logo = ContextCompat.getDrawable(this, R.drawable.test_anim)
+        textAnim = toolbar.logo as AnimatedVectorDrawable
+
         lifecycleScope.launchWhenResumed{
             detailViewModel.getDetail(intent.getLongExtra(ID, -1))
 //            bindForecast(loadLots())

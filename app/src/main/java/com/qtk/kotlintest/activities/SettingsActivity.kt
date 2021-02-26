@@ -1,5 +1,7 @@
 package com.qtk.kotlintest.activities
 
+import android.animation.AnimatorInflater
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -36,6 +38,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
         intent.getStringExtra("toast")?.let { toast(it) }
+        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+            setTarget(heart)
+            start()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

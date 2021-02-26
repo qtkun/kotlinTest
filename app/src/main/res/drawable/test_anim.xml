@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" android:drawable="@drawable/ic_baseline_account_box_24">
+    <target
+        android:animation="@animator/rotation"
+        android:name="change"/>
+</animated-vector>

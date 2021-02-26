@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
-            WorkManager.getInstance(this@MainActivity)
+            /*WorkManager.getInstance(this@MainActivity)
                 .beginWith(saveImageWorkRequest)
                 .then(testWorkRequest).
                 enqueue()
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                         WorkInfo.State.BLOCKED -> toast("挂起")
                         WorkInfo.State.CANCELLED -> toast("取消保存")
                     }
-                })
+                })*/
 
             /*mViewModel.getZipCode().observe(this@MainActivity, Observer {
                 lifecycleScope.launchWhenResumed {

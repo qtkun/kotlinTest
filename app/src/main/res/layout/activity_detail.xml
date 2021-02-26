@@ -47,5 +47,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Display3"
             android:text="@{String.valueOf(viewModel.detail.low) + 'º'}"/>
+
+
+
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

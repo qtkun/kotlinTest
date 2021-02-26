@@ -7,10 +7,11 @@ import androidx.lifecycle.Lifecycle.Event.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class AutoLoadRecyclerView : RecyclerView {
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+class AutoLoadRecyclerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : RecyclerView(context, attrs, defStyleAttr) {
     init {
         addOnScrollListener(object : OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -36,7 +37,7 @@ class AutoLoadRecyclerView : RecyclerView {
         })
     }
 
-    private fun getLifecycleOwner() : LifecycleOwner? {
+    private fun getLifecycleOwner(): LifecycleOwner? {
         if (context is LifecycleOwner) {
             return context as LifecycleOwner
         }
