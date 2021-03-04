@@ -8,7 +8,9 @@ import com.qtk.kotlintest.App
 class TestWork(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-        App.instance.loadImage()
+        App.instance.loadImage().let {
+            App.instance.copyUriToExternalFilesDir(it[0], App.instance.getUriName(it[0]))
+        }
         return Result.success()
     }
 }

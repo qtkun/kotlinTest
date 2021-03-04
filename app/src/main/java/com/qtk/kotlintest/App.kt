@@ -19,6 +19,9 @@ import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.sink
+import okio.source
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -97,6 +100,18 @@ class App : Application() {
         }
     }
 
+    fun getUriName(uri: Uri): String {
+        val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+        contentResolver.query(uri, projection, null, null, null).use {
+            it?.let {
+                if(it.moveToFirst()) {
+                    return it.getString(it.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME))
+                }
+            }
+        }
+        return ""
+    }
+
     //添加图片到相册
     fun writeInputStreamToAlbum(inputStream: InputStream, displayName: String, mimeType: String) {
         thread {
@@ -113,19 +128,9 @@ class App : Application() {
             }
             contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
                 ?.let { uri ->
-                    BufferedInputStream(inputStream).use { bis ->
-                        contentResolver.openOutputStream(uri).use {
-                            it?.let {
-                                val bos = BufferedOutputStream(it)
-                                val buffer = ByteArray(1024)
-                                var bytes = bis.read(buffer)
-                                while (bytes >= 0) {
-                                    bos.write(buffer, 0, bytes)
-                                    bos.flush()
-                                    bytes = bis.read(buffer)
-                                }
-                            }
-                        }
+                    inputStream.use {
+                        contentResolver.openOutputStream(uri)?.sink()?.buffer()
+                            ?.write(it.source().buffer().readByteArray())?.close()
                     }
                 }
         }
@@ -165,19 +170,10 @@ class App : Application() {
         val tempDir = getExternalFilesDir("temp")
         if (inputStream != null && tempDir != null) {
             val file = File("$tempDir/$fileName")
-            FileOutputStream(file).use { fos ->
-                BufferedInputStream(inputStream).use { bis ->
-                    BufferedOutputStream(fos).use {
-                        val byteArray = ByteArray(1024)
-                        var bytes = bis.read(byteArray)
-                        while (bytes > 0) {
-                            it.write(byteArray, 0, bytes)
-                            it.flush()
-                            bytes = bis.read(byteArray)
-                        }
-                    }
-                }
+            inputStream.use {
+                file.sink().buffer().write(it.source().buffer().readByteArray()).close()
             }
+            println(file.absolutePath)
             return file.absolutePath
         }
         return null

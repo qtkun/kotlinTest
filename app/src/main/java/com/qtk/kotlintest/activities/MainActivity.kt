@@ -98,6 +98,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                 }
             })
             /*WorkManager.getInstance(this@MainActivity)
+                .enqueue(testWorkRequest)*/
+            /*WorkManager.getInstance(this@MainActivity)
                 .beginWith(saveImageWorkRequest)
                 .then(testWorkRequest).
                 enqueue()
@@ -137,7 +139,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             .build()
 
     private val testWorkRequest: OneTimeWorkRequest = OneTimeWorkRequestBuilder<TestWork>()
-        .setInitialDelay(10, TimeUnit.SECONDS)
+        .setInitialDelay(1, TimeUnit.SECONDS)
         .build()
 
     private val testWorkRequest2: WorkRequest =
