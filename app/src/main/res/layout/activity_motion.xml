@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/image_arrow_start"
             app:tint="@android:color/white"
-            android:onClick="@{(view) -> motion.back()}"/>
+            android:onClick="@{(view) -> motion::back}"/>
 
         <TextView
             android:id="@+id/title"

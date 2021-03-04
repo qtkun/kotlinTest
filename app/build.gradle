@@ -143,3 +143,13 @@ dependencies {
     implementation "androidx.work:work-runtime:2.5.0"
     implementation "androidx.work:work-runtime-ktx:2.5.0"
 }
+
+/**
+ * 关闭不需要执行的task，提高build速度
+ */
+this.tasks.whenTaskAdded {
+    task ->
+        if (task.name.contains('UnitTest') || task.name.contains("AndroidTest")) {
+            task.enabled = false
+        }
+}

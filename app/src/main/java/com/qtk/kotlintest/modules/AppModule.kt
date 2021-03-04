@@ -22,13 +22,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-
+//koin依赖注入viewModel初始化
 val viewModelModule = module {
     viewModel { MainViewModel(get(), get()) }
     viewModel { DetailViewModel() }
     viewModel { PokemonViewModel(get()) }
 }
 
+//koin依赖注入基础三方类初始化
 val appModule = module {
     single {
         OkHttpClient.Builder()

@@ -67,4 +67,3 @@ fun bindRefreshListener(swipe: SwipeRefreshLayout, refresh: () -> Unit) {
         refresh()
     }
 }
-

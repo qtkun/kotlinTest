@@ -54,11 +54,11 @@ class _MyHomePageState2 extends State<MyHomePage2> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.photo_library),
-              title: Text('Albums'),
+              label: 'Albums',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.photo),
-              title: Text('Photos'),
+              label: 'Photos',
             ),
           ],
         ),

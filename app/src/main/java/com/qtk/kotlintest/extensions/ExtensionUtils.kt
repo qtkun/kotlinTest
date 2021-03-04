@@ -30,10 +30,6 @@ fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
     return df.format(this)
 }
 
-fun Map<String, Any>.createBody(): RequestBody {
-    return Gson().toJson(this).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-}
-
 fun Double.toPx(): Int {
     val scale: Float = App.instance.applicationContext.resources.displayMetrics.scaledDensity
     return (this * scale + 0.5f).toInt()
@@ -52,6 +48,18 @@ inline fun <reified T> T.dpToPx(): Int {
     }
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
+        value.toFloat(), App.instance.applicationContext.resources.displayMetrics
+    ).toInt()
+}
+
+inline fun <reified T> T.spToPx(): Int {
+    val value = when (T::class) {
+        Float::class -> this as Float
+        Int::class -> this as Int
+        else -> throw IllegalStateException("Type not supported")
+    }
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
         value.toFloat(), App.instance.applicationContext.resources.displayMetrics
     ).toInt()
 }
@@ -78,6 +86,11 @@ inline fun <reified T> Moshi.fromJsonList(json: String): List<T>? {
     return jsonAdapter.fromJson(json)
 }
 
+inline fun <reified K, reified V> Moshi.fromJsonMap(json: String): Map<K, V>? {
+    val jsonAdapter: JsonAdapter<Map<K, V>> = buildMapJsonAdapter()
+    return jsonAdapter.fromJson(json)
+}
+
 inline fun <reified T> Moshi.toJson(t: T): String {
     val jsonAdapter: JsonAdapter<T> = buildJsonAdapter()
     return jsonAdapter.toJson(t)
@@ -93,6 +106,16 @@ inline fun <reified K, reified V> Moshi.toJsonMap(t: Map<K, V>): String {
     return jsonAdapter.toJson(t)
 }
 
+/**
+ * 构建Retrofit Body参数
+ */
+fun Moshi.createBody(map: Map<String, Any>): RequestBody {
+    return toJsonMap(map).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+}
+
+/**
+ * dataStore取数据需设置默认值
+ */
 @Suppress("UNCHECKED_CAST")
 fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
     return this.data
@@ -118,6 +141,37 @@ fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
         }
 }
 
+/**
+ * dataStore取数据
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun<reified T> DataStore<Preferences>.getData(name: String): Flow<T> {
+    return this.data
+        .catch {
+            if (it is IOException) {
+                it.printStackTrace()
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {
+            when(T::class){
+                Long::class -> it[preferencesKey<Long>(name)] ?: 0L
+                String::class -> it[preferencesKey<String>(name)] ?: ""
+                Int::class -> it[preferencesKey<Int>(name)] ?: 0
+                Float::class -> it[preferencesKey<Float>(name)] ?: 0f
+                Double::class -> it[preferencesKey<Double>(name)] ?: 0.0
+                Boolean::class -> it[preferencesKey<Boolean>(name)] ?: false
+                else -> throw IllegalArgumentException(
+                    "This type can be saved into Preferences")
+            } as T
+        }
+}
+
+/**
+ * dataStore存数据
+ */
 suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(this) {
     edit {
         when(value){
