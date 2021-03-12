@@ -6,12 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
-import com.google.gson.Gson
 import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -40,7 +38,7 @@ fun Double.toDp(): Int {
     return (this / scale + 0.5f).toInt()
 }
 
-inline fun <reified T> T.dpToPx(): Int {
+inline fun <reified T> T.dpToPx(): Float {
     val value = when (T::class) {
         Float::class -> this as Float
         Int::class -> this as Int
@@ -49,7 +47,7 @@ inline fun <reified T> T.dpToPx(): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         value.toFloat(), App.instance.applicationContext.resources.displayMetrics
-    ).toInt()
+    )
 }
 
 inline fun <reified T> T.spToPx(): Int {

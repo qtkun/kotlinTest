@@ -3,8 +3,8 @@ package com.qtk.kotlintest.extensions
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 
 val View.ctx : Context
     get() = context
@@ -23,4 +23,13 @@ fun View.slideExit() {
 
 fun View.slideEnter() {
     if (translationY < 0f) animate().translationY(0f).duration = 100
+}
+
+fun makePopupWindowMeasureSpec(measureSpec: Int): Int{
+    val model = if (measureSpec == ViewGroup.LayoutParams.WRAP_CONTENT) {
+        View.MeasureSpec.UNSPECIFIED
+    } else {
+        View.MeasureSpec.EXACTLY
+    }
+    return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec), model)
 }

@@ -1,9 +1,9 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar"/>
+    <include android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -24,9 +24,30 @@
             android:inputType="number"/>
 
         <com.qtk.kotlintest.widget.HeartView
-            android:id="@+id/heart"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:id="@+id/heart1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"/>
+
+        <com.qtk.kotlintest.widget.HeartView
+            android:id="@+id/heart2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"/>
+
+        <com.qtk.kotlintest.widget.HeartView
+            android:id="@+id/heart3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"/>
+
+        <com.qtk.kotlintest.widget.HeartView
+            android:id="@+id/heart4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"/>
 

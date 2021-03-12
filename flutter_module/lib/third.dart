@@ -68,15 +68,17 @@ class _ThirdPageState extends State<ThirdPage> {
                   '${counter.value}',
                   style: Theme.of(context).textTheme.headline4,
                 ),
-                FlatButton.icon(
+                TextButton.icon(
                   onPressed: () {
                     counter.increment();
                     textSize.increment();
                   },
                   label: Text("1", style: TextStyle(color: Colors.white, fontSize: 20),),
                   icon: Icon(Icons.add, color: Colors.white,),
-                  color: Theme.of(context).primaryColor,
-                )
+                  style: TextButton.styleFrom(
+                    primary: Theme.of(context).primaryColor,
+                  ),
+                ),
               ],
             ),
           ),

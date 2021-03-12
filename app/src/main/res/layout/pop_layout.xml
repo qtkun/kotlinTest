@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.qtk.kotlintest.widget.TriangleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:trv_color="#666666"
+    app:trv_direction="bottom"
+    app:trv_padding="60dp"
+    android:id="@+id/tc">
+
+<LinearLayout
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/bingxiang"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="冰箱"/>
+
+    <TextView
+        android:id="@+id/xiyiji"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="洗衣机"/>
+
+    <TextView
+        android:id="@+id/caidian"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="彩电"/>
+
+</LinearLayout>
+
+</com.qtk.kotlintest.widget.TriangleContainer>

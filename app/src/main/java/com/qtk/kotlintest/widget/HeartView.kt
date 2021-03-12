@@ -5,6 +5,7 @@ import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import com.qtk.kotlintest.extensions.dpToPx
 import kotlin.math.min
 
 class HeartView @JvmOverloads constructor(
@@ -14,7 +15,7 @@ class HeartView @JvmOverloads constructor(
 ) :
     View(context, attributeSet, defStyleAttr) {
     companion object {
-        const val DEFAULT_SIZE = 200
+        var DEFAULT_SIZE = 30.dpToPx().toInt()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

@@ -1,24 +1,24 @@
 package com.qtk.kotlintest.activities
 
-import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
-import com.qtk.kotlintest.R
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
-import com.qtk.kotlintest.extensions.DelegatesExt
-import com.qtk.kotlintest.extensions.getData
-import com.qtk.kotlintest.extensions.putData
-import kotlinx.android.synthetic.main.activity_settings.*
-import kotlinx.android.synthetic.main.toolbar.*
+import com.qtk.kotlintest.databinding.ActivitySettingsBinding
+import com.qtk.kotlintest.databinding.PopLayoutBinding
+import com.qtk.kotlintest.extensions.*
+import com.qtk.kotlintest.widget.*
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
@@ -26,22 +26,64 @@ import org.koin.android.ext.android.inject
 class SettingsActivity : AppCompatActivity() {
     private val dataStore by inject<DataStore<Preferences>>()
     var zipCode : Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
+    private lateinit var popupWindow: PopupWindow
+    private val popBinding: PopLayoutBinding by lazy { PopLayoutBinding.inflate(layoutInflater) }
+
+    private val binding by inflate<ActivitySettingsBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         lifecycleScope.launchWhenCreated {
             dataStore.getData(ZIP_CODE, DEFAULT_ZIP).collectLatest {
-                cityCode.setText(it.toString())
+                binding.cityCode.setText(it.toString())
             }
         }
         intent.getStringExtra("toast")?.let { toast(it) }
-        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+        popupWindow = PopupWindow(this).apply {
+            this.contentView = popBinding.root
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+            isOutsideTouchable = true
+            isFocusable = true
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+
+        with(popBinding) {
+            bingxiang.setOnClickListener {
+                toast("冰箱")
+                popupWindow.dismiss()
+            }
+
+            xiyiji.setOnClickListener {
+                toast("洗衣机")
+                popupWindow.dismiss()
+            }
+
+            caidian.setOnClickListener {
+                toast("彩电")
+                popupWindow.dismiss()
+            }
+        }
+        with(binding) {
+            heart1.setOnClickListener {
+                popBinding.tc.showTop(popupWindow, it)
+            }
+            heart2.setOnClickListener {
+                popBinding.tc.showBottom(popupWindow, it)
+            }
+            heart3.setOnClickListener {
+                popBinding.tc.showLeft(popupWindow, it)
+            }
+            heart4.setOnClickListener {
+                popBinding.tc.showRight(popupWindow, it)
+            }
+        }
+        /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(heart)
             start()
-        }
+        }*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -51,8 +93,8 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         lifecycleScope.launchWhenResumed {
-            dataStore.putData(ZIP_CODE, cityCode.text.toString().toLong())
-            zipCode = cityCode.text.toString().toLong()
+            dataStore.putData(ZIP_CODE, binding.cityCode.text.toString().toLong())
+            zipCode = binding.cityCode.text.toString().toLong()
             val intent = Intent()
             intent.putExtra("toast", "我从原生页面回来了")
             setResult(Activity.RESULT_OK, intent)
