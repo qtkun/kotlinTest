@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.BR
+import com.qtk.kotlintest.extensions.singleClick
 
 abstract class BaseAdapter<T : Any>(
     var items: List<T>?,
@@ -77,7 +78,7 @@ class BaseViewHolder<T : Any>(
         item?.let {
             _binding.setVariable(BR.item, item)
             _binding.executePendingBindings()
-            itemView.setOnClickListener { itemClick(item) }
+            itemView.singleClick { itemClick(item) }
         }
     }
 

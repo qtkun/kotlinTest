@@ -25,6 +25,22 @@ fun View.slideEnter() {
     if (translationY < 0f) animate().translationY(0f).duration = 100
 }
 
+private var View.lastClickTime: Long
+    get() = if (getTag(1123460103) != null) getTag(1123460103) as Long else 0L
+    set(value) {
+        setTag(1123460103, value)
+    }
+
+fun View.singleClick(duration: Long = 500L, onClick: (View) -> Unit) {
+    setOnClickListener {
+        val currentClickTime = System.currentTimeMillis()
+        if(currentClickTime - lastClickTime > duration) {
+            onClick(it)
+        }
+        lastClickTime = currentClickTime
+    }
+}
+
 fun makePopupWindowMeasureSpec(measureSpec: Int): Int{
     val model = if (measureSpec == ViewGroup.LayoutParams.WRAP_CONTENT) {
         View.MeasureSpec.UNSPECIFIED

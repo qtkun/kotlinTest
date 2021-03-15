@@ -28,6 +28,11 @@ fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
     return df.format(this)
 }
 
+fun Long.toDateString(): String {
+    val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+    return df.format(this)
+}
+
 fun Double.toPx(): Int {
     val scale: Float = App.instance.applicationContext.resources.displayMetrics.scaledDensity
     return (this * scale + 0.5f).toInt()

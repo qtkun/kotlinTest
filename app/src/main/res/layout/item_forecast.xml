@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:text="@{item.date}" />
+                android:text="@{ExtensionUtilsKt.toDateString(item.date)}" />
 
             <TextView
                 android:id="@+id/descriptionText"

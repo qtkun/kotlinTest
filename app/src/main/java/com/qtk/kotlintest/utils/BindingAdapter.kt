@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.utils
 
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingConversion
@@ -11,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.qtk.kotlintest.extensions.singleClick
 import com.qtk.kotlintest.extensions.toDateString
 
 @BindingAdapter("imageListUrl", "placeholder")
@@ -53,9 +55,6 @@ fun loadImage(view: ImageView, url: String?, drawable: Drawable) {
         .into(view)
 }
 
-@BindingConversion
-fun dateToString(long: Long): String = long.toDateString()
-
 @BindingAdapter("bindLoading")
 fun bindingLoading(swipe: SwipeRefreshLayout, isLoading: Boolean) {
     swipe.isRefreshing = isLoading
@@ -65,5 +64,19 @@ fun bindingLoading(swipe: SwipeRefreshLayout, isLoading: Boolean) {
 fun bindRefreshListener(swipe: SwipeRefreshLayout, refresh: () -> Unit) {
     swipe.setOnRefreshListener {
         refresh()
+    }
+}
+
+@BindingAdapter("singleClickWithView")
+fun bindSingleClickWithView(view: View, singleClick: View.OnClickListener) {
+    view.singleClick {
+        singleClick.onClick(it)
+    }
+}
+
+@BindingAdapter("singleClick")
+fun bindSingleClick(view: View, singleClick: () -> Unit) {
+    view.singleClick {
+        singleClick()
     }
 }

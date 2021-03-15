@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     app:trv_color="#666666"
     app:trv_direction="bottom"
-    app:trv_padding="60dp"
     android:id="@+id/tc">
 
 <LinearLayout

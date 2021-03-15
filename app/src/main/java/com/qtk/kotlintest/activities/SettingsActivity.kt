@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.activities
 
+import android.animation.AnimatorInflater
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -10,16 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
+import com.qtk.kotlintest.R
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivitySettingsBinding
 import com.qtk.kotlintest.databinding.PopLayoutBinding
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.widget.*
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 
@@ -30,6 +33,7 @@ class SettingsActivity : AppCompatActivity() {
     private val popBinding: PopLayoutBinding by lazy { PopLayoutBinding.inflate(layoutInflater) }
 
     private val binding by inflate<ActivitySettingsBinding>()
+    private val etState = MutableStateFlow("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +83,36 @@ class SettingsActivity : AppCompatActivity() {
             heart4.setOnClickListener {
                 popBinding.tc.showRight(popupWindow, it)
             }
+            cityCode.addTextChangedListener {
+                etState.value = (it ?: "").toString()
+            }
         }
-        /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
-            setTarget(heart)
+        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+            setTarget(binding.heart1)
             start()
-        }*/
+        }
+        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+            setTarget(binding.heart2)
+            start()
+        }
+        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+            setTarget(binding.heart3)
+            start()
+        }
+        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+            setTarget(binding.heart4)
+            start()
+        }
+        lifecycleScope.launchWhenResumed {
+            etState
+                .sample(500L)
+                .filter {
+                    it.isNotBlank()
+                }
+                .collectLatest {
+                    dataStore.putData(ZIP_CODE, it.toLong())
+                }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
