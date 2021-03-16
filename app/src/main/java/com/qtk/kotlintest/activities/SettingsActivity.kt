@@ -87,22 +87,10 @@ class SettingsActivity : AppCompatActivity() {
                 etState.value = (it ?: "").toString()
             }
         }
-        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
+        /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(binding.heart1)
             start()
-        }
-        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
-            setTarget(binding.heart2)
-            start()
-        }
-        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
-            setTarget(binding.heart3)
-            start()
-        }
-        AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
-            setTarget(binding.heart4)
-            start()
-        }
+        }*/
         lifecycleScope.launchWhenResumed {
             etState
                 .sample(500L)

@@ -40,12 +40,3 @@ fun View.singleClick(duration: Long = 500L, onClick: (View) -> Unit) {
         lastClickTime = currentClickTime
     }
 }
-
-fun makePopupWindowMeasureSpec(measureSpec: Int): Int{
-    val model = if (measureSpec == ViewGroup.LayoutParams.WRAP_CONTENT) {
-        View.MeasureSpec.UNSPECIFIED
-    } else {
-        View.MeasureSpec.EXACTLY
-    }
-    return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec), model)
-}

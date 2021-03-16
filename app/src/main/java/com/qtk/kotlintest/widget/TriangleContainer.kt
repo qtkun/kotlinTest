@@ -9,7 +9,6 @@ import android.widget.PopupWindow
 import androidx.core.content.res.use
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.extensions.dpToPx
-import com.qtk.kotlintest.extensions.makePopupWindowMeasureSpec
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -81,7 +80,6 @@ class TriangleContainer@JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         var widthSpec = widthMeasureSpec
         var heightSpec = heightMeasureSpec
         if (childCount > 1) {
@@ -272,4 +270,13 @@ fun TriangleContainer.showRight(popupWindow: PopupWindow, anchor: View) {
         makePopupWindowMeasureSpec(popupWindow.height)
     )
     popupWindow.showAsDropDown(anchor, anchor.width, leftDy(anchor))
+}
+
+fun makePopupWindowMeasureSpec(measureSpec: Int): Int{
+    val model = if (measureSpec == ViewGroup.LayoutParams.WRAP_CONTENT) {
+        View.MeasureSpec.UNSPECIFIED
+    } else {
+        View.MeasureSpec.EXACTLY
+    }
+    return View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(measureSpec), model)
 }
