@@ -48,11 +48,7 @@ fun getRequestHeader(): Interceptor {
 }
 
 fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
-    return HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-        override fun log(message: String) {
-            Log.i("qtk", message)
-        }
-    }).setLevel(HttpLoggingInterceptor.Level.BODY)
+    return HttpLoggingInterceptor { message -> Log.i("qtk", message) }.setLevel(HttpLoggingInterceptor.Level.BODY)
 }
 
 fun commonInterceptor(): Interceptor {
