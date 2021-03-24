@@ -1,13 +1,16 @@
 package com.qtk.kotlintest.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.*
@@ -22,11 +25,14 @@ import com.qtk.kotlintest.contant.BITMAP_ID
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
+import com.qtk.kotlintest.contant.locationPermission
 import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
+import com.qtk.kotlintest.utils.map.TraceAsset
+import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +41,7 @@ import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
@@ -77,6 +84,25 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         }
     }
 
+    private val backgroundLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        it?.let {
+            WorkManager.getInstance(this@MainActivity)
+                .enqueue(locationWorker)
+        }
+    }
+
+    private val coarseLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        if (it[Manifest.permission.ACCESS_COARSE_LOCATION] == true &&
+            it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                backgroundLocation.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            } else {
+                WorkManager.getInstance(this@MainActivity)
+                    .enqueue(locationWorker)
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +110,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)
         binding.forecastList.adapter = adapter
+        coarseLocation.launch(locationPermission)
         business()
     }
 
@@ -97,8 +124,6 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
-            /*WorkManager.getInstance(this@MainActivity)
-                .enqueue(testWorkRequest)*/
             /*WorkManager.getInstance(this@MainActivity)
                 .beginWith(saveImageWorkRequest)
                 .then(testWorkRequest).
@@ -127,6 +152,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresBatteryNotLow(true)
         .build()
 
     val data = workDataOf(
@@ -144,6 +170,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private val testWorkRequest2: WorkRequest =
         PeriodicWorkRequestBuilder<TestWork>(15, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
+
+    private val locationWorker: WorkRequest =
+        OneTimeWorkRequestBuilder<LocationWorker>()
             .setConstraints(constraints)
             .build()
 

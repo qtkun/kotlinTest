@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.extensions
 
+import android.annotation.SuppressLint
 import android.util.TypedValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -17,6 +18,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 import java.lang.reflect.Type
 import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 /**
@@ -31,6 +34,20 @@ fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
 fun Long.toDateString(): String {
     val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
     return df.format(this)
+}
+
+@SuppressLint("NewApi")
+fun getYesterdayMillis(): Long {
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val yesterday = LocalDate.now().minusDays(1).toString()
+    return sdf.parse(yesterday)?.time ?: 0L
+}
+
+@SuppressLint("NewApi")
+fun getTodayMillis(): Long {
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val today = LocalDate.now().toString()
+    return sdf.parse(today)?.time ?: 0L
 }
 
 fun Double.toPx(): Int {

@@ -67,8 +67,7 @@ val appModule = module {
     single { get<Application>().createDataStore(name = DATA_STORE_NAME) }
     single {
         Room.databaseBuilder(get<Application>(), PokemonDataBase::class.java, "pokemon.db")
-        .fallbackToDestructiveMigration()
-        .build()
+            .fallbackToDestructiveMigration().build()
     }
     single { get<PokemonDataBase>().getPokemonDao() }
 }

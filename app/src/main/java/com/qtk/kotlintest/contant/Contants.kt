@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.contant
 
+import android.Manifest
 import androidx.paging.PagingConfig
 
 const val BASE_URL = "https://pokeapi.co/api/v2/"
@@ -13,6 +14,10 @@ const val DATA_STORE_NAME = "KotlinTest"
 const val ZIP_CODE = "zipCode"
 const val DEFAULT_ZIP = 94043L
 const val BITMAP_ID = "bitmapId"
+
+val locationPermission = arrayOf(
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+    Manifest.permission.ACCESS_FINE_LOCATION)
 
 val pagingConfig = PagingConfig(
     // 每页显示的数据的大小

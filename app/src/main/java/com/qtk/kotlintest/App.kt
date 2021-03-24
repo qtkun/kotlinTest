@@ -8,25 +8,33 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
 import com.qtk.kotlintest.domain.data.room.AppDatabase
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
 import com.qtk.kotlintest.modules.appModule
 import com.qtk.kotlintest.modules.viewModelModule
+import com.qtk.kotlintest.room.PokemonDao
+import com.qtk.kotlintest.room.entity.Location
 import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okio.buffer
 import okio.sink
 import okio.source
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 /**
@@ -42,6 +50,46 @@ class App : Application() {
     lateinit var fE1: FlutterEngine
     lateinit var fE2: FlutterEngine
     lateinit var fE3: FlutterEngine
+    private val mLocationOption by lazy {
+        AMapLocationClientOption().apply {
+            locationPurpose = AMapLocationClientOption.AMapLocationPurpose.Transport
+            locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+            interval = 10000
+            isNeedAddress = true
+            httpTimeOut = 30000
+        }
+    }
+    private val pokemonDao by inject<PokemonDao> ()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    val mLocationClient by lazy {
+        AMapLocationClient(applicationContext).apply {
+            setLocationOption(mLocationOption)
+            setLocationListener  {
+                if (it.errorCode == 0) {
+                    coroutineScope.launch {
+                        pokemonDao.insertLocation(
+                            Location(time = System.currentTimeMillis(),
+                                latitude = it.latitude, longitude = it.longitude)
+                        )
+                    }
+                    val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    println("定位时间：${df.format(Date(it.time))}, 系统时间：${df.format(Date(System.currentTimeMillis()))}")
+                   /* //定位成功回调信息，设置相关消息
+                    it.locationType //获取当前定位结果来源，如网络定位结果，详见定位类型表
+                    it.latitude //获取纬度
+                    it.longitude //获取经度
+                    it.accuracy //获取精度信息 */
+                } else {
+                    //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
+                    Log.e(
+                        "AmapError",
+                        ("location Error, ErrCode:" + it.errorCode) + ", errInfo:" + it.errorInfo
+                    )
+                }
+            }
+        }
+    }
 
 //    val catalogue = getExternalFilesDir("file")
 
@@ -76,6 +124,8 @@ class App : Application() {
 
     override fun onTerminate() {
         AppDatabase.destroyInstance()
+        coroutineScope.cancel()
+        mLocationClient.stopLocation()
         super.onTerminate()
     }
 

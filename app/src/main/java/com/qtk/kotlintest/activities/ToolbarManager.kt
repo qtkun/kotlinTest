@@ -55,6 +55,7 @@ interface ToolbarManager {
                 R.id.action_pokemon -> toolbar.ctx.startActivity<MotionActivity>()
                 R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()
                 R.id.action_camera -> toolbar.ctx.startActivity<CameraActivity>()
+                R.id.action_map -> toolbar.ctx.startActivity<MapActivity>()
                 else -> App.instance.toast("Unknown option")
             }
             true

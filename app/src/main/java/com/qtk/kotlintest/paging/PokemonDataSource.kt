@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.paging
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.qtk.kotlintest.api.Api
 import com.qtk.kotlintest.contant.BASE_URL
 import com.qtk.kotlintest.retrofit.adapter.ApiException
@@ -18,7 +19,7 @@ class PokemonDataSource(private val api: Api): PagingSource<Int, PokemonBean>() 
                     val pokemon = result.data!!.results
                     LoadResult.Page(
                         data = pokemon,
-                        prevKey = null,
+                        prevKey = if (key > 1) key - 1 else null,
                         nextKey = if (pokemon.size >= params.loadSize) key + 1 else null
                     )
                 }
@@ -33,5 +34,9 @@ class PokemonDataSource(private val api: Api): PagingSource<Int, PokemonBean>() 
         } catch (e : Exception) {
             LoadResult.Error(e)
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, PokemonBean>): Int? {
+        return null
     }
 }
