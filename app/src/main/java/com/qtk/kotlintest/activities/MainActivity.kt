@@ -51,9 +51,9 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     override val activity: Activity by lazy { this }
     var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
     private val adapter: ForecastListAdapter2 by lazy {
-        ForecastListAdapter2(mViewModel.forecastList.value?.dailyForecast) {
+        ForecastListAdapter2(mViewModel.forecastList.value?.dailyForecast) { forecast, _ ->
             this.startActivity<DetailActivity>(
-                DetailActivity.ID to it.id,
+                DetailActivity.ID to forecast.id,
                 DetailActivity.CITY_NAME to city
             )
         }
@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private val backgroundLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         it?.let {
-            WorkManager.getInstance(this@MainActivity)
-                .enqueue(locationWorker)
+            /*WorkManager.getInstance(this@MainActivity)
+                .enqueue(locationWorker)*/
         }
     }
 
@@ -97,8 +97,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 backgroundLocation.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             } else {
-                WorkManager.getInstance(this@MainActivity)
-                    .enqueue(locationWorker)
+                /*WorkManager.getInstance(this@MainActivity)
+                    .enqueue(locationWorker)*/
             }
         }
     }

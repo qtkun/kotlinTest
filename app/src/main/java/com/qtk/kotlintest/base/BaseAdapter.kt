@@ -10,23 +10,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.BR
 import com.qtk.kotlintest.extensions.singleClick
 
-abstract class BaseAdapter<T : Any>(
+abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
     var items: List<T>?,
-    private val itemClick: (T) -> Unit,
+    private val itemClick: (T, ViewDataBinding) -> Unit,
     val id: Int
-) : RecyclerView.Adapter<BaseViewHolder<T>>() {
+) : RecyclerView.Adapter<BaseViewHolder<T, VDB>>() {
 
     override fun getItemCount(): Int = items?.size ?: 0
 
-    override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<T, VDB>, position: Int) {
         items?.let {
             onBind(holder.binding, it[position])
             holder.bindView(it[position])
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-        val binding: ViewDataBinding =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VDB> {
+        val binding: VDB =
             DataBindingUtil.inflate(LayoutInflater.from(parent.context), id, parent, false)
         return BaseViewHolder(binding, itemClick)
     }
@@ -34,23 +34,23 @@ abstract class BaseAdapter<T : Any>(
     open fun onBind(binding: ViewDataBinding, item: T) {}
 }
 
-abstract class BaseListAdapter<T : Any>(
+abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
     var items: List<T>?,
-    private val itemClick: (T) -> Unit,
+    private val itemClick: (T, ViewDataBinding) -> Unit,
     val id: Int,
     diffUtil: DiffUtil.ItemCallback<T> = DiffUtilHelper.create()
-) : ListAdapter<T, BaseViewHolder<T>>(diffUtil) {
+) : ListAdapter<T, BaseViewHolder<T, VDB>>(diffUtil) {
     override fun getItemCount(): Int = items?.size ?: 0
 
-    override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<T, VDB>, position: Int) {
         items?.let {
             onBind(holder.binding, it[position])
             holder.bindView(it[position])
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-        val binding: ViewDataBinding =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VDB> {
+        val binding: VDB =
             DataBindingUtil.inflate(LayoutInflater.from(parent.context), id, parent, false)
         return BaseViewHolder(binding, itemClick)
     }
@@ -70,32 +70,32 @@ open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {
 
 }
 
-class BaseViewHolder<T : Any>(
-    private val _binding: ViewDataBinding,
-    private val itemClick: (T) -> Unit
+class BaseViewHolder<T : Any, VDB: ViewDataBinding>(
+    private val _binding: VDB,
+    private val itemClick: (T, VDB) -> Unit
 ) : RecyclerView.ViewHolder(_binding.root) {
     fun bindView(item: T?) {
         item?.let {
             _binding.setVariable(BR.item, item)
             _binding.executePendingBindings()
-            itemView.singleClick { itemClick(item) }
+            itemView.singleClick { itemClick(item, _binding) }
         }
     }
 
     val binding get() = _binding
 }
 
-fun <T : Any> BaseAdapter<T>.update(newItems: List<T>) {
+fun <T : Any, VDB: ViewDataBinding> BaseAdapter<T, VDB>.update(newItems: List<T>) {
     items = newItems
     notifyDataSetChanged()
 }
 
-fun <T : Any> BaseListAdapter<T>.update(newItems: List<T>) {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.update(newItems: List<T>) {
     items = newItems
     submitList(items)
 }
 
-fun <T : Any> BaseListAdapter<T>.add(addItem: T) {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.add(addItem: T) {
     items = if (items == null) {
         ArrayList<T>().apply { add(addItem) }
     } else {
@@ -108,7 +108,7 @@ fun <T : Any> BaseListAdapter<T>.add(addItem: T) {
     submitList(items)
 }
 
-fun <T : Any> BaseListAdapter<T>.addAll(addItems: List<T>) {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.addAll(addItems: List<T>) {
     items = if (items == null) {
         addItems
     } else {
@@ -121,7 +121,7 @@ fun <T : Any> BaseListAdapter<T>.addAll(addItems: List<T>) {
     submitList(items)
 }
 
-fun <T : Any> BaseListAdapter<T>.remove(deleteItem: T) {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.remove(deleteItem: T) {
     items = items?.let {
         ArrayList<T>(it).apply {
             remove(deleteItem)
@@ -130,7 +130,7 @@ fun <T : Any> BaseListAdapter<T>.remove(deleteItem: T) {
     submitList(items)
 }
 
-fun <T : Any> BaseListAdapter<T>.removeAll(deleteItems: List<T>) {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.removeAll(deleteItems: List<T>) {
     items = items?.let {
         ArrayList<T>(it).apply {
             removeAll(deleteItems)
@@ -139,7 +139,7 @@ fun <T : Any> BaseListAdapter<T>.removeAll(deleteItems: List<T>) {
     submitList(items)
 }
 
-fun <T : Any> BaseListAdapter<T>.clear() {
+fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.clear() {
     items = items?.let {
         ArrayList<T>(it).apply {
             clear()

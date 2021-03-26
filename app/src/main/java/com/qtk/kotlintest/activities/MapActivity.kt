@@ -76,19 +76,19 @@ class MapActivity: BaseActivity<ActivityMapBinding>(R.layout.activity_map) {
         initMap()
         coarseLocation.launch(locationPermission)
         lifecycleScope.launch {
-            pokemonDao.getLocations(getYesterdayMillis(), getTodayMillis())?.also {
+            /*pokemonDao.getLocations(getYesterdayMillis(), getTodayMillis())?.also {
                 println("定位点数量：${it.size}")
                 for(location in it) {
                     mPointList.add(LatLng(location.latitude, location.longitude))
                 }
             }
+            addLocPath()*/
             /*pokemonDao.getAllLocations()?.also {
                 println("定位点数量：${it.size}")
                 for(location in it) {
                     mPointList.add(LatLng(location.latitude, location.longitude))
                 }
             }*/
-            addLocPath()
         }
     }
 

@@ -1,5 +1,8 @@
 package com.qtk.kotlintest.activities
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -12,11 +15,14 @@ import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.base.initLoading
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
+import com.qtk.kotlintest.databinding.ItemPokemonBinding
+import com.qtk.kotlintest.extensions.color
 import com.qtk.kotlintest.extensions.inflate
 import com.qtk.kotlintest.extensions.toJson
 import com.qtk.kotlintest.extensions.toJsonList
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
+import com.qtk.kotlintest.widget.StickyDecoration
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.inject
@@ -28,13 +34,23 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
     private val mViewModel by viewModel<PokemonViewModel>()
     //通过hilt注入
 //    private val mViewModel by lazy { ViewModelProvider(this).get(PokemonViewModel::class.java) }
-    private val adapter: PokemonAdapter = PokemonAdapter {
-        like(it)
+    private val adapter: PokemonAdapter = PokemonAdapter {pokemon, binding ->
+        like(pokemon, binding)
     }
 
-    private fun like(pokemonBean: PokemonBean) {
+    private fun like(pokemonBean: PokemonBean,binding: ItemPokemonBinding) {
         pokemonBean.like = !pokemonBean.like
         adapter.notifyItemChanged(pokemonBean.id.toInt() - 1)
+        AnimatorSet().apply {
+            val scalex = ObjectAnimator.ofFloat(binding.like,"ScaleX", 1f, 0.6f)
+            val scaley = ObjectAnimator.ofFloat(binding.like,"ScaleY", 1f, 0.6f)
+            val scalex2 = ObjectAnimator.ofFloat(binding.like,"ScaleX", 0.6f, 1f)
+            val scaley2 = ObjectAnimator.ofFloat(binding.like,"ScaleY", 0.6f, 1f)
+            play(scalex).with(scaley)
+            play(scalex2).after(scalex)
+            play(scaley2).after(scaley)
+            start()
+        }
     }
 
     private val moshi by inject<Moshi>()
@@ -54,7 +70,12 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
                 adapter.retry()
             })
             pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
-            pokemonList.itemAnimator?.changeDuration = 0
+            pokemonList.itemAnimator = null
+            pokemonList.addItemDecoration(
+                StickyDecoration (backgroundColor = this@MotionActivity.color(R.color.colorAccent)) {
+                    return@StickyDecoration "${it / 3 + 1}"
+                }
+            )
 
             lifecycleScope.launchWhenCreated {
                 adapter.addLoadStateListener {

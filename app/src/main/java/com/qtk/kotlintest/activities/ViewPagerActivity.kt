@@ -2,21 +2,29 @@ package com.qtk.kotlintest.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.qtk.kotlintest.adapter.ParentAdapter
 import com.qtk.kotlintest.adapter.ViewPagerAdapter
 import com.qtk.kotlintest.databinding.ActivityViewpager2Binding
+import com.qtk.kotlintest.databinding.ActivityViewpager2NestBinding
 import com.qtk.kotlintest.extensions.inflate
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ViewPagerActivity : AppCompatActivity() {
-    private val binding by inflate<ActivityViewpager2Binding>()
+    private val binding by inflate<ActivityViewpager2NestBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.viewPager.adapter = ViewPagerAdapter(this@ViewPagerActivity)
+        binding.parent.layoutManager = LinearLayoutManager(this)
+        binding.parent.adapter = ParentAdapter(this)
+        binding.back.setOnClickListener {
+            finish()
+        }
+        /*binding.viewPager.adapter = ViewPagerAdapter(this@ViewPagerActivity)
         with(binding){
             viewPager.adapter = ViewPagerAdapter(this@ViewPagerActivity)
             TabLayoutMediator(
@@ -51,6 +59,6 @@ class ViewPagerActivity : AppCompatActivity() {
             back.setOnClickListener {
                 finish()
             }
-        }
+        }*/
     }
 }

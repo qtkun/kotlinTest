@@ -17,8 +17,8 @@ import com.squareup.picasso.Picasso
  * Created by qtkun
 on 2020-06-15.
  */
-class ForecastListAdapter(dailyForecast:List<Forecast>?, itemClick : (Forecast) -> Unit) :
-    BaseAdapter<Forecast>(dailyForecast, itemClick, R.layout.item_forecast) {
+class ForecastListAdapter(dailyForecast:List<Forecast>?, itemClick : (Forecast, ViewDataBinding) -> Unit) :
+    BaseAdapter<Forecast, ItemForecastBinding>(dailyForecast, itemClick, R.layout.item_forecast) {
     override fun onBind(binding: ViewDataBinding, item: Forecast) {
         TODO("Not yet implemented")
     }

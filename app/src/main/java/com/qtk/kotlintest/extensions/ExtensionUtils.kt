@@ -72,7 +72,7 @@ inline fun <reified T> T.dpToPx(): Float {
     )
 }
 
-inline fun <reified T> T.spToPx(): Int {
+inline fun <reified T> T.spToPx(): Float {
     val value = when (T::class) {
         Float::class -> this as Float
         Int::class -> this as Int
@@ -81,7 +81,7 @@ inline fun <reified T> T.spToPx(): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
         value.toFloat(), App.instance.applicationContext.resources.displayMetrics
-    ).toInt()
+    )
 }
 
 inline fun <reified T> Moshi.buildJsonAdapter(): JsonAdapter<T> = this.adapter(T::class.java)
