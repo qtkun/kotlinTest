@@ -31,7 +31,10 @@ import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
+import com.qtk.kotlintest.utils.dateToPosition
+import com.qtk.kotlintest.utils.getMonthDate
 import com.qtk.kotlintest.utils.map.TraceAsset
+import com.qtk.kotlintest.utils.positionToDate
 import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
+            println(getMonthDate(positionToDate(dateToPosition())))
             /*WorkManager.getInstance(this@MainActivity)
                 .beginWith(saveImageWorkRequest)
                 .then(testWorkRequest).

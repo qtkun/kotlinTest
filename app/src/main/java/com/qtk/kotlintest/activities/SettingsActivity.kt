@@ -15,12 +15,17 @@ import androidx.core.widget.addTextChangedListener
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.viewpager2.widget.ViewPager2
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivitySettingsBinding
 import com.qtk.kotlintest.databinding.PopLayoutBinding
 import com.qtk.kotlintest.extensions.*
+import com.qtk.kotlintest.utils.dateToPosition
 import com.qtk.kotlintest.widget.*
 import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.toast
@@ -86,6 +91,10 @@ class SettingsActivity : AppCompatActivity() {
             cityCode.addTextChangedListener {
                 etState.value = (it ?: "").toString()
             }
+            PagerSnapHelper().attachToRecyclerView(calendarPager)
+            calendarPager.adapter = CalendarPagerAdapter()
+            calendarPager.layoutManager = LinearLayoutManager(this@SettingsActivity)
+            calendarPager.scrollToPosition(dateToPosition())
         }
         /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(binding.heart1)

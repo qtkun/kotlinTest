@@ -12,7 +12,7 @@ import com.qtk.kotlintest.extensions.singleClick
 
 abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
     var items: List<T>?,
-    private val itemClick: (T, ViewDataBinding) -> Unit,
+    private val itemClick: (T, VDB) -> Unit,
     val id: Int
 ) : RecyclerView.Adapter<BaseViewHolder<T, VDB>>() {
 
@@ -36,7 +36,7 @@ abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
 
 abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
     var items: List<T>?,
-    private val itemClick: (T, ViewDataBinding) -> Unit,
+    private val itemClick: (T, VDB) -> Unit,
     val id: Int,
     diffUtil: DiffUtil.ItemCallback<T> = DiffUtilHelper.create()
 ) : ListAdapter<T, BaseViewHolder<T, VDB>>(diffUtil) {
