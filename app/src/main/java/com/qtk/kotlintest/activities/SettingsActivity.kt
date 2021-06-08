@@ -17,7 +17,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
@@ -25,7 +27,7 @@ import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivitySettingsBinding
 import com.qtk.kotlintest.databinding.PopLayoutBinding
 import com.qtk.kotlintest.extensions.*
-import com.qtk.kotlintest.utils.dateToPosition
+import com.qtk.kotlintest.utils.*
 import com.qtk.kotlintest.widget.*
 import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.toast
@@ -92,9 +94,24 @@ class SettingsActivity : AppCompatActivity() {
                 etState.value = (it ?: "").toString()
             }
             PagerSnapHelper().attachToRecyclerView(calendarPager)
-            calendarPager.adapter = CalendarPagerAdapter()
+            val calendarPagerAdapter = CalendarPagerAdapter(calendarPager)
+            calendarPager.adapter = calendarPagerAdapter
             calendarPager.layoutManager = LinearLayoutManager(this@SettingsActivity)
             calendarPager.scrollToPosition(dateToPosition())
+            calendarPager.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val firstIndex = (calendarPager.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    calendarPagerAdapter.months[firstIndex]?.let {
+                        for (day in it) {
+                            if (day.type == 1) {
+                                date.text = "${day.year}年${day.month}月"
+                                break
+                            }
+                        }
+                    }
+                }
+            })
         }
         /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(binding.heart1)

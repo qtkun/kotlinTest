@@ -10,8 +10,8 @@ data class CalendarBean(
     val weekday: Int,
     val dateString: String,
     val millisecond: Long,
-    val current: Boolean,
-    val select: Boolean = false,
+    val type: Int, //0 上个月, 1这个月，2下个月
+    var select: Boolean = false,
 )
 
 fun monthCount(): Int = 20 * 12
@@ -59,24 +59,24 @@ fun getMonthDate(date: IntArray): List<CalendarBean> {
         nextYear = year
     }
     for (i in 0 until week) {
-        days.add(initCalendarBean(lastYear, lastMonth, lastMonthDays - week + 1 + i, false))
+        days.add(initCalendarBean(lastYear, lastMonth, lastMonthDays - week + 1 + i, 0))
     }
     for (i in 0 until currentMonthDays) {
-        days.add(initCalendarBean(year, month, i + 1, true))
+        days.add(initCalendarBean(year, month, i + 1, 1))
     }
     for (i in 0 until 42 - currentMonthDays - week) {
-        days.add(initCalendarBean(nextYear, nextMonth, i + 1, false))
+        days.add(initCalendarBean(nextYear, nextMonth, i + 1, 2))
     }
     return days
 }
 
-fun initCalendarBean(year: Int, month: Int, day: Int, current: Boolean): CalendarBean {
+fun initCalendarBean(year: Int, month: Int, day: Int, type: Int): CalendarBean {
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val calendar = Calendar.getInstance().apply { set(year, month - 1, day) }
     val dateString = sdf.format(calendar.time)
     return CalendarBean(
         year, month, day, calendar[Calendar.DAY_OF_WEEK] - 1,
-        dateString, calendar.timeInMillis, current
+        dateString, calendar.timeInMillis, type
     )
 }
 

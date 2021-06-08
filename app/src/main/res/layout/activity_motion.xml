@@ -40,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="@string/pokemon_list" />
+            android:text="@string/pokemon_list"
+            android:onClick="@{(v) -> motion.scroll()}"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pokemon_refresh"

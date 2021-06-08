@@ -5,19 +5,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.gson.Gson
-import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastListAdapter2
 import com.qtk.kotlintest.base.update
@@ -31,10 +27,7 @@ import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
-import com.qtk.kotlintest.utils.dateToPosition
-import com.qtk.kotlintest.utils.getMonthDate
-import com.qtk.kotlintest.utils.map.TraceAsset
-import com.qtk.kotlintest.utils.positionToDate
+import com.qtk.kotlintest.widget.TimeLineDecoration
 import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
@@ -43,8 +36,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
@@ -113,8 +104,13 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)
         binding.forecastList.adapter = adapter
+        binding.forecastList.addItemDecoration(
+            TimeLineDecoration(this.color(R.color.colorAccent))
+        )
         coarseLocation.launch(locationPermission)
         business()
+        println(10.toHex())
+        println("11111111".binaryToHex())
     }
 
     private fun business() {
@@ -127,13 +123,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     if (dialog.isShowing) dialog.dismiss()
                 }
             })
-            println(getMonthDate(positionToDate(dateToPosition())))
             /*WorkManager.getInstance(this@MainActivity)
-                .beginWith(saveImageWorkRequest)
-                .then(testWorkRequest).
-                enqueue()
-
-            WorkManager.getInstance(this@MainActivity)
                 .getWorkInfoByIdLiveData(saveImageWorkRequest.id)
                 .observe(this@MainActivity, Observer {
                     when(it.state){
@@ -144,7 +134,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                         WorkInfo.State.BLOCKED -> toast("挂起")
                         WorkInfo.State.CANCELLED -> toast("取消保存")
                     }
-                })*/
+                })
+            WorkManager.getInstance(this@MainActivity)
+                .beginWith(saveImageWorkRequest)
+                .then(testWorkRequest).
+                enqueue()*/
 
             /*mViewModel.getZipCode().observe(this@MainActivity, Observer {
                 lifecycleScope.launchWhenResumed {
@@ -156,7 +150,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
-        .setRequiresBatteryNotLow(true)
+//        .setRequiresBatteryNotLow(true)
         .build()
 
     val data = workDataOf(

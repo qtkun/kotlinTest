@@ -20,8 +20,8 @@ abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
 
     override fun onBindViewHolder(holder: BaseViewHolder<T, VDB>, position: Int) {
         items?.let {
-            onBind(holder.binding, it[position])
             holder.bindView(it[position])
+            onBind(holder.binding, it[position])
         }
     }
 
@@ -31,7 +31,7 @@ abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
         return BaseViewHolder(binding, itemClick)
     }
 
-    open fun onBind(binding: ViewDataBinding, item: T) {}
+    open fun onBind(binding: VDB, item: T) {}
 }
 
 abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
@@ -44,8 +44,8 @@ abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
 
     override fun onBindViewHolder(holder: BaseViewHolder<T, VDB>, position: Int) {
         items?.let {
-            onBind(holder.binding, it[position])
             holder.bindView(it[position])
+            onBind(holder.binding, it[position])
         }
     }
 
@@ -55,7 +55,7 @@ abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
         return BaseViewHolder(binding, itemClick)
     }
 
-    open fun onBind(binding: ViewDataBinding, item: T) {}
+    open fun onBind(binding: VDB, item: T) {}
 }
 
 open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {

@@ -18,6 +18,10 @@ import com.qtk.kotlintest.modules.appModule
 import com.qtk.kotlintest.modules.viewModelModule
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.room.entity.Location
+import com.qtk.kotlintest.utils.CalendarBean
+import com.qtk.kotlintest.utils.getMonthDate
+import com.qtk.kotlintest.utils.monthCount
+import com.qtk.kotlintest.utils.positionToDate
 import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
@@ -61,6 +65,7 @@ class App : Application() {
     }
     private val pokemonDao by inject<PokemonDao> ()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    val months = hashMapOf<Int, List<CalendarBean>>()
 
     val mLocationClient by lazy {
         AMapLocationClient(applicationContext).apply {
@@ -92,7 +97,6 @@ class App : Application() {
     }
 
 //    val catalogue = getExternalFilesDir("file")
-
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -104,6 +108,11 @@ class App : Application() {
             androidFileProperties()
             modules(listOf(viewModelModule))
             modules(listOf(appModule))
+        }
+        coroutineScope.launch {
+            for (i in 0 until monthCount()) {
+                months[i] = getMonthDate(positionToDate(i))
+            }
         }
     }
 

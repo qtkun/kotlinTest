@@ -23,6 +23,8 @@ import com.qtk.kotlintest.extensions.toJsonList
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.widget.StickyDecoration
+import com.qtk.kotlintest.widget.TimeLineDecoration
+import com.qtk.kotlintest.widget.smoothScroll
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.inject
@@ -76,6 +78,9 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
                     return@StickyDecoration "${it / 3 + 1}"
                 }
             )
+            pokemonList.addItemDecoration(
+                TimeLineDecoration(this@MotionActivity.color(R.color.colorAccent))
+            )
 
             lifecycleScope.launchWhenCreated {
                 adapter.addLoadStateListener {
@@ -98,6 +103,10 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
 
         fun refresh() {
             adapter.refresh()
+        }
+
+        fun scroll() {
+            (binding.pokemonList.layoutManager as LinearLayoutManager).smoothScroll(this@MotionActivity, 10)
         }
     }
 }

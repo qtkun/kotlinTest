@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.and
 import okio.IOException
 import java.lang.reflect.Type
 import java.text.DateFormat
@@ -58,6 +59,17 @@ fun Double.toPx(): Int {
 fun Double.toDp(): Int {
     val scale: Float = App.instance.applicationContext.resources.displayMetrics.scaledDensity
     return (this / scale + 0.5f).toInt()
+}
+
+fun Int.toHex(): String {
+    val hex = Integer.toHexString(this)
+    return if (hex.length % 2 != 0) { "0x0${hex}" } else { "0x$hex" }
+}
+
+fun String.binaryToHex(): String {
+    val binary = Integer.parseInt(this, 2)
+    val hex = Integer.toHexString(binary and 0xFF)
+    return if (hex.length == 1) { "0x0${hex}" } else { "0x$hex" }
 }
 
 inline fun <reified T> T.dpToPx(): Float {

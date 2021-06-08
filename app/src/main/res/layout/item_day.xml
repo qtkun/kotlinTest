@@ -12,6 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/select_bg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/main_color_oval"/>
+
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
@@ -22,7 +32,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="16sp"
-            android:textColor='@{item.current ? @android:color/black : @color/text_gray}'
             android:textStyle="bold"
             android:text="@{Integer.toString(item.day)}"/>
 

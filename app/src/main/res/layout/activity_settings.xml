@@ -54,9 +54,115 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendar_pager"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_gravity="bottom"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="15sp"
+            android:textColor="@color/text_secondary"
+            android:paddingStart="16dp"/>
+
+        <TextView
+            android:id="@+id/sunday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/monday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="日"/>
+
+        <TextView
+            android:id="@+id/monday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/sunday"
+            app:layout_constraintEnd_toStartOf="@+id/tuesday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="一"/>
+
+        <TextView
+            android:id="@+id/tuesday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/monday"
+            app:layout_constraintEnd_toStartOf="@+id/wednesday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="二"/>
+
+        <TextView
+            android:id="@+id/wednesday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/tuesday"
+            app:layout_constraintEnd_toStartOf="@+id/thursday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="三"/>
+
+        <TextView
+            android:id="@+id/thursday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/wednesday"
+            app:layout_constraintEnd_toStartOf="@+id/friday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="四"/>
+
+        <TextView
+            android:id="@+id/friday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/thursday"
+            app:layout_constraintEnd_toStartOf="@+id/saturday"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="五"/>
+
+        <TextView
+            android:id="@+id/saturday"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/friday"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/text_main"
+            android:text="六"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calendar_pager"
+            android:layout_width="0dp"
+            android:layout_height="240dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sunday"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

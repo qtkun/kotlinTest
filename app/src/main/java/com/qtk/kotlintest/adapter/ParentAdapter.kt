@@ -9,9 +9,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.databinding.HomeTabLayoutBinding
 import com.qtk.kotlintest.databinding.ItemNestBottomBinding
 import com.qtk.kotlintest.databinding.ItemNestTopBinding
 import com.qtk.kotlintest.extensions.bindItemView
+import com.qtk.kotlintest.extensions.drawable
 import org.jetbrains.anko.toast
 
 class ParentAdapter(val activity: AppCompatActivity): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -62,23 +64,49 @@ class BottomViewHolder(activity: AppCompatActivity, itemView: View): RecyclerVie
             TabLayoutMediator(
                 tabLayout, viewPager
             ) { tab, position -> // Styling each tab here
+                val binding = HomeTabLayoutBinding.inflate(LayoutInflater.from(itemView.context))
                 when (position) {
-                    0 -> tab.text = "列表1"
-                    1 -> tab.text = "列表2"
+                    0 -> {
+                        binding.icon = itemView.context.drawable(R.drawable.workbench_selector)
+                        binding.label = "工作台"
+                        tab.customView = binding.root
+                        /*tab.icon = itemView.context.drawable(R.drawable.ic_workbench_selected)
+                        tab.text = "列表1"*/
+                    }
+                    1 -> {
+                        binding.icon = itemView.context.drawable(R.drawable.customer_selector)
+                        binding.label = "客户"
+                        tab.customView = binding.root
+                        /*tab.icon = itemView.context.drawable(R.drawable.ic_customer_unselected)
+                        tab.text = "列表2"*/
+                    }
                 }
             }.attach()
-            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            /*tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when (tab?.position) {
-                        0 -> activity.toast("列表1")
-                        1 -> activity.toast("列表2")
+                        0 -> {
+                            tab.icon = itemView.context.drawable(R.drawable.ic_workbench_selected)
+                        }
+                        1 -> {
+                            tab.icon = itemView.context.drawable(R.drawable.ic_customer_selected)
+                        }
                     }
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    when (tab?.position) {
+                        0 -> {
+                            tab.icon = itemView.context.drawable(R.drawable.ic_workbench_unselected)
+                        }
+                        1 -> {
+                            tab.icon = itemView.context.drawable(R.drawable.ic_customer_unselected)
+                        }
+                    }
+                }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
+            })*/
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)

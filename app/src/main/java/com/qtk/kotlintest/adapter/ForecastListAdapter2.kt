@@ -11,7 +11,7 @@ import com.qtk.kotlintest.domain.model.Forecast
  * Created by qtkun
 on 2020-06-15.
  */
-class ForecastListAdapter2(dailyForecast:List<Forecast>?, itemClick : (Forecast, ViewDataBinding) -> Unit) :
+class ForecastListAdapter2(dailyForecast:List<Forecast>?, itemClick : (Forecast, ItemForecastBinding) -> Unit) :
     BaseListAdapter<Forecast, ItemForecastBinding>(
         dailyForecast,
         itemClick,

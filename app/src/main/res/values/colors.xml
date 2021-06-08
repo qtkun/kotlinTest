@@ -6,5 +6,8 @@
     <color name="color_light_teal">#2CDAB1</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#e5e5e5</color>
+    <color name="text_main">#363C5A</color>
+    <color name="text_secondary">#A2A5B3</color>
     <color name="text_gray">#999999</color>
+    <color name="main">#4E6DFB</color>
 </resources>
