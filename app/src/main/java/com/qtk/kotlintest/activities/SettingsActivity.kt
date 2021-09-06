@@ -7,20 +7,18 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.qtk.kotlintest.App
-import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
@@ -29,6 +27,8 @@ import com.qtk.kotlintest.databinding.PopLayoutBinding
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.utils.*
 import com.qtk.kotlintest.widget.*
+import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
@@ -40,7 +40,7 @@ class SettingsActivity : AppCompatActivity() {
     private val popBinding: PopLayoutBinding by lazy { PopLayoutBinding.inflate(layoutInflater) }
 
     private val binding by inflate<ActivitySettingsBinding>()
-    private val etState = MutableStateFlow("")
+    private val etState = MutableStateFlow(0L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,9 +90,9 @@ class SettingsActivity : AppCompatActivity() {
             heart4.setOnClickListener {
                 popBinding.tc.showRight(popupWindow, it)
             }
-            cityCode.addTextChangedListener {
+            /*cityCode.addTextChangedListener {
                 etState.value = (it ?: "").toString()
-            }
+            }*/
             PagerSnapHelper().attachToRecyclerView(calendarPager)
             val calendarPagerAdapter = CalendarPagerAdapter(calendarPager)
             calendarPager.adapter = calendarPagerAdapter
@@ -112,6 +112,10 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             })
+            button.setOnLongClickListener {
+                etState.value += 1L
+                true
+            }
         }
         /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(binding.heart1)
@@ -119,12 +123,18 @@ class SettingsActivity : AppCompatActivity() {
         }*/
         lifecycleScope.launchWhenResumed {
             etState
-                .sample(500L)
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .sample(100L)
                 .filter {
-                    it.isNotBlank()
+                    it != 0L
                 }
+                .flowOn(Dispatchers.IO)
                 .collectLatest {
-                    dataStore.putData(ZIP_CODE, it.toLong())
+                    cityCode.setText(it.toString())
+                    if (binding.button.isPressed) {
+                        etState.value += 1L
+                    }
+//                    dataStore.putData(ZIP_CODE, it.toLong())
                 }
         }
     }

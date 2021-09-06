@@ -6,9 +6,12 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
@@ -27,6 +30,7 @@ import com.qtk.kotlintest.widget.TimeLineDecoration
 import com.qtk.kotlintest.widget.smoothScroll
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -60,27 +64,30 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewModel.getPokemon().observe(this, {
-                lifecycleScope.launchWhenCreated {
-                    adapter.submitData(it)
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        adapter.submitData(it)
+                    }
                 }
             })
         with(binding) {
             motion = MotionPresenter()
             pokemon = mViewModel
 
+            LinearSnapHelper().attachToRecyclerView(pokemonList)
             pokemonList.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
                 adapter.retry()
             })
             pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
             pokemonList.itemAnimator = null
-            pokemonList.addItemDecoration(
+            /*pokemonList.addItemDecoration(
                 StickyDecoration (backgroundColor = this@MotionActivity.color(R.color.colorAccent)) {
                     return@StickyDecoration "${it / 3 + 1}"
                 }
             )
             pokemonList.addItemDecoration(
                 TimeLineDecoration(this@MotionActivity.color(R.color.colorAccent))
-            )
+            )*/
 
             lifecycleScope.launchWhenCreated {
                 adapter.addLoadStateListener {

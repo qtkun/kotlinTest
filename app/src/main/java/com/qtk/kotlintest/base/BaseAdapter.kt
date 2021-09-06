@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.BR
 import com.qtk.kotlintest.extensions.singleClick
+import com.qtk.kotlintest.extensions.toJson
+import com.squareup.moshi.Moshi
 
 abstract class BaseAdapter<T : Any, VDB: ViewDataBinding>(
     var items: List<T>?,
@@ -70,6 +72,17 @@ open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {
 
 }
 
+open class DiffCallBack<T>(protected val oldItems: List<T>, protected val newItems: List<T>): DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldItems.size
+
+    override fun getNewListSize(): Int = newItems.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldItems[oldItemPosition] === newItems[newItemPosition]
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldItems[oldItemPosition].toString() == newItems[newItemPosition].toString()
+
+}
+
 class BaseViewHolder<T : Any, VDB: ViewDataBinding>(
     private val _binding: VDB,
     private val itemClick: (T, VDB) -> Unit
@@ -85,9 +98,10 @@ class BaseViewHolder<T : Any, VDB: ViewDataBinding>(
     val binding get() = _binding
 }
 
-fun <T : Any, VDB: ViewDataBinding> BaseAdapter<T, VDB>.update(newItems: List<T>) {
+fun <T : Any, VDB: ViewDataBinding> BaseAdapter<T, VDB>.update(newItems: List<T>, diffUtil: DiffUtil.Callback = DiffCallBack(items ?: emptyList(), newItems)) {
     items = newItems
-    notifyDataSetChanged()
+    val result = DiffUtil.calculateDiff(diffUtil, true)
+    result.dispatchUpdatesTo(this)
 }
 
 fun <T : Any, VDB: ViewDataBinding> BaseListAdapter<T, VDB>.update(newItems: List<T>) {

@@ -10,11 +10,13 @@ import androidx.paging.cachedIn
 import com.qtk.kotlintest.base.BaseViewModel
 import com.qtk.kotlintest.paging.CommonRepository
 import com.qtk.kotlintest.retrofit.data.PokemonBean
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
-class PokemonViewModel @ViewModelInject constructor(private val commonRepository: CommonRepository) : BaseViewModel() {
+@HiltViewModel
+class PokemonViewModel constructor(private val commonRepository: CommonRepository) : BaseViewModel() {
     val refresh = ObservableBoolean()
 
     fun getPokemon(): LiveData<PagingData<PokemonBean>> =

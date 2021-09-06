@@ -39,8 +39,8 @@ class FlowLayout @JvmOverloads constructor(
 
     init {
         context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout).use {
-            mHorizontalSpacing = it.getDimension(R.styleable.FlowLayout_horizontal_spacing, 10.dpToPx()).toInt()
-            mVerticalSpacing = it.getDimension(R.styleable.FlowLayout_vertical_spacing, 8.dpToPx()).toInt()
+            mHorizontalSpacing = it.getDimension(R.styleable.FlowLayout_horizontal_spacing, 10f.dpToPx()).toInt()
+            mVerticalSpacing = it.getDimension(R.styleable.FlowLayout_vertical_spacing, 8f.dpToPx()).toInt()
         }
     }
 

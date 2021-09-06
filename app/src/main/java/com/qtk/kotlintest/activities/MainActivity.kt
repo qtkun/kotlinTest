@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.gson.Gson
 import com.qtk.kotlintest.R
+import com.qtk.kotlintest.adapter.ForecastDiffCallBack
+import com.qtk.kotlintest.adapter.ForecastListAdapter
 import com.qtk.kotlintest.adapter.ForecastListAdapter2
 import com.qtk.kotlintest.base.update
 import com.qtk.kotlintest.contant.BITMAP_ID
@@ -32,7 +34,7 @@ import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,8 +46,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
-    private val adapter: ForecastListAdapter2 by lazy {
-        ForecastListAdapter2(mViewModel.forecastList.value?.dailyForecast) { forecast, _ ->
+    private val adapter: ForecastListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ForecastListAdapter(mViewModel.forecastList.value?.dailyForecast) { forecast, _ ->
             this.startActivity<DetailActivity>(
                 DetailActivity.ID to forecast.id,
                 DetailActivity.CITY_NAME to city
@@ -107,10 +109,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         binding.forecastList.addItemDecoration(
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
-        coarseLocation.launch(locationPermission)
+        binding.fab.setOnClickListener {
+            startActivity<CoordinatorLayoutActivity>()
+        }
+//        coarseLocation.launch(locationPermission)
         business()
-        println(10.toHex())
-        println("11111111".binaryToHex())
     }
 
     private fun business() {
@@ -178,7 +181,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     private fun observer(): Observer<ForecastList> = Observer { result ->
         city = result.city
-        adapter.update(result.dailyForecast)
+        adapter.update(result.dailyForecast, ForecastDiffCallBack(adapter.items ?: emptyList(), result.dailyForecast))
         toolbarTitle = "${result.city} (${result.country})"
     }
 
@@ -205,6 +208,22 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     private fun load() = lifecycleScope.launchWhenResumed {
         if (lifecycle.currentState != Lifecycle.State.DESTROYED) {
             mViewModel.setData(zipCode)
+        }
+    }
+
+    private suspend fun test() = coroutineScope {
+        val a = async {
+            delay(2000)
+            println("aaaaaaaaaaaaa")
+            1
+        }
+        val b = async {
+            delay(2000)
+            println("bbbbbbbbbbbbb")
+            2
+        }
+        withContext(Dispatchers.Main) {
+            toast("${a.await() + b.await()}")
         }
     }
 

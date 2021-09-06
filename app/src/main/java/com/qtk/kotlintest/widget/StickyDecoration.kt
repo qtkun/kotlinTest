@@ -15,9 +15,9 @@ import kotlin.math.max
 class StickyDecoration(
     private val backgroundColor: Int = Color.MAGENTA,
     private val textColor: Int = Color.WHITE,
-    private val testSize: Float = 16.spToPx(),
-    private val paddingLeft: Float = 20.dpToPx(),
-    private val height: Float = 50.dpToPx(),
+    private val testSize: Float = 16f.spToPx(),
+    private val paddingLeft: Float = 20f.dpToPx(),
+    private val height: Float = 50f.dpToPx(),
     private val tag: (Int) -> String?
 ) : RecyclerView.ItemDecoration() {
     private val paint by lazy {

@@ -13,7 +13,7 @@ import com.qtk.kotlintest.extensions.dpToPx
 class TimeLineDecoration(
     private val color: Int = Color.MAGENTA,
     private val circleRadius: Float = (3.5f).dpToPx(),
-    private val leftPadding: Float = 4.dpToPx(),
+    private val leftPadding: Float = 4f.dpToPx(),
     private val topPadding: Float = (3.5f).dpToPx()
 ): RecyclerView.ItemDecoration() {
     private val paint by lazy {
@@ -21,7 +21,7 @@ class TimeLineDecoration(
             color = this@TimeLineDecoration.color
             isAntiAlias = true
             style = Paint.Style.FILL
-            strokeWidth = 1.dpToPx()
+            strokeWidth = 1f.dpToPx()
         }
     }
 

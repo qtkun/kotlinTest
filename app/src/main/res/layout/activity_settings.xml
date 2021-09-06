@@ -51,6 +51,12 @@
 
         </com.qtk.kotlintest.widget.FlowLayout>
 
+        <Button
+            android:id="@+id/button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="test"/>
+
 
     </LinearLayout>
 

@@ -96,6 +96,32 @@ inline fun <reified T> T.spToPx(): Float {
     )
 }
 
+inline fun <reified T : Number> T.dpToPx(): T {
+    val px = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(), App.instance.applicationContext.resources.displayMetrics
+    )
+    return when (T::class) {
+        Float::class -> px as T
+        Double::class -> px.toDouble() as T
+        Int::class -> px.toInt() as T
+        else -> throw IllegalStateException("Type not supported")
+    }
+}
+
+inline fun <reified T : Number> T.spToPx(): T {
+    val px = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        this.toFloat(), App.instance.applicationContext.resources.displayMetrics
+    )
+    return when (T::class) {
+        Float::class -> px as T
+        Double::class -> px.toDouble() as T
+        Int::class -> px.toInt() as T
+        else -> throw IllegalStateException("Type not supported")
+    }
+}
+
 inline fun <reified T> Moshi.buildJsonAdapter(): JsonAdapter<T> = this.adapter(T::class.java)
 
 inline fun <reified T> Moshi.buildListJsonAdapter(): JsonAdapter<List<T>> {
@@ -148,8 +174,7 @@ fun Moshi.createBody(map: Map<String, Any>): RequestBody {
 /**
  * dataStore取数据需设置默认值
  */
-@Suppress("UNCHECKED_CAST")
-fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
+inline fun<reified T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
     return this.data
         .catch {
             if (it is IOException) {
@@ -176,7 +201,6 @@ fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
 /**
  * dataStore取数据
  */
-@Suppress("UNCHECKED_CAST")
 inline fun<reified T> DataStore<Preferences>.getData(name: String): Flow<T> {
     return this.data
         .catch {

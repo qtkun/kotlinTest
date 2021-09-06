@@ -60,6 +60,7 @@
         <activity android:name=".activities.ViewPagerActivity" />
         <activity android:name=".activities.CameraActivity" />
         <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.CoordinatorLayoutActivity" />
 
         <service android:name="com.amap.api.location.APSService"
             android:foregroundServiceType="location"/>

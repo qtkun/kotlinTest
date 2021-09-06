@@ -1,6 +1,5 @@
 package com.qtk.kotlintest.adapter
 
-import androidx.databinding.ViewDataBinding
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.base.BaseListAdapter
 import com.qtk.kotlintest.base.DiffUtilHelper

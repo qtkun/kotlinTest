@@ -12,22 +12,21 @@ import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-inline fun<reified VB: ViewBinding> Activity.inflate() = lazy {
+inline fun<reified VB: ViewBinding> Activity.inflate() = lazy(LazyThreadSafetyMode.NONE) {
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
 }
 
-inline fun <reified VB : ViewBinding> Dialog.inflate() = lazy {
+inline fun <reified VB : ViewBinding> Dialog.inflate() = lazy(LazyThreadSafetyMode.NONE) {
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
 }
 
-@Suppress("UNCHECKED_CAST")
 inline fun <reified VB : ViewBinding> inflateBinding(layoutInflater: LayoutInflater) =
     VB::class.java.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
 
 
 inline fun <reified VB : ViewBinding> bindView() = FragmentBindingDelegate(VB::class.java)
 
-inline fun <reified VB : ViewBinding> bindItemView(view: View) = lazy {
+inline fun <reified VB : ViewBinding> bindItemView(view: View) = lazy(LazyThreadSafetyMode.NONE) {
     VB::class.java.getMethod("bind",View::class.java).invoke(null, view) as VB
 }
 
