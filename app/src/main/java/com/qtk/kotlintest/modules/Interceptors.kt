@@ -76,7 +76,7 @@ fun commonInterceptor(): Interceptor {
 
 
         val jsonObject = JSONObject(resultString)
-        if (!jsonObject.has("code")) {
+        if (jsonObject.has("code")) {
             return@invoke response
         }
 

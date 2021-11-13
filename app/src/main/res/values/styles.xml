@@ -31,5 +31,10 @@
         <attr name="horizontal_spacing" format="dimension"/>
         <attr name="vertical_spacing" format="dimension"/>
     </declare-styleable>
+    
+    <style name="circleImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 
 </resources>

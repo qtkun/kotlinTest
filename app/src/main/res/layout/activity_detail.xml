@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             tools:ignore="ContentDescription"
             tools:src="@mipmap/ic_launcher"
-            imageUrl="@{viewModel.detail.iconUrl}"
+            imageUrl="@{viewModel.detail2.iconUrl}"
             placeholder="@{@drawable/ic_place_holder}"/>
 
         <TextView
@@ -32,21 +32,21 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             tools:text="Few clouds"
-            android:text="@{viewModel.detail.description}"/>
+            android:text="@{viewModel.detail2.description}"/>
 
         <TextView
             android:id="@+id/maxTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-            android:text="@{String.valueOf(viewModel.detail.high) + 'º'}" />
+            android:text="@{String.valueOf(viewModel.detail2.high) + 'º'}" />
 
         <TextView
             android:id="@+id/minTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-            android:text="@{String.valueOf(viewModel.detail.low) + 'º'}"/>
+            android:text="@{String.valueOf(viewModel.detail2.low) + 'º'}"/>
 
 
 

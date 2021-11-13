@@ -27,7 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,7 +46,10 @@
 
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/settings"/>
+            android:label="@string/settings"
+            android:icon="@drawable/ic_place_holder"
+            android:launchMode="singleInstance">
+        </activity>
 
         <activity
             android:name=".activities.FlutterActivity"/>
@@ -61,9 +65,17 @@
         <activity android:name=".activities.CameraActivity" />
         <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.CoordinatorLayoutActivity" />
+        <activity
+            android:name=".activities.ConversationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
+        <activity android:name=".activities.FlowActivity" />
 
         <service android:name="com.amap.api.location.APSService"
-            android:foregroundServiceType="location"/>
+            android:foregroundServiceType="location"
+            android:exported="false"/>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"

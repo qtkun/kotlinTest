@@ -6,29 +6,28 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.gson.Gson
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastDiffCallBack
 import com.qtk.kotlintest.adapter.ForecastListAdapter
-import com.qtk.kotlintest.adapter.ForecastListAdapter2
 import com.qtk.kotlintest.base.update
 import com.qtk.kotlintest.contant.BITMAP_ID
-import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
-import com.qtk.kotlintest.contant.locationPermission
 import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
 import com.qtk.kotlintest.method.IntentMethod
+import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.widget.TimeLineDecoration
 import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
@@ -38,6 +37,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
         binding.fab.setOnClickListener {
+            startActivity<FlowActivity>()
+        }
+        binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
         }
 //        coarseLocation.launch(locationPermission)

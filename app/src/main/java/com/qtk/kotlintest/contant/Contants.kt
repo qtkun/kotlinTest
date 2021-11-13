@@ -9,11 +9,18 @@ const val URL = "https://api.openweathermap.org/data/2.5/" +
         "forecast/daily?mode=json&units=metric&cnt=7"
 const val COMPLETE_URL = "$URL&APPID=$APP_ID&q="
 
+const val RONG_IM_URL = "https://api-cn.ronghub.com/"
+
 
 const val DATA_STORE_NAME = "KotlinTest"
 const val ZIP_CODE = "zipCode"
 const val DEFAULT_ZIP = 94043L
 const val BITMAP_ID = "bitmapId"
+const val IM_TOKEN = "im_token"
+const val IM_USER_ID = "im_user_id"
+const val IM_APP_KEY = "bmdehs6pbf3os"
+const val IM_APP_SECRET = "ciPCmLbj3II"
+const val REMOVE_CONVERSATION = "remove_conversation"
 
 val locationPermission = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION,

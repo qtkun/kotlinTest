@@ -1,9 +1,7 @@
 package com.qtk.kotlintest.view_model
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.qtk.kotlintest.App
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
@@ -12,14 +10,15 @@ import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.getData
 import com.qtk.kotlintest.extensions.toJson
 import com.squareup.moshi.Moshi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-class MainViewModel @ViewModelInject constructor(
-    val moshi: Moshi,
-    private val dataStore: DataStore<Preferences>
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    val moshi: Moshi
 ) : ViewModel() {
     private val forecast = MediatorLiveData<ForecastList>()
     val forecastList: LiveData<ForecastList> = forecast
@@ -36,7 +35,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun getZipCode(): LiveData<Long> =
-        dataStore.getData(ZIP_CODE, DEFAULT_ZIP).asLiveData(viewModelScope.coroutineContext)
+        App.instance.dataStore.getData(ZIP_CODE, DEFAULT_ZIP).asLiveData(viewModelScope.coroutineContext)
 
     suspend fun setData(zipCode: Long) {
         //协程对viewModel
@@ -65,7 +64,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun setData3(): LiveData<ForecastList> =
-        dataStore.getData(ZIP_CODE, DEFAULT_ZIP).map {
+        App.instance.dataStore.getData(ZIP_CODE, DEFAULT_ZIP).map {
             RequestForecastCommand(it).execute()
         }.asLiveData()
 

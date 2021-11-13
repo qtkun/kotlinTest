@@ -14,9 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import javax.inject.Inject
 
 @HiltViewModel
-class PokemonViewModel constructor(private val commonRepository: CommonRepository) : BaseViewModel() {
+class PokemonViewModel @Inject constructor(private val commonRepository: CommonRepository) : BaseViewModel() {
     val refresh = ObservableBoolean()
 
     fun getPokemon(): LiveData<PagingData<PokemonBean>> =

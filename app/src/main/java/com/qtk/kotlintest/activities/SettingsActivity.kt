@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.qtk.kotlintest.App
 import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
@@ -34,7 +35,6 @@ import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 
 class SettingsActivity : AppCompatActivity() {
-    private val dataStore by inject<DataStore<Preferences>>()
     var zipCode : Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
     private lateinit var popupWindow: PopupWindow
     private val popBinding: PopLayoutBinding by lazy { PopLayoutBinding.inflate(layoutInflater) }
@@ -47,7 +47,7 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         lifecycleScope.launchWhenCreated {
-            dataStore.getData(ZIP_CODE, DEFAULT_ZIP).collectLatest {
+            App.instance.dataStore.getData(ZIP_CODE, DEFAULT_ZIP).collectLatest {
                 binding.cityCode.setText(it.toString())
             }
         }
@@ -146,7 +146,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         lifecycleScope.launchWhenResumed {
-            dataStore.putData(ZIP_CODE, binding.cityCode.text.toString().toLong())
+            App.instance.dataStore.putData(ZIP_CODE, binding.cityCode.text.toString().toLong())
             zipCode = binding.cityCode.text.toString().toLong()
             val intent = Intent()
             intent.putExtra("toast", "我从原生页面回来了")

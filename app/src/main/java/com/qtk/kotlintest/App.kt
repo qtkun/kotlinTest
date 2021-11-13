@@ -1,5 +1,6 @@
 package com.qtk.kotlintest
 
+import android.app.ActivityManager
 import android.app.Application
 import android.content.ContentUris
 import android.content.ContentValues
@@ -7,10 +8,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Process.myPid
 import android.provider.MediaStore
 import android.util.Log
+import androidx.datastore.preferences.preferencesDataStore
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.qtk.kotlintest.contant.*
 import com.qtk.kotlintest.domain.data.room.AppDatabase
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.method.ToastMethod
@@ -18,10 +22,8 @@ import com.qtk.kotlintest.modules.appModule
 import com.qtk.kotlintest.modules.viewModelModule
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.room.entity.Location
-import com.qtk.kotlintest.utils.CalendarBean
-import com.qtk.kotlintest.utils.getMonthDate
-import com.qtk.kotlintest.utils.monthCount
-import com.qtk.kotlintest.utils.positionToDate
+import com.qtk.kotlintest.utils.*
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
@@ -38,7 +40,6 @@ import org.koin.core.context.startKoin
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 /**
@@ -51,6 +52,7 @@ class App : Application() {
         var instance: App by DelegatesExt.notNullSingleValue()
     }
 
+    val dataStore by preferencesDataStore(name = DATA_STORE_NAME)
     lateinit var fE1: FlutterEngine
     lateinit var fE2: FlutterEngine
     lateinit var fE3: FlutterEngine
@@ -66,6 +68,7 @@ class App : Application() {
     private val pokemonDao by inject<PokemonDao> ()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     val months = hashMapOf<Int, List<CalendarBean>>()
+    val moshi by inject<Moshi>()
 
     val mLocationClient by lazy {
         AMapLocationClient(applicationContext).apply {
@@ -100,21 +103,34 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        initFE()
-        ToastMethod.registerWith(this)
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            androidFileProperties()
-            modules(listOf(viewModelModule))
-            modules(listOf(appModule))
-        }
-        coroutineScope.launch {
-            for (i in 0 until monthCount()) {
-                months[i] = getMonthDate(positionToDate(i))
+        if (isMainProcess) {
+            initFE()
+            ToastMethod.registerWith(this)
+            startKoin {
+                androidLogger()
+                androidContext(this@App)
+                androidFileProperties()
+                modules(listOf(viewModelModule, appModule))
+            }
+            coroutineScope.launch {
+                for (i in 0 until monthCount()) {
+                    months[i] = getMonthDate(positionToDate(i))
+                }
             }
         }
     }
+
+    private val isMainProcess: Boolean
+        get() {
+            val pid = myPid()
+            val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+            for (appProcess in activityManager.runningAppProcesses) {
+                if (appProcess.pid == pid) {
+                    return applicationInfo.packageName == appProcess.processName
+                }
+            }
+            return false
+        }
 
     private fun initFE() {
         fE1 = initEngine("route?{\"desc\":\"点击按钮\"}", "test")

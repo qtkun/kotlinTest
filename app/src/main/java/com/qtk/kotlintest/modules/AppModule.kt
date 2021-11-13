@@ -1,7 +1,6 @@
 package com.qtk.kotlintest.modules
 
 import android.app.Application
-import androidx.datastore.preferences.createDataStore
 import androidx.room.Room
 import com.google.gson.Gson
 import com.qtk.kotlintest.api.Api
@@ -15,6 +14,7 @@ import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 //koin依赖注入viewModel初始化
 val viewModelModule = module {
-    viewModel { MainViewModel(get(), get()) }
+    viewModel { MainViewModel(get()) }
     viewModel { DetailViewModel() }
     viewModel { PokemonViewModel(get()) }
 }
@@ -50,7 +50,7 @@ val appModule = module {
             .client(get())
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(ApiResultCallAdapterFactory())
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(get()))
             .build()
     }
     single {
@@ -63,8 +63,7 @@ val appModule = module {
         get<Retrofit>().create(ApiService::class.java)
     }
     single { Gson() }
-    single { Moshi.Builder().build() }
-    single { get<Application>().createDataStore(name = DATA_STORE_NAME) }
+    single { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
     single {
         Room.databaseBuilder(get<Application>(), PokemonDataBase::class.java, "pokemon.db")
             .fallbackToDestructiveMigration().build()

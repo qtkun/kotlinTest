@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="String" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:paddingTop="13dp"
+        android:paddingEnd="13dp">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:text="@{item}"
+            android:textColor="#6A7181"
+            android:textSize="13sp"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/flow_item_bg"
+            tools:text="Dunk Low"/>
+
+        <ImageView
+            android:id="@+id/delete_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:paddingStart="10dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/ic_cancel"
+            android:layout_gravity="end|top"
+            app:tint="#C0C2CE" />
+
+    </FrameLayout>
+</layout>

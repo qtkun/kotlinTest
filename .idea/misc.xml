@@ -3,18 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/flow_item_bg.xml" value="0.3592592592592593" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.3398148148148148" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_camera.xml" value="0.3764102564102564" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_cancel.xml" value="0.3764102564102564" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_favorite.xml" value="0.3764102564102564" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_icon_delete.xml" value="0.22083333333333333" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/ic_icon_stranger.xml" value="0.22083333333333333" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/im_tips_bg.xml" value="0.3398148148148148" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/loading_bg.xml" value="0.3764102564102564" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/main_color_oval.xml" value="0.3764102564102564" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/drawable/test_anim.xml" value="0.38229166666666664" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_camera.xml" value="0.22604166666666667" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_conversation.xml" value="0.33" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_conversation_list.xml" value="0.36614583333333334" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_coordinator.xml" value="0.36614583333333334" />
-        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_detail.xml" value="0.36614583333333334" />
-        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
-        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_motion.xml" value="0.36614583333333334" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_detail.xml" value="0.33" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_flow_layout.xml" value="0.34057971014492755" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_motion.xml" value="0.3493670886075949" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/activity_viewpager2_nest.xml" value="0.36614583333333334" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/conversation_fragment.xml" value="0.36614583333333334" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/conversationlist_item.xml" value="0.3515625" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/fragment_pokemon_list.xml" value="0.17806484295845998" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/item_flow.xml" value="0.5466562986003111" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/item_pokemon.xml" value="0.2046875" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/pop_layout.xml" value="0.36614583333333334" />
+        <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/tips_message_layout.xml" value="0.31431159420289856" />
         <entry key="..\:/AndroidProject/kotlinTest/app/src/main/res/layout/toolbar.xml" value="0.36614583333333334" />
       </map>
     </option>
@@ -27,7 +43,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="android" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

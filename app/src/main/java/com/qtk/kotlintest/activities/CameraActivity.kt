@@ -14,7 +14,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.widget.CustomTouchListener
 import kotlinx.android.synthetic.main.activity_camera.*
 import org.jetbrains.anko.toast
 import java.io.File
@@ -100,60 +99,6 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
         }
     }
 
-    /**
-     * 初始化手势动作
-     */
-    private fun initCameraListener(){
-        val zoomState = camera!!.cameraInfo.zoomState
-        viewFinder.setCustomTouchListener(object : CustomTouchListener {
-            override fun zoom(delta: Float) {
-                zoomState.value?.let {
-                    val zoomRadio = it.zoomRatio
-                    camera!!.cameraControl.setZoomRatio(zoomRadio * delta)
-                }
-            }
-
-            override fun click(x: Float, y: Float) {
-                if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                    val factory = viewFinder.createMeteringPointFactory(cameraSelector)
-                    val point = factory.createPoint(x, y)
-                    val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
-                        .setAutoCancelDuration(3, TimeUnit.SECONDS).build()
-                    val future = camera!!.cameraControl.startFocusAndMetering(action)
-                    future.addListener(Runnable {
-                        try {
-                            /*val result = future.get()
-                            if (result.isFocusSuccessful) {
-                                focusView.onFocusSuccess()
-                            } else {
-                                focusView.onFocusFailed()
-                            }*/
-                        } catch (e: Exception) {
-
-                        }
-                    }, cameraExecutor)
-                }
-            }
-
-            override fun doubleClick(x: Float, y: Float) {
-                //双击放大缩小
-                zoomState.value?.let {
-                    val currentZoomRatio = it.zoomRatio
-                    if (currentZoomRatio > it.minZoomRatio) {
-                        camera!!.cameraControl.setLinearZoom(0f)
-                    } else {
-                        camera!!.cameraControl.setLinearZoom(0.5f)
-                    }
-                }
-            }
-
-            override fun longClick(x: Float, y: Float) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
     private fun startCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -161,7 +106,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             cameraProvider = cameraProviderFuture.get()//获取相机信息
             //预览配置
             preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(viewFinder.createSurfaceProvider())
+                it.setSurfaceProvider(viewFinder.surfaceProvider)
             }
             imageCapture = ImageCapture.Builder().
                 setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -190,7 +135,6 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             } catch (exc: Exception) {
                 Log.e("qtk", "Use case binding failed", exc)
             }
-            initCameraListener()
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -200,8 +144,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
     }
 
     private fun takePhoto() {
-        val file = File(
-            getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path +
+        val file = File(getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path +
                     "/CameraX" + SimpleDateFormat(
                 FILENAME_FORMAT,
                 Locale.CHINA
@@ -232,9 +175,23 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             ).format(System.currentTimeMillis()) + ".mp4"
         )
         //开始录像
-        videoCapture?.startRecording(file, Executors.newSingleThreadExecutor(), object :
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        videoCapture?.startRecording(VideoCapture.OutputFileOptions.Builder(file).build(), Executors.newSingleThreadExecutor(), object :
             VideoCapture.OnVideoSavedCallback {
-            override fun onVideoSaved(@NonNull file: File) {
+            override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
                 //保存视频成功回调，会在停止录制时被调用
                 lifecycleScope.launchWhenCreated {
                     toast(file.absolutePath)

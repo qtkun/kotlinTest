@@ -18,6 +18,7 @@ import com.qtk.kotlintest.extensions.drawable
 import com.qtk.kotlintest.extensions.textColor
 import com.qtk.kotlintest.extensions.toDateString
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.DateFormat
 
@@ -32,14 +33,15 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
     private val detailViewModel by viewModel<DetailViewModel>()
     private lateinit var textAnim: AnimatedVectorDrawable
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initLoading(this, detailViewModel)
-        detailViewModel.detail.observe(this, {
-            supportActionBar?.subtitle = it.date.toDateString(DateFormat.FULL)
-            bindWeather(it.high to binding.maxTemperature, it.low to binding.minTemperature)
-        })
+        lifecycleScope.launch {
+            detailViewModel.detail2.collectLatest {
+                supportActionBar?.subtitle = it.date.toDateString(DateFormat.FULL)
+                bindWeather(it.high to binding.maxTemperature, it.low to binding.minTemperature)
+            }
+        }
         initToolbar()
         toolbarTitle = intent.getStringExtra(CITY_NAME) ?: ""
         enableHomeAsUp {
@@ -49,7 +51,8 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
         textAnim = toolbar.logo as AnimatedVectorDrawable
 
         lifecycleScope.launchWhenResumed{
-            detailViewModel.getDetail(intent.getLongExtra(ID, -1))
+//            detailViewModel.getDetail(lifecycle, intent.getLongExtra(ID, -1))
+            detailViewModel.id.value = intent.getLongExtra(ID, -1)
 //            bindForecast(loadLots())
         }
     }

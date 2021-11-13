@@ -3,10 +3,7 @@ package com.qtk.kotlintest.extensions
 import android.annotation.SuppressLint
 import android.util.TypedValue
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.*
 import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -15,8 +12,8 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.and
 import okio.IOException
+import java.lang.StringBuilder
 import java.lang.reflect.Type
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -171,6 +168,18 @@ fun Moshi.createBody(map: Map<String, Any>): RequestBody {
     return toJsonMap(map).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 }
 
+fun random(): String {
+    val generator = Random()
+    val randomStringBuilder = StringBuilder()
+    val randomLength = generator.nextInt(6)
+    var tempChar: Char
+    for (i in 0 until randomLength) {
+        tempChar = (generator.nextInt(96) + 32).toChar()
+        randomStringBuilder.append(tempChar)
+    }
+    return randomStringBuilder.toString()
+}
+
 /**
  * dataStore取数据需设置默认值
  */
@@ -186,12 +195,12 @@ inline fun<reified T> DataStore<Preferences>.getData(name: String, default: T): 
         }
         .map {
             when(default){
-                is Long -> it[preferencesKey<Long>(name)] ?: default
-                is String -> it[preferencesKey<String>(name)] ?: default
-                is Int -> it[preferencesKey<Int>(name)] ?: default
-                is Float -> it[preferencesKey<Float>(name)] ?: default
-                is Double -> it[preferencesKey<Double>(name)] ?: default
-                is Boolean -> it[preferencesKey<Boolean>(name)] ?: default
+                is Long -> it[longPreferencesKey(name)] ?: default
+                is String -> it[stringPreferencesKey(name)] ?: default
+                is Int -> it[intPreferencesKey(name)] ?: default
+                is Float -> it[floatPreferencesKey(name)] ?: default
+                is Double -> it[doublePreferencesKey(name)] ?: default
+                is Boolean -> it[booleanPreferencesKey(name)] ?: default
                 else -> throw IllegalArgumentException(
                     "This type can be saved into Preferences")
             } as T
@@ -213,12 +222,12 @@ inline fun<reified T> DataStore<Preferences>.getData(name: String): Flow<T> {
         }
         .map {
             when(T::class){
-                Long::class -> it[preferencesKey<Long>(name)] ?: 0L
-                String::class -> it[preferencesKey<String>(name)] ?: ""
-                Int::class -> it[preferencesKey<Int>(name)] ?: 0
-                Float::class -> it[preferencesKey<Float>(name)] ?: 0f
-                Double::class -> it[preferencesKey<Double>(name)] ?: 0.0
-                Boolean::class -> it[preferencesKey<Boolean>(name)] ?: false
+                Long::class -> it[longPreferencesKey(name)] ?: 0L
+                String::class -> it[stringPreferencesKey(name)] ?: ""
+                Int::class -> it[intPreferencesKey(name)] ?: 0
+                Float::class -> it[floatPreferencesKey(name)] ?: 0f
+                Double::class -> it[doublePreferencesKey(name)] ?: 0.0
+                Boolean::class -> it[booleanPreferencesKey(name)] ?: false
                 else -> throw IllegalArgumentException(
                     "This type can be saved into Preferences")
             } as T
@@ -231,12 +240,12 @@ inline fun<reified T> DataStore<Preferences>.getData(name: String): Flow<T> {
 suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(this) {
     edit {
         when(value){
-            is Long -> it[preferencesKey<Long>(name)] = value as Long
-            is String -> it[preferencesKey<String>(name)] = value as String
-            is Int -> it[preferencesKey<Int>(name)] = value as Int
-            is Float -> it[preferencesKey<Float>(name)] = value as Float
-            is Double -> it[preferencesKey<Double>(name)] = value as Double
-            is Boolean -> it[preferencesKey<Boolean>(name)] = value as Boolean
+            is Long -> it[longPreferencesKey(name)] = value as Long
+            is String -> it[stringPreferencesKey(name)] = value as String
+            is Int -> it[intPreferencesKey(name)] = value as Int
+            is Float -> it[floatPreferencesKey(name)] = value as Float
+            is Double -> it[doublePreferencesKey(name)] = value as Double
+            is Boolean -> it[booleanPreferencesKey(name)] = value as Boolean
             else -> throw IllegalArgumentException(
                 "This type can be saved into Preferences")
         }

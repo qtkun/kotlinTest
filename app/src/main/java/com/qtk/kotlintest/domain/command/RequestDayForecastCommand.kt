@@ -15,7 +15,6 @@ class RequestDayForecastCommand(
 ) : Command<Forecast> {
     override suspend fun execute(): Forecast = withContext(Dispatchers.IO) {forecastProvider.requestForecast(id)}
 
-    @ExperimentalCoroutinesApi
     override suspend fun execute2(): Flow<Forecast> = flow {
         emit(forecastProvider.requestForecast(id))
     }.flowOn(Dispatchers.IO)

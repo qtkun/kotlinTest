@@ -1,30 +1,24 @@
 package com.qtk.kotlintest.modules
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.createDataStore
 import com.google.gson.Gson
 import com.qtk.kotlintest.contant.BASE_URL
-import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.*
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+@InstallIn(SingletonComponent::class)
 @Module
-@InstallIn(ApplicationComponent::class)
 class NetworkModule {
     @Singleton
     @Provides
@@ -67,9 +61,4 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().build()
-
-    @Singleton
-    @Provides
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.createDataStore(name = DATA_STORE_NAME)
 }
