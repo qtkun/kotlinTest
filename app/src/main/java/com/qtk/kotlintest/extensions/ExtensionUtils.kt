@@ -8,7 +8,12 @@ import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -19,6 +24,9 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by qtkun
@@ -53,7 +61,7 @@ fun Double.toPx(): Int {
     return (this * scale + 0.5f).toInt()
 }
 
-fun Double.toDp(): Int {
+fun Float.toDp(): Int {
     val scale: Float = App.instance.applicationContext.resources.displayMetrics.scaledDensity
     return (this / scale + 0.5f).toInt()
 }
@@ -69,7 +77,7 @@ fun String.binaryToHex(): String {
     return if (hex.length == 1) { "0x0${hex}" } else { "0x$hex" }
 }
 
-inline fun <reified T> T.dpToPx(): Float {
+inline fun <reified T> T.dp(): Float {
     val value = when (T::class) {
         Float::class -> this as Float
         Int::class -> this as Int
@@ -248,6 +256,32 @@ suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(thi
             is Boolean -> it[booleanPreferencesKey(name)] = value as Boolean
             else -> throw IllegalArgumentException(
                 "This type can be saved into Preferences")
+        }
+    }
+}
+suspend inline fun<reified T> DataStore<Preferences>.getDataAwait(name: String, default: T): T = suspendCoroutine { cont ->
+    CoroutineScope(Dispatchers.IO).launch {
+        data.catch {
+            if (it is IOException) {
+                it.printStackTrace()
+                emit(emptyPreferences())
+                cont.resumeWithException(it)
+            } else {
+                throw it
+            }
+        }.map {
+            when(T::class){
+                Long::class -> it[longPreferencesKey(name)] ?: default
+                String::class -> it[stringPreferencesKey(name)] ?: default
+                Int::class -> it[intPreferencesKey(name)] ?: default
+                Float::class -> it[floatPreferencesKey(name)] ?: default
+                Double::class -> it[doublePreferencesKey(name)] ?: default
+                Boolean::class -> it[booleanPreferencesKey(name)] ?: default
+                else -> throw IllegalArgumentException(
+                    "This type can be saved into Preferences")
+            } as T
+        }.collect {
+            cont.resume(it)
         }
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="320dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="5"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="3600"
+    android:previewImage="@drawable/ic_place_holder"
+    android:resizeMode="vertical|horizontal"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:widgetCategory="home_screen">
+</appwidget-provider>

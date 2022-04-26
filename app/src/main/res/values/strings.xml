@@ -8,6 +8,7 @@
     <string name="viewpager">Viewpager</string>
     <string name="cameraX">CameraX</string>
     <string name="map">Map</string>
+    <string name="video">Video</string>
     <string name="city_zipcode">City ZipCode</string>
     <string name="reload">重新加载</string>
     <string name="load_more">加载更多…</string>

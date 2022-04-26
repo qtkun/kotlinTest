@@ -43,4 +43,9 @@
         android:orderInCategory="100"
         android:title="@string/map"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_video"
+        android:orderInCategory="100"
+        android:title="@string/video"
+        app:showAsAction="never"/>
 </menu>

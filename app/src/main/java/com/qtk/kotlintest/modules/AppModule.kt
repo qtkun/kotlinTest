@@ -10,6 +10,7 @@ import com.qtk.kotlintest.paging.CommonRepository
 import com.qtk.kotlintest.retrofit.adapter.ApiResultCallAdapterFactory
 import com.qtk.kotlintest.retrofit.service.ApiService
 import com.qtk.kotlintest.room.PokemonDataBase
+import com.qtk.kotlintest.view_model.AnimTestViewModel
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.view_model.MainViewModel
@@ -27,6 +28,7 @@ val viewModelModule = module {
     viewModel { MainViewModel(get()) }
     viewModel { DetailViewModel() }
     viewModel { PokemonViewModel(get()) }
+    viewModel { AnimTestViewModel(get()) }
 }
 
 //koin依赖注入基础三方类初始化

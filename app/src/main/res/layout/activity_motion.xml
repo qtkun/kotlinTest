@@ -58,9 +58,11 @@
                 android:id="@+id/pokemon_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false" />
+                android:clipToPadding="false"
+                android:scrollbars="vertical"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

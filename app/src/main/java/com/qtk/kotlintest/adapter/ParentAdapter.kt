@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.HomeTabLayoutBinding
 import com.qtk.kotlintest.databinding.ItemNestBottomBinding
 import com.qtk.kotlintest.databinding.ItemNestTopBinding
 import com.qtk.kotlintest.extensions.bindItemView
+import com.qtk.kotlintest.extensions.dpToPx
 import com.qtk.kotlintest.extensions.drawable
+import com.qtk.kotlintest.extensions.getScreenWidth
 import org.jetbrains.anko.toast
 
 class ParentAdapter(val activity: AppCompatActivity): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -58,9 +59,13 @@ class TopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 class BottomViewHolder(activity: AppCompatActivity, itemView: View): RecyclerView.ViewHolder(itemView) {
     private val binding by bindItemView<ItemNestBottomBinding>(itemView)
     init {
-        binding.viewPager.adapter = ViewPagerAdapter(activity)
         with(binding){
             viewPager.adapter = ViewPagerAdapter(activity)
+            val padding = (activity.getScreenWidth() - 240.dpToPx()) / 2
+            (viewPager.getChildAt(0) as RecyclerView).apply {
+                clipToPadding = false
+                setPadding(padding, 0, padding, 0)
+            }
             TabLayoutMediator(
                 tabLayout, viewPager
             ) { tab, position -> // Styling each tab here

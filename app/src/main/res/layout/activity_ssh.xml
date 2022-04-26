@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="presenter"
+            type="com.qtk.kotlintest.activities.SSHActivity.SSHPresenter" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="连接"
+            singleClick="@{presenter::connect}"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/connect"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="私钥"
+            singleClick="@{presenter::getKey}"/>
+
+        <com.qtk.kotlintest.widget.SshEditText
+            android:id="@+id/command"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FF302533"
+            android:gravity="top|start"
+            android:imeOptions="actionGo"
+            android:inputType="textMultiLine"
+            android:minLines="10"
+            android:singleLine="true"
+            android:textColor="#FF66FA45"
+            android:textCursorDrawable="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/connect"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

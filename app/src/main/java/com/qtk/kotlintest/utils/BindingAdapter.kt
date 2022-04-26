@@ -80,3 +80,8 @@ fun bindSingleClick(view: View, singleClick: () -> Unit) {
         singleClick()
     }
 }
+
+@BindingAdapter("select")
+fun bindSelect(view: View, select: Boolean) {
+    view.isSelected = select
+}

@@ -42,13 +42,9 @@ abstract class BaseListAdapter<T : Any, VDB: ViewDataBinding>(
     val id: Int,
     diffUtil: DiffUtil.ItemCallback<T> = DiffUtilHelper.create()
 ) : ListAdapter<T, BaseViewHolder<T, VDB>>(diffUtil) {
-    override fun getItemCount(): Int = items?.size ?: 0
-
     override fun onBindViewHolder(holder: BaseViewHolder<T, VDB>, position: Int) {
-        items?.let {
-            holder.bindView(it[position])
-            onBind(holder.binding, it[position])
-        }
+        holder.bindView(getItem(position))
+        onBind(holder.binding, getItem(position))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VDB> {

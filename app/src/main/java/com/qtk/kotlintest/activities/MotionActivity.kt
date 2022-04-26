@@ -31,6 +31,7 @@ import com.qtk.kotlintest.widget.smoothScroll
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -63,13 +64,13 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.getPokemon().observe(this, {
-                lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                        adapter.submitData(it)
-                    }
+        mViewModel.getPokemon().observe(this) {
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    adapter.submitData(it)
                 }
-            })
+            }
+        }
         with(binding) {
             motion = MotionPresenter()
             pokemon = mViewModel
@@ -113,7 +114,10 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
         }
 
         fun scroll() {
-            (binding.pokemonList.layoutManager as LinearLayoutManager).smoothScroll(this@MotionActivity, 10)
+            startActivityResult(SettingsActivity::class.java) {
+                toast(it.getStringExtra("test") ?: "")
+            }
+//            (binding.pokemonList.layoutManager as LinearLayoutManager).smoothScroll(this@MotionActivity, 10)
         }
     }
 }

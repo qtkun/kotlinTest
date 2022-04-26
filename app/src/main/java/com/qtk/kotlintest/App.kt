@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.ContentUris
 import android.content.ContentValues
+import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -96,6 +97,13 @@ class App : Application() {
                     )
                 }
             }
+        }
+    }
+
+    private fun shortcuts() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            val shortcutManager = getSystemService(ShortcutManager::class.java)
+
         }
     }
 

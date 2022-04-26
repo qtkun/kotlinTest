@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.gson.Gson
+import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastDiffCallBack
 import com.qtk.kotlintest.adapter.ForecastListAdapter
@@ -33,7 +35,9 @@ import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -68,6 +72,9 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     val binding by inflate<ActivityMainBinding>()
 
+
+    private val etState = MutableStateFlow(10L)
+
     private val dialog: Dialog by lazy {
         Dialog(this).apply {
             setContentView(R.layout.loading_dialog)
@@ -99,6 +106,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         }
     }
 
+    var isEnd = false
+    var duration = 10
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +119,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
         binding.fab.setOnClickListener {
-            startActivity<FlowActivity>()
+            startActivity<RecyclerActivity>()
         }
         binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
@@ -151,6 +160,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     mViewModel.setData2(it)
                 }
             })*/
+        }
+        lifecycleScope.launch {
+            val code = App.instance.dataStore.getDataAwait(ZIP_CODE, DEFAULT_ZIP)
+            Log.i("qtkun", code.toString())
+            Log.i("qtkun", "finish")
         }
     }
 

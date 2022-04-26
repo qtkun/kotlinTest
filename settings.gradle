@@ -1,5 +1,6 @@
 rootProject.name='kotlinTest'
 include ':app'
+include ':LeonidsLib'
 setBinding(new Binding([gradle: this]))
 evaluate(new File(
   settingsDir,

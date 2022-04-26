@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.dp
 
 class SpaceDecoration(
         private val space: Int = 8.dpToPx(),

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="item"
+            type="com.qtk.kotlintest.domain.data.server.BrandBean" />
+    </data>
+
+    <TextView
+        android:id="@+id/name_tv"
+        android:layout_width="75dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@drawable/rv_color"
+        android:paddingHorizontal="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@{item.name}"
+        app:select="@{item.selected}"/>
+</layout>

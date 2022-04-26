@@ -34,6 +34,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -60,18 +63,41 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             />
-        <activity android:name=".activities.MotionActivity" />
+        <activity android:name=".activities.MotionActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.qtk.kotlintest.pokemon"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.ViewPagerActivity" />
         <activity android:name=".activities.CameraActivity" />
         <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.CoordinatorLayoutActivity" />
-        <activity
-            android:name=".activities.ConversationActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-        </activity>
-
         <activity android:name=".activities.FlowActivity" />
+        <activity android:name=".activities.SSHActivity" />
+        <activity android:name=".activities.RecyclerActivity" />
+        <activity android:name=".activities.VideoListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AnimTestActivity" />
+
+        <receiver android:name=".widget.TestAppWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.qtk.kotlintest.testWidget"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/test_appwidget_info" />
+        </receiver>
+
+        <!--<receiver android:name=".MuteHelper$MuteReceiver"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.media.STREAM_MUTE_CHANGED_ACTION" />
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>-->
 
         <service android:name="com.amap.api.location.APSService"
             android:foregroundServiceType="location"

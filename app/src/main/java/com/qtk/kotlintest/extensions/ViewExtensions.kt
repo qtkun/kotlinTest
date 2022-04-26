@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
+import androidx.core.widget.doOnTextChanged
 
 val View.ctx : Context
     get() = context
@@ -98,6 +100,41 @@ fun View.addAnimView(str: String, dur: Long = 300) {
             AnimatorSet().apply {
                 playTogether(translateX, translateY, alpha)
                 start()
+            }
+        }
+    }
+}
+
+fun EditText.limitDecimal(intLimit: Int = Int.MAX_VALUE, limit: Int = 2) {
+    doOnTextChanged { text, _, _, _ ->
+        text?.let {
+            //如果第一个数字为0，第二个不为点，就不允许输入
+            if (text.startsWith("0") && text.toString().trim().length > 1) {
+                if (text.substring(1, 2) != ".") {
+                    this.setText(text.subSequence(0, 1))
+                    setSelection(1)
+                    return@doOnTextChanged
+                }
+            }
+            //如果第一为点，直接显示0.
+            if (text.startsWith(".")) {
+                this.setText("0.")
+                setSelection(2)
+                return@doOnTextChanged
+            }
+            if (text.contains(".")) {
+                if (text.length - 1 - text.indexOf(".") > limit) {
+                    val s = text.subSequence(0, text.indexOf(".") + limit + 1)
+                    this.setText(s)
+                    setSelection(s.length)
+                }
+            }
+            val split = text.split(".")
+            if (split[0].length > intLimit) {
+                var s = split[0].substring(0, split[0].length - 1)
+                if (split.size > 1) s += ".${split[1]}"
+                this.setText(s)
+                setSelection(s.length)
             }
         }
     }

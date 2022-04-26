@@ -15,8 +15,6 @@ import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.contant.locationPermission
 import com.qtk.kotlintest.databinding.ActivityMapBinding
 import com.qtk.kotlintest.extensions.dpToPx
-import com.qtk.kotlintest.extensions.getTodayMillis
-import com.qtk.kotlintest.extensions.getYesterdayMillis
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.utils.map.PathSmoothTool
 import com.qtk.kotlintest.utils.map.saveScreenShot

@@ -1,8 +1,11 @@
 package com.qtk.kotlintest.base
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,6 +17,7 @@ import com.qtk.kotlintest.databinding.LoadingDialogBinding
 import com.qtk.kotlintest.extensions.toPx
 import dagger.hilt.android.AndroidEntryPoint
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 open class BaseActivity<VDB : ViewDataBinding>(@LayoutRes val contentLayoutId: Int) : AppCompatActivity() {
     lateinit var binding: VDB
@@ -32,10 +36,35 @@ open class BaseActivity<VDB : ViewDataBinding>(@LayoutRes val contentLayoutId: I
         }
     }
 
+    private val resultCallBacks = Stack<(Intent) -> Unit>()
+    private val activityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        result?.let {
+            if (it.resultCode == RESULT_OK) {
+                it.data?.let { data -> resultCallBacks.pop()?.invoke(data) }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, contentLayoutId)
         binding.lifecycleOwner = this
+    }
+
+    protected fun startActivityResult(
+        cls: Class<*>,
+        block: Intent.() -> Unit = {},
+        callback: (Intent) -> Unit
+    ){
+        resultCallBacks.push(callback)
+        activityForResult.launch(Intent(this, cls).apply(block))
+    }
+
+    protected fun finishForResult(
+        block: Intent.() -> Unit = {}
+    ) {
+        setResult(RESULT_OK, Intent().apply(block))
+        finish()
     }
 
     fun showLoading(tips: String = "正在加载...") {

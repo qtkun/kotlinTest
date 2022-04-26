@@ -30,11 +30,11 @@ class PokemonFragment : Fragment(R.layout.fragment_pokemon_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mViewModel.getPokemon()
-            .observe(viewLifecycleOwner, {
+            .observe(viewLifecycleOwner) {
                 lifecycleScope.launchWhenCreated {
                     adapter.submitData(it)
                 }
-            })
+            }
         with(binding) {
             pokemonList.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
                 adapter.retry()

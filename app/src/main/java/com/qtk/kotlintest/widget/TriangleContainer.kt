@@ -62,7 +62,9 @@ class TriangleContainer@JvmOverloads constructor(
             mRadius = it.getDimension(R.styleable.TriangleContainer_trv_radius, defaultRadius)
         }
         mPaint.color = mColor
-        mPaint.maskFilter = BlurMaskFilter(mShadowWidth, BlurMaskFilter.Blur.OUTER)
+        if (mShadowWidth > 0f) {
+            mPaint.maskFilter = BlurMaskFilter(mShadowWidth, BlurMaskFilter.Blur.OUTER)
+        }
         initWH()
     }
 
@@ -144,6 +146,33 @@ class TriangleContainer@JvmOverloads constructor(
         get() = mDirection
         set(value) {
             mDirection = value
+            initWH()
+            requestLayout()
+            invalidate()
+        }
+
+    var trvHeight: Float
+        get() = mTrvHeight
+        set(value) {
+            mTrvHeight = value
+            initWH()
+            requestLayout()
+            invalidate()
+        }
+
+    var trvWidth: Float
+        get() = mTrvWidth
+        set(value) {
+            mTrvWidth = value
+            initWH()
+            requestLayout()
+            invalidate()
+        }
+
+    var radius: Float
+        get() = mRadius
+        set(value) {
+            mRadius = value
             initWH()
             requestLayout()
             invalidate()

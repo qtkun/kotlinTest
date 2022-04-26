@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:padding="@dimen/spacing_xlarge">
+        android:padding="@dimen/spacing_xlarge"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/city_zipcode"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
 
         <com.qtk.kotlintest.widget.FlowLayout
             android:layout_width="match_parent"
@@ -56,6 +58,34 @@
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:text="test"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp">
+
+            <ImageView
+                android:id="@+id/avatar_iv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/default_avatar"/>
+
+            <ImageView
+                android:id="@+id/pendant_iv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintWidth_percent="1.34"
+                app:layout_constraintHeight_percent="1.34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_avatar_pendant"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
