@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.base.BaseViewHolder
@@ -25,5 +26,10 @@ class PokemonAdapter(private val itemClick : (PokemonBean, ItemPokemonBinding) -
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<PokemonBean, ItemPokemonBinding> {
         val binding: ItemPokemonBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_pokemon, parent, false)
         return BaseViewHolder(binding, itemClick)
+    }
+
+    override fun onViewRecycled(holder: BaseViewHolder<PokemonBean, ItemPokemonBinding>) {
+        super.onViewRecycled(holder)
+        Glide.with(holder.binding.root.context).clear(holder.binding.icon)
     }
 }

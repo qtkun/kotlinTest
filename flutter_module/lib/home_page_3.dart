@@ -54,11 +54,11 @@ class _MyHomePageState3 extends State<MyHomePage3> {
           },
           items: const [
             BottomNavigationBarItem(
-                title: Text('首页'),
+                label: '首页',
                 icon: Icon(Icons.home)
             ),
             BottomNavigationBarItem(
-                title: Text('我的'),
+                label: '我的',
                 icon: Icon(Icons.perm_identity)
             ),
           ],
