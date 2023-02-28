@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import java.lang.reflect.ParameterizedType
 
-abstract class AdapterProxy<T, VB: ViewBinding>: DiffUtil.ItemCallback<T>() {
+abstract class AdapterProxy<T, in VB: ViewBinding>: DiffUtil.ItemCallback<T>() {
     fun onCreateViewHolder(
         parent: ViewGroup,
         itemClick: ((Int) -> Unit)? = null,

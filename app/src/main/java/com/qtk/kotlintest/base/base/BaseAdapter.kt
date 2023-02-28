@@ -161,7 +161,7 @@ class MultiTypeListAdapter(
 
 }
 
-open class BaseViewHolder<VB: ViewBinding>(
+open class BaseViewHolder<out VB: ViewBinding>(
     private val _binding: VB
 ): RecyclerView.ViewHolder(_binding.root) {
     val binding: VB get() = _binding
