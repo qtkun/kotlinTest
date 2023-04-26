@@ -181,3 +181,41 @@
     public <init>(android.content.Context, android.util.AttributeSet);
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
+
+-keep class com.qtk.kotlintest.domain.data.db.CityForecast {*;}
+-keep class com.qtk.kotlintest.domain.data.db.DayForecast {*;}
+-keep class com.qtk.kotlintest.domain.data.room.CityForecastRoom {*;}
+-keep class com.qtk.kotlintest.domain.data.room.DayForecastRoom {*;}
+-keep class com.qtk.kotlintest.domain.data.server.ForecastResult {*;}
+-keep class com.qtk.kotlintest.domain.data.server.City {*;}
+-keep class com.qtk.kotlintest.domain.data.server.Coordinates {*;}
+-keep class com.qtk.kotlintest.domain.data.server.Forecast {*;}
+-keep class com.qtk.kotlintest.domain.data.server.Temperature {*;}
+-keep class com.qtk.kotlintest.domain.data.server.Weather {*;}
+-keep class com.qtk.kotlintest.domain.model.** {*;}
+-keep class com.qtk.kotlintest.retrofit.data.* {*;}
+-keep class **.*entity*.** {*;}
+-keepclassmembers class com.qtk.kotlintest.base.base.AdapterProxy {
+    public ** onCreateViewHolder(android.view.ViewGroup, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function1);
+}
+-keepclassmembers public class * extends androidx.viewbinding.ViewBinding {
+    public static * inflate(android.view.LayoutInflater);
+    public static * inflate(android.view.LayoutInflater,android.view.ViewGroup,boolean);
+    public static * inflate(android.view.LayoutInflater,android.view.ViewGroup,java.lang.Boolean);
+    public static * bind(android.view.View);
+}
+-keepclassmembers public class * extends androidx.lifecycle.ViewModelProvider {
+    public ** get(java.lang.Class);
+}
+-keepclassmembers public class * extends androidx.lifecycle.ViewModel {
+    public <init>(***);
+}
+-keep class androidx.recyclerview.widget.RecyclerView$ViewFlinger{*;}
+-keepclassmembers class androidx.recyclerview.widget.RecyclerView {
+    private androidx.recyclerview.widget.RecyclerView$ViewFlinger mViewFlinger;
+}
+-keep class android.widget.OverScroller$SplineOverScroller{*;}
+-keepclassmembers class android.widget.OverScroller {
+    public android.widget.OverScroller$SplineOverScroller mScrollerY;
+}
+-keep class androidx.viewpager2.widget.ViewPager2 {*;}

@@ -5,8 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.adapter.VideoAdapter
+import com.qtk.kotlintest.adapter.VideoAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
+import com.qtk.kotlintest.base.base.MultiAdapter
 import com.qtk.kotlintest.databinding.ActivityVideoListBinding
 import com.qtk.kotlintest.utils.onScrollPlayVideo
 import com.qtk.kotlintest.utils.onScrollReleaseAllVideos
@@ -16,14 +17,11 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager
 class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewModel>(), ToolbarManager {
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
-    private val adapter by lazy {
-        VideoAdapter(viewModel.videoList)
-    }
 
     override fun ActivityVideoListBinding.initViewBinding() {
         initToolbar()
         videoRv.apply {
-            adapter = this@VideoListActivity.adapter
+            adapter = MultiAdapter(mutableListOf(VideoAdapterProxy()), viewModel.videoList)
             layoutManager = LinearLayoutManager(this@VideoListActivity)
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -38,7 +36,7 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
                     if (dy == 0) {
                         onScrollPlayVideo(recyclerView, R.id.detail_player)
                     } else {
-                        onScrollReleaseAllVideos(recyclerView, this@VideoListActivity.adapter.TAG, 0.2f)
+                        onScrollReleaseAllVideos(recyclerView, VideoAdapterProxy.TAG, 0.2f)
                     }
                 }
             })

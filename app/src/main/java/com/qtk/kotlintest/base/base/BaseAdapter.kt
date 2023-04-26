@@ -1,85 +1,197 @@
 package com.qtk.kotlintest.base.base
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.qtk.kotlintest.R
+import java.lang.IllegalArgumentException
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseAdapter<T: Any, VB: ViewBinding>(
-    val items: MutableList<T>,
-    private val itemClick: ((Int, T) -> Unit)? = null,
-    private val itemLongClick: ((Int, T) -> Unit)? = null,
-): RecyclerView.Adapter<BaseViewHolder<T, VB>>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VB> {
-        val binding = (javaClass.genericSuperclass as ParameterizedType).let {
-            it.actualTypeArguments.let { types ->
-                (types[1] as Class<VB>).getMethod("inflate", LayoutInflater::class.java,
-                    ViewGroup::class.java, Boolean::class.java).invoke(null,
-                    LayoutInflater.from(parent.context), parent, false) as VB
+class MultiAdapter(
+    private val proxies: List<AdapterProxy<*, *>>,
+    private val items: List<Any> = listOf(),
+    private val itemClick: ((Int) -> Unit)? = null,
+    private val itemLongClick: ((Int) -> Unit)? = null,
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    companion object {
+        private const val TYPE_EMPTY = -2
+        private const val TYPE_UNKNOWN = -1
+    }
+
+    private var emptyView: View? = null
+
+    fun setEmptyView(view: View) {
+        emptyView = view
+    }
+
+    override fun getItemCount(): Int {
+        return if (items.isEmpty()) 1 else items.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (items.isEmpty()) TYPE_EMPTY else proxies.getProxyIndex(items[position])
+    }
+
+    val data: List<Any> get() = items
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_EMPTY) {
+            object : RecyclerView.ViewHolder(emptyView ?: LayoutInflater.from(parent.context).inflate(
+                R.layout.empty_view, parent, false)) {}
+        } else if(viewType != TYPE_UNKNOWN) {
+            proxies[viewType].onCreateViewHolder(parent, itemClick, itemLongClick)
+        } else {
+            throw IllegalArgumentException("缺少数据模型对应Proxy")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        getItemViewType(position).let { viewType ->
+            if (viewType != TYPE_EMPTY && viewType != TYPE_UNKNOWN) {
+                (proxies[getItemViewType(position)] as AdapterProxy<Any, ViewBinding>).onBindViewHolder(
+                    holder as BaseViewHolder<ViewBinding>, items[position], position)
             }
         }
-        return BaseViewHolder(binding, itemClick, itemLongClick)
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<T, VB>, position: Int) {
-        holder.bind(position, items[position]).bindView(position, items[position])
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        getItemViewType(position).let { viewType ->
+            if (viewType != TYPE_EMPTY && viewType != TYPE_UNKNOWN) {
+                (proxies[getItemViewType(position)] as AdapterProxy<Any, ViewBinding>).onBindViewHolder(
+                    holder as BaseViewHolder<ViewBinding>, items[position], position, payloads)
+            }
+        }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder.itemViewType != TYPE_EMPTY && holder.itemViewType != TYPE_UNKNOWN) {
+            (proxies[holder.itemViewType] as AdapterProxy<Any, ViewBinding>).onViewRecycled(holder as BaseViewHolder<ViewBinding>)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder.itemViewType != TYPE_EMPTY && holder.itemViewType != TYPE_UNKNOWN) {
+            (proxies[holder.itemViewType] as AdapterProxy<Any, ViewBinding>).onViewDetachedFromWindow(holder as BaseViewHolder<ViewBinding>)
+        }
+    }
 
     val lastIndex: Int
         get() = items.lastIndex
-
-    protected abstract fun VB.bindView(position: Int, item: T)
 }
 
-abstract class BaseListAdapter<T: Any, VB: ViewBinding>(
-    private val itemClick: ((Int, T) -> Unit)? = null,
-    private val itemLongClick: ((Int, T) -> Unit)? = null,
-    diffUtil: DiffUtil.ItemCallback<T> = DiffUtilHelper.create()
-): ListAdapter<T, BaseViewHolder<T, VB>>(diffUtil) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, VB> {
-        val binding = (javaClass.genericSuperclass as ParameterizedType).let {
-            it.actualTypeArguments.let { types ->
-                (types[1] as Class<VB>).getMethod("inflate", LayoutInflater::class.java,
-                    ViewGroup::class.java, Boolean::class.java).invoke(null,
-                    LayoutInflater.from(parent.context), parent, false) as VB
-            }
-        }
-        return BaseViewHolder(binding, itemClick, itemLongClick)
+class MultiTypeListAdapter(
+    private val proxies: List<AdapterProxy<*, *>>,
+    private val itemClick: ((Int) -> Unit)? = null,
+    private val itemLongClick: ((Int) -> Unit)? = null
+): ListAdapter<Any, RecyclerView.ViewHolder>(DiffCallback(proxies)) {
+    companion object {
+        private const val TYPE_EMPTY = -2
+        private const val TYPE_UNKNOWN = -1
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<T, VB>, position: Int) {
-        holder.bind(position, getItem(position)).bindView(position, getItem(position))
+    private var emptyView: View? = null
+
+    fun setEmptyView(view: View) {
+        emptyView = view
+    }
+
+    override fun getItemCount(): Int {
+        return if (currentList.isEmpty()) 1 else super.getItemCount()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (currentList.isEmpty()) TYPE_EMPTY else proxies.getProxyIndex(currentList[position])
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_EMPTY) {
+            object : RecyclerView.ViewHolder(emptyView ?: LayoutInflater.from(parent.context).inflate(
+                R.layout.empty_view, parent, false)) {}
+        } else if(viewType != -1) {
+            proxies[viewType].onCreateViewHolder(parent, itemClick, itemLongClick)
+        } else {
+            throw IllegalArgumentException("缺少数据模型对应Proxy")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        getItemViewType(position).let { viewType ->
+            if (viewType != TYPE_EMPTY && viewType != TYPE_UNKNOWN) {
+                (proxies[getItemViewType(position)] as AdapterProxy<Any, ViewBinding>).onBindViewHolder(
+                    holder as BaseViewHolder<ViewBinding>, getItem(position), position)
+            }
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        getItemViewType(position).let { viewType ->
+            if (viewType != TYPE_EMPTY && viewType != TYPE_UNKNOWN) {
+                (proxies[getItemViewType(position)] as AdapterProxy<Any, ViewBinding>).onBindViewHolder(
+                    holder as BaseViewHolder<ViewBinding>, getItem(position), position, payloads)
+            }
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder.itemViewType != TYPE_EMPTY && holder.itemViewType != TYPE_UNKNOWN) {
+            (proxies[holder.itemViewType] as AdapterProxy<Any, ViewBinding>).onViewRecycled(holder as BaseViewHolder<ViewBinding>)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder.itemViewType != TYPE_EMPTY && holder.itemViewType != TYPE_UNKNOWN) {
+            (proxies[holder.itemViewType] as AdapterProxy<Any, ViewBinding>).onViewDetachedFromWindow(holder as BaseViewHolder<ViewBinding>)
+        }
     }
 
     val lastIndex: Int
         get() = itemCount - 1
 
-    protected abstract fun VB.bindView(position: Int, item: T)
 }
 
-open class BaseViewHolder<T: Any, VB: ViewBinding>(
-    val binding: VB,
-    private val itemClick: ((Int, T) -> Unit)? = null,
-    private val itemLongClick: ((Int, T) -> Unit)? = null,
-): RecyclerView.ViewHolder(binding.root) {
-    open fun bind(position: Int, item: T): VB {
-        binding.root.setOnClickListener {
-            itemClick?.invoke(position, item)
+open class BaseViewHolder<out VB: ViewBinding>(
+    private val _binding: VB
+): RecyclerView.ViewHolder(_binding.root) {
+    val binding: VB get() = _binding
+}
+
+fun List<AdapterProxy<*, *>>.getProxyIndex(data: Any): Int = indexOfFirst {
+    // 如果AdapterProxy<T: Any, VB: ViewBinding>中的第一个类型参数T和数据的类型相同，则返回对应策略的索引
+    (it.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0].toString() == data.javaClass.toString()
+}
+
+internal class DiffCallback(
+    private val proxies: List<AdapterProxy<*, *>>,
+): DiffUtil.ItemCallback<Any>() {
+
+    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+        if (oldItem::class != newItem::class) {
+            return false
         }
-        binding.root.setOnLongClickListener {
-            itemLongClick?.let {
-                it.invoke(position, item)
-                return@setOnLongClickListener false
-            }
-            true
-        }
-        return binding
+        val proxy = proxies.getProxyIndex(oldItem)
+        return if (proxy >= 0) (proxies[proxy] as AdapterProxy<Any, ViewBinding>).areItemsTheSame(oldItem, newItem) else false
     }
+
+    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+        if (oldItem::class != newItem::class) {
+            return false
+        }
+        val proxy = proxies.getProxyIndex(oldItem)
+        return if (proxy >= 0) (proxies[proxy] as AdapterProxy<Any, ViewBinding>).areContentsTheSame(oldItem, newItem) else false
+    }
+
 }
 
 open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {

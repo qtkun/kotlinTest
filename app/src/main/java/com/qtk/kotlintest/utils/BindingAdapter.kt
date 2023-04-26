@@ -17,6 +17,9 @@ import com.qtk.kotlintest.extensions.toDateString
 
 @BindingAdapter("imageListUrl", "placeholder")
 fun loadListImage(view: ImageView, url: String, drawable: Drawable) {
+    if ((view.tag as? String) != url) {
+        Glide.with(view.context).clear(view)
+    }
     Glide.with(view.context)
         .load(url)
         .placeholder(drawable)
@@ -28,7 +31,7 @@ fun loadListImage(view: ImageView, url: String, drawable: Drawable) {
                 target: Target<Drawable>?,
                 isFirstResource: Boolean
             ): Boolean {
-                return false;
+                return false
             }
 
             override fun onResourceReady(
@@ -38,8 +41,8 @@ fun loadListImage(view: ImageView, url: String, drawable: Drawable) {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
             ): Boolean {
-                view.tag = url;
-                return false;
+                view.tag = url
+                return false
             }
         })
         .override(300, 300)

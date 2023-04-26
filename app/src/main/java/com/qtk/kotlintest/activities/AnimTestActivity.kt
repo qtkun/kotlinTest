@@ -7,11 +7,13 @@ import androidx.core.animation.doOnEnd
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.qtk.kotlintest.adapter.PokemonAdapter2
+import com.qtk.kotlintest.adapter.PokemonAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
+import com.qtk.kotlintest.base.base.MultiTypeListAdapter
 import com.qtk.kotlintest.databinding.ActivityAnimTestBinding
 import com.qtk.kotlintest.extensions.dpToPx
 import com.qtk.kotlintest.extensions.getScreenWidth
+import com.qtk.kotlintest.extensions.setOnItemClickListener
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.AnimTestViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,21 +27,23 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
     private val trvHeight = 15f.dpToPx()
 
     private val adapter by lazy {
-        PokemonAdapter2{ position, item ->
-            selectItem(position, item)
-        }
+        MultiTypeListAdapter(listOf(PokemonAdapterProxy()), itemClick = {
+            selectItem(it)
+        })
     }
 
     private val layoutManager by lazy {
         LinearLayoutManager(this@AnimTestActivity, RecyclerView.HORIZONTAL, false)
     }
 
-    private fun selectItem(position: Int, item: PokemonBean) {
+    private fun selectItem(position: Int) {
+        val item = adapter.currentList[position]
+        if (item !is PokemonBean) return
         for ((pos, data) in adapter.currentList.withIndex()) {
-            if (data.like && pos == position) return
+            if (data is PokemonBean && data.like && pos == position) return
         }
         adapter.currentList.forEach {
-            it.like = item.id == it.id
+            if (it is PokemonBean) it.like = item.id == it.id
         }
         adapter.notifyDataSetChanged()
 
@@ -113,12 +117,15 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
         rv.apply {
             adapter = this@AnimTestActivity.adapter
             layoutManager = this@AnimTestActivity.layoutManager
+            setOnItemClickListener { view, i ->
+                selectItem(i)
+            }
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         for ((pos, data) in this@AnimTestActivity.adapter.currentList.withIndex()) {
-                            if (data.like) {
+                            if (data is PokemonBean && data.like) {
                                 getItemCenterX(pos).let { x ->
                                     val offset = (binding.tc.radius + binding.tc.trvWidth).toInt()
                                     if (x == null || x < offset || x > getScreenWidth() - offset) {
@@ -151,8 +158,10 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
             viewModel.list
                 .filter { it.isNotEmpty() }
                 .collectLatest {
-                    adapter.submitList(it)
-                    selectItem(0, it[0])
+                    adapter.submitList(mutableListOf<Any>().apply {
+                        addAll(it)
+                    })
+                    selectItem(0)
                 }
         }
     }
