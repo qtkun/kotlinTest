@@ -26,4 +26,12 @@ class PokemonAdapter(private val itemClick : (PokemonBean, ItemPokemonBinding) -
         val binding: ItemPokemonBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_pokemon, parent, false)
         return BaseViewHolder(binding, itemClick)
     }
+
+    override fun onBindViewHolder(
+        holder: BaseViewHolder<PokemonBean, ItemPokemonBinding>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+    }
 }

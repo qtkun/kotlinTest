@@ -7,37 +7,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
-        android:layout_width="75dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/rv_bg"/>
-
-    <com.willy.ratingbar.ScaleRatingBar
-        android:id="@+id/simpleRatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/rv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srb_numStars="5"
-        app:srb_rating="0"
-        app:srb_starWidth="24dp"
-        app:srb_starHeight="24dp"
-        app:srb_starPadding="7.5dp"
-        app:srb_stepSize="1"
-        app:srb_isIndicator="false"
-        app:srb_clickable="true"
-        app:srb_scrollable="true"
-        app:srb_drawableFilled="@drawable/ic_rating_fill"
-        app:srb_drawableEmpty="@drawable/ic_rating_empty"
-        app:srb_clearRatingEnabled="false"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        app:layout_constraintStart_toEndOf="@+id/rv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simpleRatingBar"
-        android:background="@drawable/coupon_bg"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

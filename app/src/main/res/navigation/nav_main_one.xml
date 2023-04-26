@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main_one"
+    app:startDestination="@id/testOneFragment">
+
+    <fragment
+        android:id="@+id/testOneFragment"
+        android:name="com.qtk.kotlintest.fragment.TestOneFragment"
+        android:label="TestOneFragment" >
+        <action
+            android:id="@+id/action_testOneFragment_self"
+            app:destination="@id/testOneFragment" />
+    </fragment>
+</navigation>

@@ -7,10 +7,14 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.buildSpannedString
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +68,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     private val mViewModel by viewModel<MainViewModel>()
     private val gson by inject<Gson>()
 
+
     //hilt依赖注入
     /*@Inject
     lateinit var truck: Truck
@@ -108,10 +113,14 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     var isEnd = false
     var duration = 10
+
+    private val testLiveData =  MutableLiveData<Boolean>()
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initToolbar()
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
         binding.forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(binding.forecastList)
         binding.forecastList.adapter = adapter
@@ -129,6 +138,12 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     }
 
     private fun business() {
+        testLiveData.observe(this, Observer {
+            if (it) {
+                println("testLiveData: $it")
+                testLiveData.value = false
+            }
+        })
         lifecycleScope.launchWhenCreated {
             mViewModel.forecastList.observe(this@MainActivity, observer())
             mViewModel.loading.observe(this@MainActivity, Observer {
@@ -162,9 +177,15 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             })*/
         }
         lifecycleScope.launch {
-            val code = App.instance.dataStore.getDataAwait(ZIP_CODE, DEFAULT_ZIP)
+            val code = App.instance.dataStore.getDataAwait(lifecycleScope, ZIP_CODE, DEFAULT_ZIP)
             Log.i("qtkun", code.toString())
             Log.i("qtkun", "finish")
+        }
+        lifecycleScope.launch {
+            delay(5000L)
+            (0..99).asFlow().collect {
+                testLiveData.value = true
+            }
         }
     }
 
@@ -216,6 +237,15 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                         }
                     }
                 }
+                PICK_PICTURE -> {
+                    data?.let {
+                        it.clipData?.let { clipData ->
+                            for (i in 0 until clipData.itemCount) {
+                                println("uri:${clipData.getItemAt(i).uri}")
+                            }
+                        }
+                    }
+                }
             }
 
         }
@@ -258,5 +288,6 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
     companion object {
         const val PICK_FILE = 0x99
+        const val PICK_PICTURE = 0x101
     }
 }

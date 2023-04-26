@@ -1,33 +1,22 @@
 package com.qtk.kotlintest.activities
 
-import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
+import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.base.BaseActivity
-import com.qtk.kotlintest.base.initLoading
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
-import com.qtk.kotlintest.extensions.color
-import com.qtk.kotlintest.extensions.inflate
-import com.qtk.kotlintest.extensions.toJson
-import com.qtk.kotlintest.extensions.toJsonList
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
-import com.qtk.kotlintest.widget.StickyDecoration
-import com.qtk.kotlintest.widget.TimeLineDecoration
-import com.qtk.kotlintest.widget.smoothScroll
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,9 +27,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 @AndroidEntryPoint
 class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_motion) {
     //通过koin注入
-    private val mViewModel by viewModel<PokemonViewModel>()
+//    private val mViewModel by viewModel<PokemonViewModel>()
     //通过hilt注入
-//    private val mViewModel by lazy { ViewModelProvider(this).get(PokemonViewModel::class.java) }
+    private val mViewModel by lazy { ViewModelProvider(this)[PokemonViewModel::class.java] }
     private val adapter: PokemonAdapter = PokemonAdapter {pokemon, binding ->
         like(pokemon, binding)
     }

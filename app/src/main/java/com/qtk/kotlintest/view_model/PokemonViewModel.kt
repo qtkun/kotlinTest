@@ -1,7 +1,6 @@
 package com.qtk.kotlintest.view_model
 
 import androidx.databinding.ObservableBoolean
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class PokemonViewModel @Inject constructor(private val commonRepository: CommonRepository) : BaseViewModel() {
+class PokemonViewModel @Inject constructor( val commonRepository: CommonRepository) : BaseViewModel() {
     val refresh = ObservableBoolean()
 
     fun getPokemon(): LiveData<PagingData<PokemonBean>> =

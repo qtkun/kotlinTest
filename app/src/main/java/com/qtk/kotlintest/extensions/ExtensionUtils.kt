@@ -77,10 +77,11 @@ fun String.binaryToHex(): String {
     return if (hex.length == 1) { "0x0${hex}" } else { "0x$hex" }
 }
 
-inline fun <reified T> T.dp(): Float {
+inline fun <reified T> T.pxToDp(): Float {
     val value = when (T::class) {
         Float::class -> this as Float
         Int::class -> this as Int
+        Double::class -> this as Double
         else -> throw IllegalStateException("Type not supported")
     }
     return TypedValue.applyDimension(
@@ -89,10 +90,11 @@ inline fun <reified T> T.dp(): Float {
     )
 }
 
-inline fun <reified T> T.spToPx(): Float {
+inline fun <reified T> T.pxToSp(): Float {
     val value = when (T::class) {
         Float::class -> this as Float
         Int::class -> this as Int
+        Double::class -> this as Double
         else -> throw IllegalStateException("Type not supported")
     }
     return TypedValue.applyDimension(
@@ -259,9 +261,9 @@ suspend fun<T> DataStore<Preferences>.putData(name: String, value: T) = with(thi
         }
     }
 }
-suspend inline fun<reified T> DataStore<Preferences>.getDataAwait(name: String, default: T): T = suspendCoroutine { cont ->
-    CoroutineScope(Dispatchers.IO).launch {
-        data.catch {
+suspend inline fun<reified T> DataStore<Preferences>.getDataAwait(scope: CoroutineScope, name: String, default: T): T = suspendCoroutine { cont ->
+    scope.launch {
+        data.flowOn(Dispatchers.IO).catch {
             if (it is IOException) {
                 it.printStackTrace()
                 emit(emptyPreferences())

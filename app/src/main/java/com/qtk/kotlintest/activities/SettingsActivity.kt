@@ -7,14 +7,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
-import android.os.Environment
+import android.util.Log
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,9 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.VideoDecoder
-import com.bumptech.glide.request.RequestOptions
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
@@ -58,9 +56,7 @@ class SettingsActivity : AppCompatActivity() {
     private val permission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         if (it[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true &&
             it[Manifest.permission.READ_EXTERNAL_STORAGE] == true) {
-            getGifFirstFrame(
-                this,"https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.99shcs.com%2Fuploads%2Fimg1%2F20210525%2Fc226c08c8b82980c5b529205d2ca832b.jpg&refer=http%3A%2F%2Fwww.99shcs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648784459&t=2a63feed2182d9e0ebcd91965567ce10"
-                )
+
         }
     }
 
@@ -68,6 +64,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         lifecycleScope.launchWhenCreated {
             App.instance.dataStore.getData(ZIP_CODE, DEFAULT_ZIP).collectLatest {
                 binding.cityCode.setText(it.toString())
@@ -81,27 +78,44 @@ class SettingsActivity : AppCompatActivity() {
             isOutsideTouchable = true
             isFocusable = true
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-
-        with(popBinding) {
-            bingxiang.setOnClickListener {
-                toast("冰箱")
-                popupWindow.dismiss()
-            }
-
-            xiyiji.setOnClickListener {
-                toast("洗衣机")
-                popupWindow.dismiss()
-            }
-
-            caidian.setOnClickListener {
-                toast("彩电")
-                popupWindow.dismiss()
+            setOnDismissListener {
+                window?.apply {
+                    attributes = attributes.apply {
+                        alpha = 1f
+                    }
+                }
             }
         }
         with(binding) {
-            heart1.setOnClickListener {
+            val spanStr = buildSpannedString {
+                color(Color.RED) {
+                    scale(1.2f) {
+                        bold {
+                            append("City")
+                        }
+                    }
+                }
+                color(Color.GREEN) {
+                    scale(1.5f) {
+                        italic {
+                            append(" Code")
+                        }
+                    }
+                }
+                scale(0.5f) {
+                    superscript {
+                        append("TM")
+                    }
+                }
+            }
+            Log.i("qtkun", spanStr.toHtml())
+            cityTitle.text = spanStr
+
+            city_title.singleClick {
                 popBinding.tc.showTop(popupWindow, it)
+            }
+            heart1.setOnClickListener {
+                popBinding.tc.showLeft(popupWindow, it)
             }
             heart2.setOnClickListener {
                 popBinding.tc.showBottom(popupWindow, it)
@@ -194,6 +208,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        Log.i("qtk", "onBackPressed")
         lifecycleScope.launchWhenResumed {
             App.instance.dataStore.putData(ZIP_CODE, binding.cityCode.text.toString().toLong())
             zipCode = binding.cityCode.text.toString().toLong()

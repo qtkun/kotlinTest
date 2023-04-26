@@ -102,7 +102,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
     private fun startCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get()//获取相机信息
             //预览配置
             preview = Preview.Builder().build().also {

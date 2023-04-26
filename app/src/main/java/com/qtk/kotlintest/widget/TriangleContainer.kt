@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.widget
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -9,6 +10,9 @@ import android.widget.PopupWindow
 import androidx.core.content.res.use
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.getScreenHeight
+import com.qtk.kotlintest.extensions.getScreenWidth
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -169,6 +173,18 @@ class TriangleContainer@JvmOverloads constructor(
             invalidate()
         }
 
+    var shadowWidth: Float
+        get() = mShadowWidth
+        set(value) {
+            mShadowWidth = value
+            if (mShadowWidth > 0f) {
+                mPaint.maskFilter = BlurMaskFilter(mShadowWidth, BlurMaskFilter.Blur.OUTER)
+            }
+            initWH()
+            requestLayout()
+            invalidate()
+        }
+
     var radius: Float
         get() = mRadius
         set(value) {
@@ -263,8 +279,20 @@ fun TriangleContainer.showTop(popupWindow: PopupWindow, anchor: View) {
         makePopupWindowMeasureSpec(popupWindow.width),
         makePopupWindowMeasureSpec(popupWindow.height)
     )
-    popupWindow.showAsDropDown(anchor, bottomDx(anchor),
-        -popupWindow.contentView.measuredHeight - anchor.height)
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    val dx = bottomDx(anchor)
+    val offset = (anchor.context as Activity).getScreenWidth() - location[0] + abs(dx) - popupWindow.contentView.measuredWidth
+    if (offset < 0) {
+        padding += abs(offset).toFloat()
+    }
+    if (popupWindow.contentView.measuredHeight > location[1]) {
+        showBottom(popupWindow, anchor)
+    } else {
+        popupWindow.showAsDropDown(anchor, dx,
+            -popupWindow.contentView.measuredHeight - anchor.height
+        )
+    }
 }
 
 fun TriangleContainer.showBottom(popupWindow: PopupWindow, anchor: View) {
@@ -275,7 +303,19 @@ fun TriangleContainer.showBottom(popupWindow: PopupWindow, anchor: View) {
         makePopupWindowMeasureSpec(popupWindow.width),
         makePopupWindowMeasureSpec(popupWindow.height)
     )
-    popupWindow.showAsDropDown(anchor, topDx(popupWindow.contentView.measuredWidth, anchor), 0)
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    val dx = topDx(popupWindow.contentView.measuredWidth, anchor)
+    val offset = location[0] - abs(dx)
+    if (offset < 0) {
+        padding += abs(offset)
+    }
+    if ((popupWindow.contentView.measuredHeight + location[1] + anchor.measuredHeight) >
+        (anchor.context as Activity).getScreenHeight()) {
+        showTop(popupWindow, anchor)
+    } else {
+        popupWindow.showAsDropDown(anchor, dx, 0)
+    }
 }
 
 fun TriangleContainer.showLeft(popupWindow: PopupWindow, anchor: View) {
@@ -286,8 +326,16 @@ fun TriangleContainer.showLeft(popupWindow: PopupWindow, anchor: View) {
         makePopupWindowMeasureSpec(popupWindow.width),
         makePopupWindowMeasureSpec(popupWindow.height)
     )
-    popupWindow.showAsDropDown(anchor, -popupWindow.contentView.measuredWidth,
-        rightDy(popupWindow.contentView.measuredHeight, anchor))
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    if (popupWindow.contentView.measuredWidth > location[0]) {
+        showRight(popupWindow, anchor)
+    } else {
+        popupWindow.showAsDropDown(
+            anchor, -popupWindow.contentView.measuredWidth,
+            rightDy(popupWindow.contentView.measuredHeight, anchor)
+        )
+    }
 }
 
 fun TriangleContainer.showRight(popupWindow: PopupWindow, anchor: View) {
@@ -298,7 +346,14 @@ fun TriangleContainer.showRight(popupWindow: PopupWindow, anchor: View) {
         makePopupWindowMeasureSpec(popupWindow.width),
         makePopupWindowMeasureSpec(popupWindow.height)
     )
-    popupWindow.showAsDropDown(anchor, anchor.width, leftDy(anchor))
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    if ((popupWindow.contentView.measuredWidth + location[0] + anchor.measuredWidth) >
+        (anchor.context as Activity).getScreenWidth()) {
+        showLeft(popupWindow, anchor)
+    } else {
+        popupWindow.showAsDropDown(anchor, anchor.width, leftDy(anchor))
+    }
 }
 
 fun makePopupWindowMeasureSpec(measureSpec: Int): Int{

@@ -15,6 +15,10 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.widget.doOnTextChanged
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 
 val View.ctx : Context
     get() = context
@@ -48,6 +52,24 @@ fun View.singleClick(duration: Long = 500L, onClick: (View) -> Unit) {
             onClick(it)
         }
         lastClickTime = currentClickTime
+    }
+}
+fun View.clickFlow() = callbackFlow {
+    setOnClickListener { trySend(Unit) }
+    awaitClose { setOnClickListener(null) }
+}
+
+fun <T> Flow<T>.throttleFirst(thresholdMillis: Long): Flow<T> = flow {
+    var lastTime = 0L // 上次发射数据的时间
+    // 收集数据
+    collect { upstream ->
+        // 当前时间
+        val currentTime = System.currentTimeMillis()
+        // 时间差超过阈值则发送数据并记录时间
+        if (currentTime - lastTime > thresholdMillis) {
+            lastTime = currentTime
+            emit(upstream)
+        }
     }
 }
 
@@ -107,6 +129,7 @@ fun View.addAnimView(str: String, dur: Long = 300) {
 
 fun EditText.limitDecimal(intLimit: Int = Int.MAX_VALUE, limit: Int = 2) {
     doOnTextChanged { text, _, _, _ ->
+
         text?.let {
             //如果第一个数字为0，第二个不为点，就不允许输入
             if (text.startsWith("0") && text.toString().trim().length > 1) {

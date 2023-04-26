@@ -7,7 +7,6 @@ import android.graphics.Path
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.extensions.dpToPx
-import com.qtk.kotlintest.extensions.dp
 
 class BrandDecoration(
     private val radius: Float = 8f.dpToPx()

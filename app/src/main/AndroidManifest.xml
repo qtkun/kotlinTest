@@ -26,7 +26,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true" >
         <activity android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -51,7 +51,7 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/settings"
             android:icon="@drawable/ic_place_holder"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstancePerTask">
         </activity>
 
         <activity
@@ -80,6 +80,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.AnimTestActivity" />
+        <activity android:name=".activities.NavTestActivity" />
 
         <receiver android:name=".widget.TestAppWidgetProvider"
             android:exported="false">

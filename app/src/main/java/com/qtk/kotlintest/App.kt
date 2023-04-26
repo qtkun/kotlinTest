@@ -67,7 +67,7 @@ class App : Application() {
         }
     }
     private val pokemonDao by inject<PokemonDao> ()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    val coroutineScope = CoroutineScope(Dispatchers.IO)
     val months = hashMapOf<Int, List<CalendarBean>>()
     val moshi by inject<Moshi>()
 
@@ -112,6 +112,8 @@ class App : Application() {
         super.onCreate()
         instance = this
         if (isMainProcess) {
+            AMapLocationClient.updatePrivacyAgree(this, true)
+            AMapLocationClient.updatePrivacyShow(this, true, true)
             initFE()
             ToastMethod.registerWith(this)
             startKoin {
@@ -184,7 +186,7 @@ class App : Application() {
     }
 
     fun getUriName(uri: Uri): String {
-        val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+        val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.SIZE)
         contentResolver.query(uri, projection, null, null, null).use {
             it?.let {
                 if(it.moveToFirst()) {

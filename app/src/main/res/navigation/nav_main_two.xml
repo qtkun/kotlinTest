@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main_two"
+    app:startDestination="@id/testTwoFragment">
+
+    <fragment
+        android:id="@+id/testTwoFragment"
+        android:name="com.qtk.kotlintest.fragment.TestTwoFragment"
+        android:label="TestTwoFragment" >
+        <action
+            android:id="@+id/action_testTwoFragment_self"
+            app:destination="@id/testTwoFragment" />
+    </fragment>
+</navigation>

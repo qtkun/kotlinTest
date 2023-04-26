@@ -15,6 +15,7 @@
         android:clipChildren="false">
 
         <TextView
+            android:id="@+id/city_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/city_zipcode"/>
@@ -29,7 +30,7 @@
         <com.qtk.kotlintest.widget.FlowLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:horizontal_spacing="30dp"
+            app:horizontal_spacing="60dp"
             app:vertical_spacing="50dp">
             <com.qtk.kotlintest.widget.HeartView
                 android:id="@+id/heart1"
