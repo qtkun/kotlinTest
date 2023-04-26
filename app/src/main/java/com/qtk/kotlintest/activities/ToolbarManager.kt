@@ -56,7 +56,7 @@ interface ToolbarManager {
                 R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()
                 R.id.action_camera -> toolbar.ctx.startActivity<CameraActivity>()
                 R.id.action_map -> toolbar.ctx.startActivity<MapActivity>()
-                R.id.action_video -> toolbar.ctx.startActivity<CoordinatorLayoutActivity>()
+                R.id.action_video -> toolbar.ctx.startActivity<VideoListActivity>()
                 else -> App.instance.toast("Unknown option")
             }
             true

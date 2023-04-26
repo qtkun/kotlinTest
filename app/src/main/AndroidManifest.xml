@@ -75,7 +75,6 @@
         <activity android:name=".activities.CoordinatorLayoutActivity" />
         <activity android:name=".activities.FlowActivity" />
         <activity android:name=".activities.SSHActivity" />
-        <activity android:name=".activities.RecyclerActivity" />
         <activity android:name=".activities.VideoListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait"/>

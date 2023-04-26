@@ -23,7 +23,7 @@ class CoordinatorLayoutActivity: AppCompatActivity(R.layout.activity_coordinator
             transparent()
             light = true
         }
-        binding.homeViewpager.adapter = ViewPagerAdapter(this)
+        /*binding.homeViewpager.adapter = ViewPagerAdapter(this)
         with(binding) {
             homeViewpager.adapter = ViewPagerAdapter(this@CoordinatorLayoutActivity)
             TabLayoutMediator(
@@ -36,19 +36,19 @@ class CoordinatorLayoutActivity: AppCompatActivity(R.layout.activity_coordinator
                         binding.icon = drawable(R.drawable.workbench_selector)
                         binding.label = "工作台"
                         tab.customView = binding.root
-                        /*tab.icon = itemView.context.drawable(R.drawable.ic_workbench_selected)
-                        tab.text = "列表1"*/
+                        *//*tab.icon = itemView.context.drawable(R.drawable.ic_workbench_selected)
+                        tab.text = "列表1"*//*
                     }
                     1 -> {
                         binding.icon = drawable(R.drawable.customer_selector)
                         binding.label = "客户"
                         tab.customView = binding.root
-                        /*tab.icon = itemView.context.drawable(R.drawable.ic_customer_unselected)
-                        tab.text = "列表2"*/
+                        *//*tab.icon = itemView.context.drawable(R.drawable.ic_customer_unselected)
+                        tab.text = "列表2"*//*
                     }
                 }
             }.attach()
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+        }*/
     }
 }

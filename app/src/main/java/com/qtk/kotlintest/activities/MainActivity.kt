@@ -7,13 +7,10 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.buildSpannedString
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
@@ -128,7 +125,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
         binding.fab.setOnClickListener {
-            startActivity<RecyclerActivity>()
+            startActivity<NavTestActivity>()
         }
         binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
