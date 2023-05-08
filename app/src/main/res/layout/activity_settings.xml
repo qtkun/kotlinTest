@@ -89,6 +89,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ImageView
+            android:id="@+id/img_iv"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/shop_index_bg"
+            android:scaleType="centerCrop"/>
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,16 +4,20 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.graphics.Outline
+import android.graphics.Rect
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.widget.doOnTextChanged
@@ -214,5 +218,23 @@ fun RecyclerView.setOnItemClickListener(listener: (View, Int) -> Unit) {
         override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         }
     })
+}
+
+fun ImageView.rounded(radius: Float) {
+    outlineProvider = object: ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline?) {
+            outline?.setRoundRect(Rect(0, 0, view.width, view.height), radius)
+        }
+    }
+    clipToOutline = true
+}
+
+fun ImageView.circle() {
+    outlineProvider = object: ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline?) {
+            outline?.setOval(Rect(0, 0, view.width, view.height))
+        }
+    }
+    clipToOutline = true
 }
 

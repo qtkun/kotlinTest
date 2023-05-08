@@ -6,14 +6,22 @@ import java.lang.IllegalStateException
 import kotlin.reflect.KProperty
 
 class NotNullSingleValueVar<T> {
+    @Volatile
     private var value : T? = null
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return value ?: throw IllegalStateException("${property.name} not initialized")
     }
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        this.value = if (this.value == null) value
-        else throw IllegalStateException("${property.name} already initialized")
+        if (this.value == null) {
+            synchronized(this) {
+                if (this.value == null) {
+                    this.value = value
+                }
+            }
+        }
+        /*this.value = if (this.value == null) value
+        else throw IllegalStateException("${property.name} already initialized")*/
     }
 }
 
@@ -34,7 +42,7 @@ class Preference<T>(private val context: Context, val name: String, private val 
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> findPreference(name: String, default: T) : T  = with(preferences) {
+    private fun <T> findPreference(name: String, default: T) : T  = with(preferences) {
         val res : Any? = when (default){
             is Long -> getLong(name, default)
             is String -> getString(name, default)

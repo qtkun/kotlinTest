@@ -20,6 +20,7 @@ viewModel，LiveData，LifeCycle，Room，协程，
 -dontwarn com.squareup.okhttp.**            # 指定类不输出警告信息
 -dontusemixedcaseclassnames                 # 混淆后类型都为小写
 -dontskipnonpubliclibraryclasses            # 不跳过非公共的库的类
+-dontskipnonpubliclibraryclassmembers       # 不跳过非公共的库的类
 -printmapping mapping.txt                   # 生成原类名与混淆后类名的映射文件mapping.txt
 -useuniqueclassmembernames                  # 把混淆类中的方法名也混淆
 -allowaccessmodification                    # 优化时允许访问并修改有修饰符的类及类的成员

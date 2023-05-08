@@ -65,6 +65,16 @@
     void onCancel(**);
 }
 
+-optimizationpasses 5
+-dontpreverify
+-dontoptimize
+-verbose
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*,InnerClasses,Signature,EnclosingMethod
+
 # OkHttp3
 -keep class com.squareup.okhttp3.** { *;}
 -keep,includedescriptorclasses class okhttp3.** { *; }

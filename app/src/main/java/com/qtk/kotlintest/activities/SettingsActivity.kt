@@ -6,11 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
@@ -62,8 +66,8 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(binding.toolbar.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        setSupportActionBar(binding.toolbar.toolbar)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         lifecycleScope.launchWhenCreated {
             App.instance.dataStore.getData(ZIP_CODE, DEFAULT_ZIP).collectLatest {
@@ -108,6 +112,8 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            imgIv.circle()
             Log.i("qtkun", spanStr.toHtml())
             cityTitle.text = spanStr
 

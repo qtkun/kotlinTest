@@ -37,12 +37,15 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            shrinkResources false
             zipAlignEnabled false
             signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
             minifyEnabled true
-            zipAlignEnabled false
+            shrinkResources true
+            zipAlignEnabled true
             signingConfig signingConfigs.release
             ndk {
                 abiFilters 'arm64-v8a', 'x86_64'
@@ -83,22 +86,30 @@ android {
     }
 }
 
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force "androidx.activity:activity:1.5.0"
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.4.0-rc01'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    implementation project(path: ':flutter')
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
-    implementation 'androidx.room:room-runtime:2.4.1'
-    implementation 'androidx.paging:paging-runtime-ktx:3.1.0-rc01'
+    implementation 'androidx.appcompat:appcompat:1.6.0-alpha01'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+//    implementation project(path: ':flutter')
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.room:room-runtime:2.4.2'
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     implementation 'org.ligboy.retrofit2:converter-fastjson:2.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation project(path: ':LeonidsLib')
     implementation files('libs/jsch-0.1.55.jar')
     //room
