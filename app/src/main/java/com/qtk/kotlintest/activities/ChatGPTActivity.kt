@@ -48,6 +48,7 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
                 lastView?.getLocationOnScreen(location)
                 val dy = rect.bottom - location[1] - (lastView?.height ?: 0) - 60.dp
                 if (dy < 0f) {
+                    binding.rvChat.stopScroll()
                     binding.rvChat.scrollBy(0, -dy)
 //                    linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, dy)
                 }
