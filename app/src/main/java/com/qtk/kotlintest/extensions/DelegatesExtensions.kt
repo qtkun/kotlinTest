@@ -2,7 +2,18 @@ package com.qtk.kotlintest.extensions
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.IllegalStateException
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class NotNullSingleValueVar<T> {
@@ -64,4 +75,41 @@ class Preference<T>(private val context: Context, val name: String, private val 
             else -> throw IllegalArgumentException("This type can't be saved into Preferences")
         }.apply()
     }
+}
+
+interface IDataStoreOwner {
+    val context: Context
+    val storeName: String
+    val scope: CoroutineScope
+    val dataStore: DataStore<Preferences>
+}
+
+open class DataStoreOwner(override val context: Context, override val storeName: String): IDataStoreOwner {
+    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    override val dataStore: DataStore<Preferences> by lazy {
+        PreferenceDataStoreFactory.create(
+            corruptionHandler = null,
+            migrations = listOf(),
+            scope = scope
+        ) {
+            context.preferencesDataStoreFile(storeName)
+        }
+    }
+}
+
+fun <T>storeData(default: T) = DataStoreProperty(default)
+
+class DataStoreProperty<T>(private val default: T): ReadWriteProperty<IDataStoreOwner, T> {
+    override fun getValue(thisRef: IDataStoreOwner, property: KProperty<*>): T {
+        return runBlocking {
+            thisRef.dataStore.getData(property.name, default).first()
+        }
+    }
+
+    override fun setValue(thisRef: IDataStoreOwner, property: KProperty<*>, value: T) {
+        thisRef.scope.launch {
+            thisRef.dataStore.putData(property.name, value)
+        }
+    }
+
 }

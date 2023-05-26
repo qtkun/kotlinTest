@@ -1,3 +1,4 @@
+/*
 package com.qtk.kotlintest.method
 
 import android.app.Activity
@@ -50,4 +51,4 @@ class IntentMethod(private val activity: Activity) : MethodChannel.MethodCallHan
             }
         }
     }
-}
+}*/

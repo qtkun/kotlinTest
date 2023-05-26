@@ -23,6 +23,7 @@ import androidx.core.text.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,7 @@ class SettingsActivity : AppCompatActivity() {
 
         }
     }
+    private var progress = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +115,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            imgIv.circle()
             Log.i("qtkun", spanStr.toHtml())
             cityTitle.text = spanStr
 
@@ -160,28 +161,36 @@ class SettingsActivity : AppCompatActivity() {
                 etState.value += 1L
                 true
             }
+            button.setOnClickListener {
+                if (progress == 100f) {
+                    progress = 0f
+                    progressBar.setProgress(progress, false)
+                } else {
+                    progress += 10f
+                    progressBar.setProgress(progress)
+                }
+            }
         }
         permission.launch(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
         /*AnimatorInflater.loadAnimator(this, R.animator.scale).apply {
             setTarget(binding.heart1)
             start()
         }*/
-        lifecycleScope.launchWhenResumed {
-            etState
-                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .sample(100L)
-                .filter {
-                    it != 0L
+        etState
+            .sample(100L)
+            .filter {
+                it != 0L
+            }
+            .distinctUntilChanged { old, new ->
+                old == new
+            }
+            .flowOn(Dispatchers.IO)
+            .launchAndCollectIn(this, Lifecycle.State.STARTED) {
+                cityCode.setText(it.toString())
+                if (binding.button.isPressed) {
+                    etState.value += 1L
                 }
-                .flowOn(Dispatchers.IO)
-                .collectLatest {
-                    cityCode.setText(it.toString())
-                    if (binding.button.isPressed) {
-                        etState.value += 1L
-                    }
-//                    dataStore.putData(ZIP_CODE, it.toLong())
-                }
-        }
+            }
     }
 
     fun getGifFirstFrame(context: Context, url: String?) {

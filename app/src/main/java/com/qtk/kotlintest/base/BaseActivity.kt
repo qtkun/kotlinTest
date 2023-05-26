@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +14,7 @@ import com.qtk.kotlintest.BR
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.LoadingDialogBinding
 import com.qtk.kotlintest.extensions.toPx
-import dagger.hilt.android.AndroidEntryPoint
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.Stack
 
 open class BaseActivity<VDB : ViewDataBinding>(@LayoutRes val contentLayoutId: Int) : AppCompatActivity() {
     lateinit var binding: VDB

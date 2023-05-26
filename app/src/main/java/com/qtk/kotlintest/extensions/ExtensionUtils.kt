@@ -1,19 +1,20 @@
 package com.qtk.kotlintest.extensions
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.preferencesDataStore
 import com.qtk.kotlintest.App
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -77,36 +78,10 @@ fun String.binaryToHex(): String {
     return if (hex.length == 1) { "0x0${hex}" } else { "0x$hex" }
 }
 
-inline fun <reified T> T.pxToDp(): Float {
-    val value = when (T::class) {
-        Float::class -> this as Float
-        Int::class -> this as Int
-        Double::class -> this as Double
-        else -> throw IllegalStateException("Type not supported")
-    }
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        value.toFloat(), App.instance.applicationContext.resources.displayMetrics
-    )
-}
-
-inline fun <reified T> T.pxToSp(): Float {
-    val value = when (T::class) {
-        Float::class -> this as Float
-        Int::class -> this as Int
-        Double::class -> this as Double
-        else -> throw IllegalStateException("Type not supported")
-    }
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_SP,
-        value.toFloat(), App.instance.applicationContext.resources.displayMetrics
-    )
-}
-
-inline fun <reified T : Number> T.dpToPx(): T {
+inline fun <reified T : Number> T.asDp(): T {
     val px = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(), App.instance.applicationContext.resources.displayMetrics
+        this.toFloat(), Resources.getSystem().displayMetrics
     )
     return when (T::class) {
         Float::class -> px as T
@@ -116,10 +91,10 @@ inline fun <reified T : Number> T.dpToPx(): T {
     }
 }
 
-inline fun <reified T : Number> T.spToPx(): T {
+inline fun <reified T : Number> T.asSp(): T {
     val px = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
-        this.toFloat(), App.instance.applicationContext.resources.displayMetrics
+        this.toFloat(), Resources.getSystem().displayMetrics
     )
     return when (T::class) {
         Float::class -> px as T
@@ -128,6 +103,19 @@ inline fun <reified T : Number> T.spToPx(): T {
         else -> throw IllegalStateException("Type not supported")
     }
 }
+val Int.dp get() = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_DIP,
+    this.toFloat(), Resources.getSystem().displayMetrics
+).toInt()
+
+val Int.sp get() = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP,
+    this.toFloat(), Resources.getSystem().displayMetrics
+).toInt()
+
+val Int.dpToPx get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+val Int.spToPx get() = (this / Resources.getSystem().displayMetrics.scaledDensity).toInt()
 
 inline fun <reified T> Moshi.buildJsonAdapter(): JsonAdapter<T> = this.adapter(T::class.java)
 
@@ -178,6 +166,10 @@ fun Moshi.createBody(map: Map<String, Any>): RequestBody {
     return toJsonMap(map).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 }
 
+
+
+val Context.store by preferencesDataStore(name = "sd")
+
 fun random(): String {
     val generator = Random()
     val randomStringBuilder = StringBuilder()
@@ -193,7 +185,7 @@ fun random(): String {
 /**
  * dataStore取数据需设置默认值
  */
-inline fun<reified T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
+fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
     return this.data
         .catch {
             if (it is IOException) {
@@ -243,6 +235,7 @@ inline fun<reified T> DataStore<Preferences>.getData(name: String): Flow<T> {
             } as T
         }
 }
+
 
 /**
  * dataStore存数据

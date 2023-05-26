@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.retrofit.service
 
 import com.qtk.kotlintest.retrofit.data.*
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiService {

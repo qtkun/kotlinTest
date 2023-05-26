@@ -31,8 +31,8 @@
         <com.qtk.kotlintest.widget.FlowLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:horizontal_spacing="60dp"
-            app:vertical_spacing="50dp">
+            app:horizontal_spacing="10dp"
+            app:vertical_spacing="10dp">
             <com.qtk.kotlintest.widget.HeartView
                 android:id="@+id/heart1"
                 android:layout_width="wrap_content"
@@ -89,12 +89,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/img_iv"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/shop_index_bg"
-            android:scaleType="centerCrop"/>
+        <com.qtk.kotlintest.widget.CircularProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:radius="20dp"
+            app:strokeWidth="4dp"
+            app:textSize="12sp"/>
 
     </LinearLayout>
 

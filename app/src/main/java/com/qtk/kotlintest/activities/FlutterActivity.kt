@@ -1,3 +1,4 @@
+/*
 package com.qtk.kotlintest.activities
 
 import android.content.Intent
@@ -69,4 +70,4 @@ class FlutterActivity : AppCompatActivity(R.layout.activity_flutter) {
         super.onTrimMemory(level)
         flutterFragment.onTrimMemory(level)
     }
-}
+}*/

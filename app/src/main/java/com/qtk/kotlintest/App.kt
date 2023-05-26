@@ -1,5 +1,9 @@
 package com.qtk.kotlintest
 
+//import com.qtk.kotlintest.method.ToastMethod
+//import io.flutter.embedding.engine.FlutterEngine
+//import io.flutter.embedding.engine.FlutterEngineCache
+//import io.flutter.embedding.engine.dart.DartExecutor
 import android.app.ActivityManager
 import android.app.Application
 import android.content.ContentUris
@@ -15,32 +19,32 @@ import android.util.Log
 import androidx.datastore.preferences.preferencesDataStore
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
-import com.qtk.kotlintest.contant.*
-import com.qtk.kotlintest.domain.data.room.AppDatabase
+import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.extensions.DelegatesExt
-import com.qtk.kotlintest.method.ToastMethod
-import com.qtk.kotlintest.modules.appModule
-import com.qtk.kotlintest.modules.viewModelModule
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.room.entity.Location
-import com.qtk.kotlintest.utils.*
+import com.qtk.kotlintest.utils.CalendarBean
+import com.qtk.kotlintest.utils.getMonthDate
+import com.qtk.kotlintest.utils.monthCount
+import com.qtk.kotlintest.utils.positionToDate
 import com.squareup.moshi.Moshi
+import com.tencent.soter.wrapper.SoterWrapperApi
+import com.tencent.soter.wrapper.wrap_task.InitializeParam
 import dagger.hilt.android.HiltAndroidApp
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.FlutterEngineCache
-import io.flutter.embedding.engine.dart.DartExecutor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
 import okio.source
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidFileProperties
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import java.io.*
+import java.io.File
+import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import javax.inject.Inject
 import kotlin.concurrent.thread
 
 /**
@@ -54,9 +58,9 @@ class App : Application() {
     }
 
     val dataStore by preferencesDataStore(name = DATA_STORE_NAME)
-    lateinit var fE1: FlutterEngine
-    lateinit var fE2: FlutterEngine
-    lateinit var fE3: FlutterEngine
+//    lateinit var fE1: FlutterEngine
+//    lateinit var fE2: FlutterEngine
+//    lateinit var fE3: FlutterEngine
     private val mLocationOption by lazy {
         AMapLocationClientOption().apply {
             locationPurpose = AMapLocationClientOption.AMapLocationPurpose.Transport
@@ -66,10 +70,12 @@ class App : Application() {
             httpTimeOut = 30000
         }
     }
-    private val pokemonDao by inject<PokemonDao> ()
+    @Inject
+    lateinit var pokemonDao: PokemonDao
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     val months = hashMapOf<Int, List<CalendarBean>>()
-    val moshi by inject<Moshi>()
+    @Inject
+    lateinit var moshi: Moshi
 
     val mLocationClient by lazy {
         AMapLocationClient(applicationContext).apply {
@@ -115,18 +121,17 @@ class App : Application() {
             AMapLocationClient.updatePrivacyAgree(this, true)
             AMapLocationClient.updatePrivacyShow(this, true, true)
             initFE()
-            ToastMethod.registerWith(this)
-            startKoin {
-                androidLogger()
-                androidContext(this@App)
-                androidFileProperties()
-                modules(listOf(viewModelModule, appModule))
-            }
+//            ToastMethod.registerWith(this)
+
             coroutineScope.launch {
                 for (i in 0 until monthCount()) {
                     months[i] = getMonthDate(positionToDate(i))
                 }
             }
+            val params = InitializeParam.InitializeParamBuilder()
+                .setScenes(0)
+                .build()
+            SoterWrapperApi.init(this, {}, params)
         }
     }
 
@@ -143,24 +148,24 @@ class App : Application() {
         }
 
     private fun initFE() {
-        fE1 = initEngine("route?{\"desc\":\"点击按钮\"}", "test")
-        fE2 = initEngine("route2", "test2")
-        fE3 = initEngine("route3", "test3")
+//        fE1 = initEngine("route?{\"desc\":\"点击按钮\"}", "test")
+//        fE2 = initEngine("route2", "test2")
+//        fE3 = initEngine("route3", "test3")
     }
 
-    private fun initEngine(route: String, engineId: String): FlutterEngine {
+   /* private fun initEngine(route: String, engineId: String): FlutterEngine {
         val fE = FlutterEngine(this)
         //可设置初始路由
         fE.navigationChannel.setInitialRoute(route)
         fE.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
         FlutterEngineCache.getInstance().put(engineId, fE)
         return fE
-    }
+    }*/
 
     override fun onTerminate() {
-        AppDatabase.destroyInstance()
         coroutineScope.cancel()
         mLocationClient.stopLocation()
+        SoterWrapperApi.release()
         super.onTerminate()
     }
 

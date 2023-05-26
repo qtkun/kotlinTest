@@ -1,6 +1,8 @@
-package com.qtk.kotlintest.domain.data.room
+package com.qtk.kotlintest.room
 
 import androidx.room.*
+import com.qtk.kotlintest.domain.data.room.CityForecastRoom
+import com.qtk.kotlintest.domain.data.room.DayForecastRoom
 
 @Dao
 interface ForecastDao {

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.content.res.use
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 import com.qtk.kotlintest.extensions.getScreenHeight
 import com.qtk.kotlintest.extensions.getScreenWidth
 import kotlin.math.abs
@@ -31,11 +31,11 @@ class TriangleContainer@JvmOverloads constructor(
 
     private var defaultWidth by Delegates.notNull<Int>()
     private var defaultHeight by Delegates.notNull<Int>()
-    private val defaultShadowWidth = 8f.dpToPx()
-    private val defaultPadding = 20f.dpToPx()
-    private val defaultTrvWidth = 14f.dpToPx()
-    private val defaultTrvHeight = 6f.dpToPx()
-    private val defaultRadius = 4f.dpToPx()
+    private val defaultShadowWidth = 8f.asDp()
+    private val defaultPadding = 20f.asDp()
+    private val defaultTrvWidth = 14f.asDp()
+    private val defaultTrvHeight = 6f.asDp()
+    private val defaultRadius = 4f.asDp()
     private var mColor by Delegates.notNull<Int>()
     private var mDirection by Delegates.notNull<Int>()
     private var mShadowWidth by Delegates.notNull<Float>()

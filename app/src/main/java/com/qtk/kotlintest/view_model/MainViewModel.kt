@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.view_model
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
@@ -9,6 +10,8 @@ import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.getData
 import com.qtk.kotlintest.extensions.toJson
+import com.qtk.kotlintest.paging.CommonRepository
+import com.qtk.kotlintest.retrofit.data.ApiResult
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val moshi: Moshi
+    private val moshi: Moshi,
+    private val commonRepository: CommonRepository
 ) : ViewModel() {
     private val forecast = MediatorLiveData<ForecastList>()
     val forecastList: LiveData<ForecastList> = forecast
@@ -52,6 +56,7 @@ class MainViewModel @Inject constructor(
             }
             .catch {
                 //TODO 捕获上游出现的异常
+                it.printStackTrace()
                 _loading.postValue(false)
             }
             .onCompletion {
@@ -70,5 +75,14 @@ class MainViewModel @Inject constructor(
 
     fun getItem(position: Int): Forecast {
         return forecast.value!![position]
+    }
+
+    fun sendMessageToChatGPT(content: String) = viewModelScope.launch {
+        commonRepository.sendMessageToChatGPT(content)
+            .collect {
+                if (it is ApiResult.Success) {
+                    Log.i("ChatGPT", moshi.toJson(it.data ?: ""))
+                }
+            }
     }
 }

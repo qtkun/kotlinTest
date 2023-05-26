@@ -13,10 +13,10 @@ import java.lang.reflect.ParameterizedType
 
 class MultiAdapter(
     private val proxies: List<AdapterProxy<*, *>>,
-    private val items: List<Any> = listOf(),
     private val itemClick: ((Int) -> Unit)? = null,
     private val itemLongClick: ((Int) -> Unit)? = null,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val items: MutableList<Any> = mutableListOf()
     companion object {
         private const val TYPE_EMPTY = -2
         private const val TYPE_UNKNOWN = -1
@@ -85,6 +85,52 @@ class MultiAdapter(
 
     val lastIndex: Int
         get() = items.lastIndex
+
+    val size: Int
+        get() = items.size
+
+    fun setData(data: List<Any>) {
+        items.clear()
+        items.addAll(data)
+        notifyItemRangeChanged(0, data.size)
+    }
+
+    fun addData(data: List<Any>) {
+        val positionStart = items.size
+        items.addAll(data)
+        notifyItemRangeInserted(positionStart, data.size)
+    }
+
+    fun addData(data: Any) {
+        items.add(data)
+        notifyItemInserted(items.size)
+    }
+
+    fun remove(data: Any) {
+        val position = items.indexOf(data)
+        removeAt(position)
+    }
+
+    fun removeAt(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun remove(data: List<Any>) {
+        for (datum in data) {
+            remove(datum)
+        }
+    }
+
+    fun update(data: Any) {
+        for ((index, item) in items.withIndex()) {
+            if ((proxies[getItemViewType(index)] as AdapterProxy<Any, ViewBinding>).areItemsTheSame(data, item)) {
+                items[index] = data
+                notifyItemChanged(index)
+                break
+            }
+        }
+    }
 }
 
 class MultiTypeListAdapter(
@@ -191,17 +237,5 @@ internal class DiffCallback(
         val proxy = proxies.getProxyIndex(oldItem)
         return if (proxy >= 0) (proxies[proxy] as AdapterProxy<Any, ViewBinding>).areContentsTheSame(oldItem, newItem) else false
     }
-
-}
-
-open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {
-    companion object {
-        fun <T> create(): DiffUtilHelper<T> = DiffUtilHelper()
-    }
-
-    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = oldItem === newItem
-
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean =
-        oldItem.toString() == newItem.toString()
 
 }

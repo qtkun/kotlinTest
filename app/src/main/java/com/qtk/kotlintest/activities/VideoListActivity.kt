@@ -21,7 +21,9 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
     override fun ActivityVideoListBinding.initViewBinding() {
         initToolbar()
         videoRv.apply {
-            adapter = MultiAdapter(mutableListOf(VideoAdapterProxy()), viewModel.videoList)
+            adapter = MultiAdapter(mutableListOf(VideoAdapterProxy())).apply {
+                setData(viewModel.videoList)
+            }
             layoutManager = LinearLayoutManager(this@VideoListActivity)
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

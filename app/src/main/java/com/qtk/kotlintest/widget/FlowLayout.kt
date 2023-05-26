@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.use
 import androidx.core.view.isVisible
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 import kotlin.math.max
 import kotlin.properties.Delegates
 
@@ -39,8 +39,8 @@ class FlowLayout @JvmOverloads constructor(
 
     init {
         context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout).use {
-            mHorizontalSpacing = it.getDimension(R.styleable.FlowLayout_horizontal_spacing, 10f.dpToPx()).toInt()
-            mVerticalSpacing = it.getDimension(R.styleable.FlowLayout_vertical_spacing, 8f.dpToPx()).toInt()
+            mHorizontalSpacing = it.getDimension(R.styleable.FlowLayout_horizontal_spacing, 10f.asDp()).toInt()
+            mVerticalSpacing = it.getDimension(R.styleable.FlowLayout_vertical_spacing, 8f.asDp()).toInt()
         }
     }
 

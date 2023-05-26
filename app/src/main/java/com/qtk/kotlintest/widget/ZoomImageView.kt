@@ -7,6 +7,7 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
@@ -23,6 +24,7 @@ class ZoomImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ): AppCompatImageView(context, attributeSet, defStyleAttr) {
     companion object {
+        private const val TAG = "ZoomImageView"
         private const val SCREEN_MAX_SCALE = 6f
         private const val SCREEN_MIN_SCALE = 0.4f
     }
@@ -38,6 +40,7 @@ class ZoomImageView @JvmOverloads constructor(
     private var lastClickTime: Long = 0
     private var lastClickPos = 0f
     private val matrixValues = FloatArray(9)
+    private val saveMatrixValues = FloatArray(9)
 
     private var drawableWidth = 0f
     private var drawableHeight = 0f
@@ -87,27 +90,30 @@ class ZoomImageView @JvmOverloads constructor(
         when(event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 doubleClicked(event)
-                if (dragParentAllowIntercept(event)) {
+                startPoint.set(event.x, event.y)
+//                if (horizontalEnableDrag(event) || verticalEnableDrag(event)) {
                     savedMatrix.set(matrix)
-                    startPoint.set(event.x, event.y)
                     mode = Mode.DRAG
-                }
+//                }
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
                 parent.requestDisallowInterceptTouchEvent(true)
                 oldDistance = getDistance(event)
                 if (oldDistance > 10f) {
                     savedMatrix.set(matrix)
-                    getMidPoint(midPoint, event)
+                    getMidPoint(midPoint)
                     mode = Mode.ZOOM
                 }
             }
             MotionEvent.ACTION_MOVE -> {
                 if (mode == Mode.DRAG) {
-                    if (dragParentAllowIntercept(event)) {
-                        matrix.set(savedMatrix)
-                        matrix.postTranslate(event.x - startPoint.x, event.y - startPoint.y)
-                    }
+                    matrix.getValues(matrixValues)
+                    savedMatrix.getValues(saveMatrixValues)
+                    val enableDrag = getDragOffset(event)
+                    Log.e(TAG, "dx = ${enableDrag.first}")
+                    Log.e(TAG, "dy = ${enableDrag.second}")
+                    matrix.set(savedMatrix)
+                    matrix.postTranslate(enableDrag.first, enableDrag.second)
                 } else if (mode == Mode.ZOOM) {
                     val newDistance = getDistance(event)
                     if (newDistance > 10f) {
@@ -138,24 +144,53 @@ class ZoomImageView @JvmOverloads constructor(
         return true
     }
 
-    private fun dragParentAllowIntercept(event: MotionEvent): Boolean {
-        matrix.getValues(matrixValues)
+    private fun getDragOffset(event: MotionEvent): Pair<Float, Float> {
         val scale = matrixValues[0]
         val realWidth = scale * drawableWidth
         val realHeight = scale * drawableHeight
         val pointStart = PointF(matrixValues[2], matrixValues[5])
         val pointEnd = PointF(pointStart.x + realWidth, pointStart.y + realHeight)
+        var offsetX = event.x - startPoint.x
+        if (realWidth > width) {
+            if (offsetX > 0f && offsetX > abs(pointStart.x)) {
+                offsetX = abs(pointStart.x)
+            } else if (offsetX < 0 && offsetX < (width - pointEnd.x)) {
+                offsetX = width - pointEnd.x
+            }
+        }
+        var offsetY = event.y - startPoint.y
+        if (realHeight > height) {
+            if (offsetY > 0f && offsetY > abs(pointStart.y)) {
+                offsetY = abs(pointStart.y)
+            } else if(offsetY < 0f && offsetY < (height - pointEnd.y)) {
+                offsetY = height - pointEnd.y
+            }
+        }
         //当图片放大且点击点在图片内时拦截父控件事件
-        val interceptParent = (event.x in pointStart.x..pointEnd.x && event.y in pointStart.y..pointEnd.y)
-                && (realWidth > width || realHeight > height)
+        val interceptParent = (realWidth > width || realHeight > height)
+                /*&& (event.x in pointStart.x..pointEnd.x && event.y in pointStart.y..pointEnd.y)*/
         parent.requestDisallowInterceptTouchEvent(interceptParent)
-        return interceptParent
+        return offsetX to offsetY
     }
 
+    private fun verticalEnableDrag(event: MotionEvent): Boolean {
+        val scale = matrixValues[0]
+        val realHeight = (scale * drawableHeight).toInt()
+        val startY = matrixValues[5].toInt()
+        val endY = startY + realHeight
+        val offsetY = (event.y - startPoint.y).toInt()
+        var canDrag = false
+        if (realHeight > height) {
+            if ((offsetY > 0f && startY <= 0) || (offsetY < 0f && endY >= height)) {
+                canDrag = true
+            }
+        }
+        return canDrag
+    }
     private fun doubleClicked(event: MotionEvent) {
         val currentTime = System.currentTimeMillis()
         val currentPos = event.x
-        if (currentTime - lastClickTime < 500 && abs(currentPos - lastClickPos) < 50) {
+        if (currentTime - lastClickTime < 200 && abs(currentPos - lastClickPos) < 50) {
             // 双击事件
             resetImage(drawable)
         }
@@ -178,10 +213,8 @@ class ZoomImageView @JvmOverloads constructor(
         return sqrt(x * x + y * y)
     }
 
-    private fun getMidPoint(point: PointF, event: MotionEvent) {
-        val x = event.getX(0) + event.getX(1)
-        val y = event.getY(0) + event.getY(1)
-        point[x / 2] = y / 2
+    private fun getMidPoint(point: PointF) {
+        point[width.toFloat() / 2] = height.toFloat() / 2
     }
 
     enum class Mode{

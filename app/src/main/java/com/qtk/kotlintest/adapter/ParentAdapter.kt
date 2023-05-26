@@ -12,7 +12,7 @@ import com.qtk.kotlintest.databinding.HomeTabLayoutBinding
 import com.qtk.kotlintest.databinding.ItemNestBottomBinding
 import com.qtk.kotlintest.databinding.ItemNestTopBinding
 import com.qtk.kotlintest.extensions.bindItemView
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 import com.qtk.kotlintest.extensions.drawable
 import com.qtk.kotlintest.extensions.getScreenWidth
 import org.jetbrains.anko.toast
@@ -61,7 +61,7 @@ class BottomViewHolder(activity: AppCompatActivity, itemView: View): RecyclerVie
     init {
         with(binding){
             viewPager.adapter = ViewPagerAdapter(activity)
-            val padding = (activity.getScreenWidth() - 240.dpToPx()) / 2
+            val padding = (activity.getScreenWidth() - 240.asDp()) / 2
             (viewPager.getChildAt(0) as RecyclerView).apply {
                 clipToPadding = false
                 setPadding(padding, 0, padding, 0)

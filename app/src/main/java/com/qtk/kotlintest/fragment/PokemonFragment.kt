@@ -3,6 +3,7 @@ package com.qtk.kotlintest.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qtk.kotlintest.R
@@ -12,12 +13,10 @@ import com.qtk.kotlintest.databinding.FragmentPokemonListBinding
 import com.qtk.kotlintest.extensions.bindView
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @AndroidEntryPoint
 class PokemonFragment : Fragment(R.layout.fragment_pokemon_list) {
-    private val mViewModel by viewModel<PokemonViewModel>()
+    private val mViewModel by viewModels<PokemonViewModel>()
     private var adapter: PokemonAdapter = PokemonAdapter {_,_ -> }
 
     private val binding by bindView<FragmentPokemonListBinding>()

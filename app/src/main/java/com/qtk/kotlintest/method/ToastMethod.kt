@@ -1,3 +1,4 @@
+/*
 package com.qtk.kotlintest.method
 
 import android.content.Context
@@ -26,4 +27,4 @@ class ToastMethod (private val context: Context) : MethodChannel.MethodCallHandl
             }
         }
     }
-}
+}*/

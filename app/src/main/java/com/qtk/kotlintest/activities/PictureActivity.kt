@@ -17,9 +17,11 @@ class PictureActivity: BaseActivity<ActivityPictureBinding, BaseViewModel>()/*, 
 
     override fun ActivityPictureBinding.initViewBinding() {
         val urls = intent.getStringArrayListExtra(PICTURE_URL)
-        pictureVp.adapter = MultiAdapter(arrayListOf(PictureAdapterProxy()), mutableListOf<Any>().apply {
-            urls?.let { addAll(it) }
-        })
+        pictureVp.adapter = MultiAdapter(arrayListOf(PictureAdapterProxy())).apply {
+            setData(mutableListOf<Any>().apply {
+                urls?.let { addAll(it) }
+            })
+        }
         pictureVp.offscreenPageLimit = 4
     }
 

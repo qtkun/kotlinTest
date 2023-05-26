@@ -3,13 +3,16 @@ package com.qtk.kotlintest.contant
 import android.Manifest
 import androidx.paging.PagingConfig
 
-const val BASE_URL = "https://pokeapi.co/api/v2/"
+const val BASE_URL = "https://api.openai.com/"
+const val POKEMON_BASE_URL = "https://pokeapi.co/api/v2/"
 const val APP_ID = "15646a06818f61f7b8d7823ca833e1ce"
 const val URL = "https://api.openweathermap.org/data/2.5/" +
         "forecast/daily?mode=json&units=metric&cnt=7"
 const val COMPLETE_URL = "$URL&APPID=$APP_ID&q="
 
 const val RONG_IM_URL = "https://api-cn.ronghub.com/"
+
+const val OPEN_AI_API_KEY = "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"
 
 
 const val DATA_STORE_NAME = "KotlinTest"
@@ -25,6 +28,14 @@ const val REMOVE_CONVERSATION = "remove_conversation"
 val locationPermission = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION,
     Manifest.permission.ACCESS_FINE_LOCATION)
+
+val bluetoothPermission = arrayOf(
+    Manifest.permission.BLUETOOTH,
+    Manifest.permission.BLUETOOTH_ADMIN,
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.BLUETOOTH_CONNECT,
+    Manifest.permission.BLUETOOTH_SCAN
+)
 
 val pagingConfig = PagingConfig(
     // 每页显示的数据的大小

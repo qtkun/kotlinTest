@@ -3,8 +3,8 @@ package com.qtk.kotlintest.activities
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,19 +17,14 @@ import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
-import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @AndroidEntryPoint
 class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_motion) {
-    //通过koin注入
-//    private val mViewModel by viewModel<PokemonViewModel>()
     //通过hilt注入
-    private val mViewModel by lazy { ViewModelProvider(this)[PokemonViewModel::class.java] }
+    private val mViewModel by viewModels<PokemonViewModel>()
     private val adapter: PokemonAdapter = PokemonAdapter {pokemon, binding ->
         like(pokemon, binding)
     }
@@ -48,8 +43,6 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
             start()
         }
     }
-
-    private val moshi by inject<Moshi>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

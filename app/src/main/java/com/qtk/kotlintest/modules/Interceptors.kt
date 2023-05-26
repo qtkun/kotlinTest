@@ -2,6 +2,7 @@ package com.qtk.kotlintest.modules
 
 import android.content.Context
 import android.util.Log
+import com.qtk.kotlintest.contant.OPEN_AI_API_KEY
 import com.qtk.kotlintest.retrofit.adapter.ApiException
 import com.qtk.kotlintest.utils.isConnected
 import okhttp3.*
@@ -35,6 +36,7 @@ fun getRequestHeader(): Interceptor {
         val originalRequest: Request = it.request()
         val builder: Request.Builder = originalRequest.newBuilder()
         builder.addHeader("content-type", "application/json; charset=utf-8")
+        builder.addHeader("Authorization", "Bearer $OPEN_AI_API_KEY")
 
         val requestBuilder: Request.Builder =
             builder.method(originalRequest.method, originalRequest.body)

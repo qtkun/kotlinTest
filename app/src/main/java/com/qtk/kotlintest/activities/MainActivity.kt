@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
@@ -29,7 +30,7 @@ import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
-import com.qtk.kotlintest.method.IntentMethod
+//import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.widget.TimeLineDecoration
 import com.qtk.kotlintest.work.LocationWorker
@@ -39,15 +40,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.jetbrains.anko.*
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ToolbarManager {
+class MainActivity : AppCompatActivity(), ToolbarManager{
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
     var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
@@ -61,16 +63,14 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
     }
     lateinit var city: String
 
-    //koin依赖注入
-    private val mViewModel by viewModel<MainViewModel>()
-    private val gson by inject<Gson>()
+    private val mViewModel by viewModels<MainViewModel>()
 
 
     //hilt依赖注入
     /*@Inject
-    lateinit var truck: Truck
+    lateinit var truck: Truck*/
     @Inject
-    lateinit var gson: Gson*/
+    lateinit var gson: Gson
 
     val binding by inflate<ActivityMainBinding>()
 
@@ -125,13 +125,27 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
         binding.fab.setOnClickListener {
-            startActivity<NavTestActivity>()
+            startActivity<ChatGPTActivity>()
         }
         binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
         }
 //        coarseLocation.launch(locationPermission)
+        multiCoroutine()
         business()
+    }
+
+    private val mutex = Mutex()
+    private var count = 0
+    private fun multiCoroutine() {
+        repeat(1000) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                mutex.withLock {
+                    count++
+                }
+            }
+        }
+        Log.i("multiCoroutine", "$count")
     }
 
     private fun business() {
@@ -178,12 +192,13 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
             Log.i("qtkun", code.toString())
             Log.i("qtkun", "finish")
         }
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             delay(5000L)
             (0..99).asFlow().collect {
                 testLiveData.value = true
             }
-        }
+        }*/
+//        mViewModel.sendMessageToChatGPT("你好")
     }
 
     private val constraints = Constraints.Builder()
@@ -224,7 +239,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                IntentMethod.RequestCode -> data?.getStringExtra("toast")?.let { toast(it) }
+//                IntentMethod.RequestCode -> data?.getStringExtra("toast")?.let { toast(it) }
                 PICK_FILE -> {
                     if (resultCode == Activity.RESULT_OK && data != null) {
                         val uri = data.data

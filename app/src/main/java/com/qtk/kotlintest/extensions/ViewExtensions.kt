@@ -15,17 +15,17 @@ import android.view.ViewOutlineProvider
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
-import androidx.recyclerview.widget.RecyclerView
 
 val View.ctx : Context
     get() = context
@@ -220,7 +220,7 @@ fun RecyclerView.setOnItemClickListener(listener: (View, Int) -> Unit) {
     })
 }
 
-fun ImageView.rounded(radius: Float) {
+fun View.rounded(radius: Float) {
     outlineProvider = object: ViewOutlineProvider() {
         override fun getOutline(view: View, outline: Outline?) {
             outline?.setRoundRect(Rect(0, 0, view.width, view.height), radius)
@@ -229,12 +229,16 @@ fun ImageView.rounded(radius: Float) {
     clipToOutline = true
 }
 
-fun ImageView.circle() {
+fun View.circle() {
     outlineProvider = object: ViewOutlineProvider() {
         override fun getOutline(view: View, outline: Outline?) {
             outline?.setOval(Rect(0, 0, view.width, view.height))
         }
     }
     clipToOutline = true
+}
+
+fun View.hideKeyboard() {
+    context.getSystemService(InputMethodManager::class.java)?.hideSoftInputFromWindow(windowToken, 0)
 }
 

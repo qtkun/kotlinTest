@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.qtk.kotlintest.base.BaseViewModel
 import com.qtk.kotlintest.domain.command.RequestDayForecastCommand
 import com.qtk.kotlintest.domain.model.Forecast
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel : BaseViewModel() {
+@HiltViewModel
+class DetailViewModel @Inject constructor() : BaseViewModel() {
     private val _detail = MutableStateFlow(Forecast(0, 0, "", 0, 0, ""))
     val detail : MutableStateFlow<Forecast> get() = _detail
 

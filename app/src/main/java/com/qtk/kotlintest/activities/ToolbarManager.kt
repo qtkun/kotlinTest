@@ -9,8 +9,8 @@ import com.qtk.kotlintest.R
 import com.qtk.kotlintest.extensions.ctx
 import com.qtk.kotlintest.extensions.slideEnter
 import com.qtk.kotlintest.extensions.slideExit
-import com.qtk.kotlintest.method.IntentMethod
-import com.qtk.kotlintest.activities.FlutterActivity as FA
+//import com.qtk.kotlintest.method.IntentMethod
+//import com.qtk.kotlintest.activities.FlutterActivity as FA
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
@@ -32,25 +32,32 @@ interface ToolbarManager {
             when (it.itemId) {
                 R.id.action_settings -> toolbar.ctx.startActivity<SettingsActivity>()
                 R.id.action_flutter -> {
-                    /*toolbar.ctx.startActivity(FlutterActivity
-                        .withCachedEngine("test")
-                        .build(toolbar.ctx))*/
-                    activity.startActivityForResult<FA>(
+                   /* activity.startActivityForResult<FA>(
                         IntentMethod.RequestCode,
                         "engine" to "test"
-                    )
+                    )*/
+                    toolbar.ctx.startActivity<FlowActivity>()
                 }
                 R.id.action_flutter2 -> {
-                    activity.startActivityForResult<FA>(
+                    /*activity.startActivityForResult<FA>(
                         IntentMethod.RequestCode,
                         "engine" to "test2"
+                    )*/
+                    toolbar.ctx.startActivity<PictureActivity>(
+                        PictureActivity.PICTURE_URL to mutableListOf(
+                            "https://img0.baidu.com/it/u=2289446283,2987162055&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800",
+                            "https://img0.baidu.com/it/u=3295304401,3564425098&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=3000",
+                            "https://img0.baidu.com/it/u=242767209,2541342896&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500",
+                            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201702%2F05%2F20170205213628_dj3ic.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1686128761&t=ca4b8cdbb0c21a3cdaf7426d0180b860",
+                            "https://img0.baidu.com/it/u=3957758939,1600769248&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800"
+                        )
                     )
                 }
                 R.id.action_flutter3 -> {
-                    activity.startActivityForResult<FA>(
+                    /*activity.startActivityForResult<FA>(
                         IntentMethod.RequestCode,
                         "engine" to "test3"
-                    )
+                    )*/
                 }
                 R.id.action_pokemon -> toolbar.ctx.startActivity<MotionActivity>()
                 R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()

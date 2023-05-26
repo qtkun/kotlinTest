@@ -8,20 +8,20 @@ import android.view.View
 import androidx.core.view.get
 import androidx.core.view.marginBottom
 import androidx.recyclerview.widget.RecyclerView
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 
 class TimeLineDecoration(
     private val color: Int = Color.MAGENTA,
-    private val circleRadius: Float = (3.5f).dpToPx(),
-    private val leftPadding: Float = 4f.dpToPx(),
-    private val topPadding: Float = (3.5f).dpToPx()
+    private val circleRadius: Float = (3.5f).asDp(),
+    private val leftPadding: Float = 4f.asDp(),
+    private val topPadding: Float = (3.5f).asDp()
 ): RecyclerView.ItemDecoration() {
     private val paint by lazy {
         Paint().apply {
             color = this@TimeLineDecoration.color
             isAntiAlias = true
             style = Paint.Style.FILL
-            strokeWidth = 1f.dpToPx()
+            strokeWidth = 1f.asDp()
         }
     }
 

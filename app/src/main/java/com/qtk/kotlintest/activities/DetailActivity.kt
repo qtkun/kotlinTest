@@ -5,6 +5,7 @@ import android.app.Activity
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.view_model.DetailViewModel
 import com.qtk.kotlintest.R
@@ -19,7 +20,6 @@ import com.qtk.kotlintest.extensions.textColor
 import com.qtk.kotlintest.extensions.toDateString
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.DateFormat
 
 class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_detail), ToolbarManager {
@@ -30,7 +30,7 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
 
     override val toolbar by lazy { binding.toolbar.toolbar }
     override val activity: Activity by lazy { this }
-    private val detailViewModel by viewModel<DetailViewModel>()
+    private val detailViewModel by viewModels<DetailViewModel>()
     private lateinit var textAnim: AnimatedVectorDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {

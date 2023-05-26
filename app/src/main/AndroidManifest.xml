@@ -3,6 +3,8 @@
     package="com.qtk.kotlintest">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -13,10 +15,18 @@
     <!--具备摄像头-->
     <uses-feature android:name="android.hardware.camera.any" />
     <!--存储图像或者视频权限-->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--录制音频权限-->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:name=".App"
@@ -54,7 +64,7 @@
             android:launchMode="singleInstancePerTask">
         </activity>
 
-        <activity
+        <!--<activity
             android:name=".activities.FlutterActivity"/>
 
         <activity
@@ -62,7 +72,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
-            />
+            />-->
         <activity android:name=".activities.MotionActivity"
             android:exported="false">
             <intent-filter>
@@ -80,6 +90,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.AnimTestActivity" />
         <activity android:name=".activities.NavTestActivity" />
+        <activity android:name=".activities.BleActivity" />
+        <activity android:name=".activities.PictureActivity" />
+        <activity android:name=".activities.ChatGPTActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <receiver android:name=".widget.TestAppWidgetProvider"
             android:exported="false">

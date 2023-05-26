@@ -3,12 +3,14 @@ package com.qtk.kotlintest.base.base
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -16,7 +18,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.LoadingDialogBinding
+import com.qtk.kotlintest.extensions.color
+import com.qtk.kotlintest.extensions.launchAndCollectIn
 import com.zackratos.ultimatebarx.ultimatebarx.addStatusBarTopPadding
+import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import com.zackratos.ultimatebarx.ultimatebarx.statusBarOnly
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -29,17 +34,28 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
 
     private val dialogBinding: LoadingDialogBinding by lazy {
         LoadingDialogBinding.inflate(layoutInflater).apply {
-            progressCircular.indeterminateDrawable.setTint(Color.WHITE)
+            progressCircular.indeterminateDrawable.setTint(color(R.color.main))
         }
     }
     private val dialog: Dialog by lazy {
         Dialog(this).apply {
             setContentView(dialogBinding.root)
             setCanceledOnTouchOutside(false)
-            window?.also {
-                it.setBackgroundDrawableResource(R.drawable.loading_bg)
-                it.setGravity(Gravity.CENTER)
-                it.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setOnShowListener {
+                window?.run {
+                    addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        decorView.windowInsetsController?.setSystemBarsAppearance(0,  0)
+                    } else {
+                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    }
+                }
+            }
+            window?.apply {
+                setDimAmount(0f)
+                setBackgroundDrawableResource(R.drawable.loading_bg)
+                setGravity(Gravity.CENTER)
+                setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
         }
     }
@@ -54,24 +70,22 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val contentView = findViewById<ViewGroup>(android.R.id.content)
         (javaClass.genericSuperclass as ParameterizedType).let {
             it.actualTypeArguments.let { types ->
                 binding = (types[0] as Class<VB>).getMethod("inflate", LayoutInflater::class.java,
-                    ViewGroup::class.java, Boolean::class.java).invoke(null, layoutInflater, contentView, false) as VB
+                    ViewGroup::class.java, Boolean::class.java).invoke(null, layoutInflater, null, false) as VB
                 setContentView(binding.root)
                 viewModel = (types[1] as Class<VM>).run { ViewModelProvider(this@BaseActivity)[this] }
             }
         }
-        lifecycleScope.launch {
-            viewModel.loading.flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED).collect {
+        viewModel.loading
+            .launchAndCollectIn(this, Lifecycle.State.STARTED) {
                 if (it) {
-                    showLoading()
+                    showLoading(null)
                 } else {
                     hideLoading()
                 }
             }
-        }
         initVariables(savedInstanceState)
         statusBarOnly {
             transparent()
@@ -86,6 +100,15 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
     ){
         resultCallBacks.push(callback)
         activityForResult.launch(Intent(this, cls).apply(block))
+    }
+
+    protected fun startActivityForResult(
+        intent: Intent,
+        block: Intent.() -> Unit = {},
+        callback: (Intent) -> Unit
+    ){
+        resultCallBacks.push(callback)
+        activityForResult.launch(intent.apply(block))
     }
 
     protected fun finishForResult(
@@ -138,8 +161,9 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
         return null
     }
 
-    private fun showLoading(tips: String = "加载中...") {
+    private fun showLoading(tips: String? = "加载中...") {
         dialogBinding.tips.text = tips
+        dialogBinding.tips.isVisible = tips != null
         dialog.show()
     }
 

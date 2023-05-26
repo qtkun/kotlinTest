@@ -1,5 +1,8 @@
 <resources>
-
+    <!--文字颜色-->
+    <attr name="textColor" format="color|reference" />
+    <!--文字大小-->
+    <attr name="textSize" format="dimension" />
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
@@ -36,5 +39,26 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    
+    <declare-styleable name="CircularProgressBar">
+        <!--半径-->
+        <attr name="radius" format="dimension" />
+        <!--进度条宽度-->
+        <attr name="strokeWidth" format="dimension" />
+        <!--进度条背景颜色-->
+        <attr name="progressbarBackgroundColor" format="color|reference" />
+        <!--进度条进度颜色-->
+        <attr name="progressbarColor" format="color|reference" />
+        <!--最大进度-->
+        <attr name="maxProgress" format="integer" />
+        <!--当前进度-->
+        <attr name="progress" format="integer" />
+        <!--是否显示文字-->
+        <attr name="showText" format="boolean" />
+        <!--文字颜色-->
+        <attr name="textColor" />
+        <!--文字大小-->
+        <attr name="textSize" />
+    </declare-styleable>
 
 </resources>

@@ -11,7 +11,7 @@ import com.qtk.kotlintest.adapter.PokemonAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
 import com.qtk.kotlintest.base.base.MultiTypeListAdapter
 import com.qtk.kotlintest.databinding.ActivityAnimTestBinding
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 import com.qtk.kotlintest.extensions.getScreenWidth
 import com.qtk.kotlintest.extensions.setOnItemClickListener
 import com.qtk.kotlintest.retrofit.data.PokemonBean
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>() {
 
-    private val trvHeight = 15f.dpToPx()
+    private val trvHeight = 15f.asDp()
 
     private val adapter by lazy {
         MultiTypeListAdapter(listOf(PokemonAdapterProxy()), itemClick = {
@@ -79,7 +79,7 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
         binding.rv.findViewHolderForAdapterPosition(position)?.itemView?.let { view ->
             val location = IntArray(2)
             view.getLocationOnScreen(location)
-            return location[0] + view.measuredWidth / 2 + 12.dpToPx()
+            return location[0] + view.measuredWidth / 2 + 12.asDp()
         }
         return null
     }
@@ -87,7 +87,7 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
     private fun setTrvHeight(height: Float) {
         binding.tc.trvHeight = height
         binding.tc.layoutParams = (binding.tc.layoutParams as ViewGroup.MarginLayoutParams).apply {
-            topMargin = (trvHeight - height).toInt() + 18.dpToPx()
+            topMargin = (trvHeight - height).toInt() + 18.asDp()
         }
     }
 

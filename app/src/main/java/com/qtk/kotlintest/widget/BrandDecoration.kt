@@ -6,10 +6,10 @@ import android.graphics.Paint
 import android.graphics.Path
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
-import com.qtk.kotlintest.extensions.dpToPx
+import com.qtk.kotlintest.extensions.asDp
 
 class BrandDecoration(
-    private val radius: Float = 8f.dpToPx()
+    private val radius: Float = 8f.asDp()
 ): RecyclerView.ItemDecoration() {
     private val paint by lazy {
         Paint().apply {
