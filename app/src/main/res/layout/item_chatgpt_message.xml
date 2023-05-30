@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp">
+    android:padding="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/main">
 
     <ImageView
         android:id="@+id/iv_avatar"
@@ -13,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,15 +30,22 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/baseline_arrow_right_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:rotation="180"
             app:tint="@color/white"
-            android:layout_marginEnd="-13dp"
             android:layout_marginTop="4dp"/>
 
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constrainedWidth="true"
+            android:layout_marginStart="17dp"
             android:minHeight="40dp"
             android:textColor="@color/text_main"
             android:background="@drawable/shape_white_corner_6dp"
@@ -45,6 +54,6 @@
             android:gravity="center_vertical"
             android:textIsSelectable="true"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

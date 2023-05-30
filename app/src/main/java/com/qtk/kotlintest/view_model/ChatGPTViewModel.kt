@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ChatGPTViewModel @Inject constructor(
     private val commonRepository: CommonRepository
 ) : BaseViewModel() {
-    val message = MutableStateFlow<ChatMessageBean?>(null)
+    val message = MutableStateFlow<Any?>(null)
 
     val historyMessage = MutableStateFlow<List<Any>>(emptyList())
 
@@ -51,11 +51,15 @@ class ChatGPTViewModel @Inject constructor(
             }
     }
 
-    fun insertMessage(content: String) = viewModelScope.launch(Dispatchers.IO) {
-        commonRepository.insertMessage(ChatMessageBean(UUID.randomUUID().toString(), content, Role.USER))
+    fun insertMessage(messageBean: ChatMessageBean) = viewModelScope.launch(Dispatchers.IO) {
+        commonRepository.insertMessage(messageBean)
     }
 
-    private fun insertMessage(messageBean: ChatMessageBean) = viewModelScope.launch(Dispatchers.IO) {
-        commonRepository.insertMessage(messageBean)
+    fun deleteAllMessages() = viewModelScope.launch {
+        commonRepository.deleteAllMessages()
+    }
+
+    fun deleteMessage(vararg messages: ChatMessageBean) = viewModelScope.launch {
+        commonRepository.deleteMessages(*messages)
     }
 }

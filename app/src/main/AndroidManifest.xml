@@ -94,7 +94,25 @@
         <activity android:name=".activities.PictureActivity" />
         <activity android:name=".activities.ChatGPTActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize"
+            android:taskAffinity=".chatgpt"/>
+
+        <activity-alias
+            android:name=".activities.ChatGPTLauncherActivity"
+            android:targetActivity=".activities.ChatGPTActivity"
+            android:icon="@drawable/ic_chatgpt"
+            android:roundIcon="@drawable/ic_chatgpt"
+            android:label="@string/app_chatgpt_name"
+            android:theme="@style/AppTheme"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <receiver android:name=".widget.TestAppWidgetProvider"
             android:exported="false">

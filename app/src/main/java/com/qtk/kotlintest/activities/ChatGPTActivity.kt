@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.activities
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.ViewTreeObserver
@@ -10,20 +11,24 @@ import com.qtk.kotlintest.adapter.MyMessageAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
 import com.qtk.kotlintest.base.base.MultiAdapter
 import com.qtk.kotlintest.databinding.ActivityChatBinding
-import com.qtk.kotlintest.extensions.dp
 import com.qtk.kotlintest.extensions.hideKeyboard
 import com.qtk.kotlintest.extensions.launchOnState
 import com.qtk.kotlintest.extensions.singleClick
+import com.qtk.kotlintest.room.entity.ChatMessageBean
+import com.qtk.kotlintest.room.entity.Role
+import com.qtk.kotlintest.room.entity.UserMessageBean
 import com.qtk.kotlintest.view_model.ChatGPTViewModel
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filter
 import org.jetbrains.anko.toast
+import java.util.UUID
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
     private val adapter by lazy {
-        MultiAdapter(listOf(MyMessageAdapterProxy(), ChatGPTAdapterProxy()))
+        MultiAdapter(listOf(MyMessageAdapterProxy(this::deleteMessage), ChatGPTAdapterProxy(this::deleteMessage)))
     }
 
     private val linearLayoutManager by lazy {
@@ -38,32 +43,35 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
         val decorHeight = window.decorView.height
         val keyboardHeight = decorHeight - rect.bottom
         if (keyboardHeight > 200 && !isKeyboardShow) {
-            if (linearLayoutManager.canScrollVertically() && adapter.lastIndex >= 0) {
+            var lastPosition = linearLayoutManager.findLastVisibleItemPosition()
+            if (adapter.lastIndex >= 0 && lastPosition < adapter.lastIndex) {
                 linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, 0)
             }
             binding.rvChat.post {
-                val lastPosition = linearLayoutManager.findLastVisibleItemPosition()
+                lastPosition = linearLayoutManager.findLastVisibleItemPosition()
                 val lastView = linearLayoutManager.findViewByPosition(lastPosition)
                 val location = IntArray(2)
                 lastView?.getLocationOnScreen(location)
-                val dy = rect.bottom - location[1] - (lastView?.height ?: 0) - 60.dp
-                if (dy < 0f) {
+                val bottomHeight = binding.llBottom.height
+                val scrollDy = rect.bottom - bottomHeight - location[1] - (lastView?.height ?: 0)
+                if (scrollDy < 0f) {
                     binding.rvChat.stopScroll()
-                    binding.rvChat.scrollBy(0, -dy)
-//                    linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, dy)
+                    val offset = (lastView?.top ?: 0) - abs(scrollDy)
+                    linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, offset)
                 }
-                isKeyboardShow = true
             }
+            isKeyboardShow = true
         } else if (keyboardHeight < 200 && isKeyboardShow) {
             isKeyboardShow = false
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun ActivityChatBinding.initViewBinding() {
         rvChat.apply {
             layoutManager = linearLayoutManager
             adapter = this@ChatGPTActivity.adapter
-            rvChat.setOnTouchListener { v, event ->
+            rvChat.setOnTouchListener { _, _ ->
                 if (isKeyboardShow && etMessage.hasFocus()) {
                     etMessage.hideKeyboard()
                 }
@@ -73,13 +81,16 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
         back.singleClick {
             finish()
         }
+        tvDeleteAll.singleClick {
+            viewModel.deleteAllMessages()
+            adapter.removeAll()
+        }
         tvSend.singleClick {
             if (etMessage.text.isNotBlank()) {
                 val content = etMessage.text.toString()
-                adapter.addData(content)
-                adapter.notifyItemInserted(adapter.size)
-                linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, 0)
-                viewModel.insertMessage(content)
+                val message = UserMessageBean(UUID.randomUUID().toString(), content, Role.USER)
+                viewModel.message.value = message
+                viewModel.insertMessage(message.mapToChatMessage())
                 viewModel.sendMessageToChatGPT(content)
                 etMessage.setText("")
             } else {
@@ -100,7 +111,6 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
             message.filter { it != null }
                 .collect {
                     adapter.addData(it!!)
-                    adapter.notifyItemInserted(adapter.size)
                     linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, 0)
                     message.value = null
                 }
@@ -117,5 +127,16 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
     override fun initVariables(savedInstanceState: Bundle?) {
         super.initVariables(savedInstanceState)
         viewModel.getMessageFromRoom()
+    }
+
+    private fun deleteMessage(position: Int) {
+        adapter[position].let { item ->
+            when (item) {
+                is UserMessageBean -> viewModel.deleteMessage(item.mapToChatMessage())
+                is ChatMessageBean -> viewModel.deleteMessage(item)
+                else -> Unit
+            }
+        }
+        adapter.removeAt(position)
     }
 }

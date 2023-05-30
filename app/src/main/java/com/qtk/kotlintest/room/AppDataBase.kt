@@ -9,7 +9,7 @@ import com.qtk.kotlintest.domain.data.room.DayForecastRoom
 import com.qtk.kotlintest.room.entity.ChatMessageBean
 import com.qtk.kotlintest.room.entity.Location
 
-@Database(version = 1, entities = [
+@Database(version = 2, entities = [
     Location::class,
     CityForecastRoom::class,
     DayForecastRoom:: class,

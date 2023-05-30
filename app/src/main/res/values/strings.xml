@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="app_chatgpt_name">ChatGPT</string>
     <string name="settings">Settings</string>
     <string name="flutter">Flutter</string>
     <string name="flutter2">Flutter2</string>

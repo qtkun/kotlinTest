@@ -46,11 +46,19 @@ class CommonRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
         .map {
             it?.map { message ->
-                if (message.role == Role.USER) message.content else message
+                if (message.role == Role.USER) message.mapToUserMessage() else message
             } ?: emptyList()
         }
 
     suspend fun insertMessage(message: ChatMessageBean) {
         chatGPTDao.insertChatMessage(message)
+    }
+
+    suspend fun deleteAllMessages() {
+        chatGPTDao.deleteAllMessages()
+    }
+
+    suspend fun deleteMessages(vararg messages: ChatMessageBean) {
+        chatGPTDao.deleteMessages(*messages)
     }
 }

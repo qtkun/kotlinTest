@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.base.base
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,6 +90,10 @@ class MultiAdapter(
     val size: Int
         get() = items.size
 
+    operator fun get(position: Int): Any {
+        return items[position]
+    }
+
     fun setData(data: List<Any>) {
         items.clear()
         items.addAll(data)
@@ -120,6 +125,12 @@ class MultiAdapter(
         for (datum in data) {
             remove(datum)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun removeAll() {
+        items.clear()
+        notifyDataSetChanged()
     }
 
     fun update(data: Any) {

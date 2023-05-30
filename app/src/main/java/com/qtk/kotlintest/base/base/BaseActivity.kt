@@ -42,17 +42,11 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
             setContentView(dialogBinding.root)
             setCanceledOnTouchOutside(false)
             setOnShowListener {
-                window?.run {
-                    addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        decorView.windowInsetsController?.setSystemBarsAppearance(0,  0)
-                    } else {
-                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    }
-                }
+
             }
             window?.apply {
                 setDimAmount(0f)
+                clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                 setBackgroundDrawableResource(R.drawable.loading_bg)
                 setGravity(Gravity.CENTER)
                 setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)

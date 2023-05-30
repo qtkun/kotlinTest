@@ -7,7 +7,10 @@ import android.content.Context
 import android.graphics.Outline
 import android.graphics.Rect
 import android.util.TypedValue
+import android.view.ActionMode
 import android.view.GestureDetector
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +23,10 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
+import androidx.core.view.iterator
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import com.qtk.kotlintest.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -242,3 +247,40 @@ fun View.hideKeyboard() {
     context.getSystemService(InputMethodManager::class.java)?.hideSoftInputFromWindow(windowToken, 0)
 }
 
+fun TextView.setSelectionMenu(textMenuItemOnClickListener: TextMenuItemOnClickListener) {
+    customSelectionActionModeCallback = object: ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            menu?.let {
+                for(i in 0 until menu.size()) {
+                    val item = menu.getItem(i)
+                    if (item.itemId == android.R.id.shareText) {
+                        menu.removeItem(item.itemId)
+                        break
+                    }
+                }
+                menu.add(Menu.NONE, R.id.message_delete, 101, "删除")
+            }
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            when(item?.itemId) {
+                R.id.message_delete -> {
+                    textMenuItemOnClickListener.onMessageDelete()
+                    mode?.finish()
+                }
+            }
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {}
+    }
+}
+
+interface TextMenuItemOnClickListener {
+    fun onMessageDelete()
+}
