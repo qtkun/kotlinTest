@@ -3,6 +3,8 @@ package com.qtk.kotlintest.activities
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,30 +38,21 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
     }
 
     private var isKeyboardShow = false
+    private val visibleRect = Rect()
+    private val scrollRunnable = ScrollRunnable()
+
+    private val mHandler = Handler(Looper.getMainLooper())
 
     private val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        val rect = Rect()
-        window.decorView.getWindowVisibleDisplayFrame(rect)
+        window.decorView.getWindowVisibleDisplayFrame(visibleRect)
         val decorHeight = window.decorView.height
-        val keyboardHeight = decorHeight - rect.bottom
+        val keyboardHeight = decorHeight - visibleRect.bottom
         if (keyboardHeight > 200 && !isKeyboardShow) {
-            var lastPosition = linearLayoutManager.findLastVisibleItemPosition()
+            val lastPosition = linearLayoutManager.findLastVisibleItemPosition()
             if (adapter.lastIndex >= 0 && lastPosition < adapter.lastIndex) {
                 linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, 0)
             }
-            binding.rvChat.post {
-                lastPosition = linearLayoutManager.findLastVisibleItemPosition()
-                val lastView = linearLayoutManager.findViewByPosition(lastPosition)
-                val location = IntArray(2)
-                lastView?.getLocationOnScreen(location)
-                val bottomHeight = binding.llBottom.height
-                val scrollDy = rect.bottom - bottomHeight - location[1] - (lastView?.height ?: 0)
-                if (scrollDy < 0f) {
-                    binding.rvChat.stopScroll()
-                    val offset = (lastView?.top ?: 0) - abs(scrollDy)
-                    linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, offset)
-                }
-            }
+            mHandler.post(scrollRunnable)
             isKeyboardShow = true
         } else if (keyboardHeight < 200 && isKeyboardShow) {
             isKeyboardShow = false
@@ -104,6 +97,7 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
     override fun onDestroy() {
         super.onDestroy()
         window.decorView.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+        mHandler.removeCallbacks(scrollRunnable)
     }
 
     override fun ChatGPTViewModel.initViewModel() {
@@ -138,5 +132,21 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
             }
         }
         adapter.removeAt(position)
+    }
+
+    inner class ScrollRunnable: Runnable {
+        override fun run() {
+            val lastPosition = linearLayoutManager.findLastVisibleItemPosition()
+            val lastView = linearLayoutManager.findViewByPosition(lastPosition) ?: return
+            val location = IntArray(2)
+            lastView.getLocationOnScreen(location)
+            val bottomHeight = binding.llBottom.height
+            val scrollDy = visibleRect.bottom - bottomHeight - location[1] - lastView.height
+            if (scrollDy < 0f) {
+                binding.rvChat.stopScroll()
+                val offset = lastView.top - abs(scrollDy)
+                linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, offset)
+            }
+        }
     }
 }

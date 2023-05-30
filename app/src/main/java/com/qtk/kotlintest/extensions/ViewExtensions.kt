@@ -23,7 +23,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
-import androidx.core.view.iterator
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.R
@@ -245,6 +244,10 @@ fun View.circle() {
 
 fun View.hideKeyboard() {
     context.getSystemService(InputMethodManager::class.java)?.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun View.showKeyboard() {
+    context.getSystemService(InputMethodManager::class.java)?.showSoftInput(this, 0)
 }
 
 fun TextView.setSelectionMenu(textMenuItemOnClickListener: TextMenuItemOnClickListener) {
