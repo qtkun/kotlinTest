@@ -7,12 +7,9 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.qtk.kotlintest.base.BaseViewModel
-import com.qtk.kotlintest.paging.CommonRepository
+import com.qtk.kotlintest.repository.CommonRepository
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel

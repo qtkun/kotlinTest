@@ -19,6 +19,11 @@ inline fun <reified VB : ViewBinding> Dialog.inflate() = lazy(LazyThreadSafetyMo
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
 }
 
+@MainThread
+inline fun <reified VB : ViewBinding> Fragment.inflate() = lazy {
+    inflateBinding<VB>(layoutInflater)
+}
+
 inline fun <reified VB : ViewBinding> inflateBinding(layoutInflater: LayoutInflater) =
     VB::class.java.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
 

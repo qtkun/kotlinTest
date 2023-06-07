@@ -1,7 +1,11 @@
 package com.qtk.kotlintest.view_model
 
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
@@ -10,19 +14,20 @@ import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.getData
 import com.qtk.kotlintest.extensions.toJson
-import com.qtk.kotlintest.paging.CommonRepository
-import com.qtk.kotlintest.retrofit.data.ApiResult
+import com.qtk.kotlintest.repository.CommonRepository
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val moshi: Moshi,
-    private val commonRepository: CommonRepository
+    private val moshi: Moshi
 ) : ViewModel() {
     private val forecast = MediatorLiveData<ForecastList>()
     val forecastList: LiveData<ForecastList> = forecast
@@ -75,14 +80,5 @@ class MainViewModel @Inject constructor(
 
     fun getItem(position: Int): Forecast {
         return forecast.value!![position]
-    }
-
-    fun sendMessageToChatGPT(content: String) = viewModelScope.launch {
-        commonRepository.sendMessageToChatGPT(content)
-            .collect {
-                if (it is ApiResult.Success) {
-                    Log.i("ChatGPT", moshi.toJson(it.data ?: ""))
-                }
-            }
     }
 }

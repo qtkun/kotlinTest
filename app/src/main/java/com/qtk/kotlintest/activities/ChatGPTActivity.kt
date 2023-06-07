@@ -17,14 +17,12 @@ import com.qtk.kotlintest.extensions.hideKeyboard
 import com.qtk.kotlintest.extensions.launchOnState
 import com.qtk.kotlintest.extensions.singleClick
 import com.qtk.kotlintest.room.entity.ChatMessageBean
-import com.qtk.kotlintest.room.entity.Role
 import com.qtk.kotlintest.room.entity.UserMessageBean
 import com.qtk.kotlintest.view_model.ChatGPTViewModel
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filter
 import org.jetbrains.anko.toast
-import java.util.UUID
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -81,10 +79,7 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
         tvSend.singleClick {
             if (etMessage.text.isNotBlank()) {
                 val content = etMessage.text.toString()
-                val message = UserMessageBean(UUID.randomUUID().toString(), content, Role.USER)
-                viewModel.message.value = message
-                viewModel.insertMessage(message.mapToChatMessage())
-                viewModel.sendMessageToChatGPT(content)
+                viewModel.saveUserMessage(content)
                 etMessage.setText("")
             } else {
                 toast("请输入内容")
@@ -106,6 +101,9 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
                 .collect {
                     adapter.addData(it!!)
                     linearLayoutManager.scrollToPositionWithOffset(adapter.lastIndex, 0)
+                    if (it is UserMessageBean) {
+                        viewModel.sendMessageToChatGPT(adapter.data)
+                    }
                     message.value = null
                 }
         }

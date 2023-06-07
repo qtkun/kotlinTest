@@ -2,7 +2,7 @@ package com.qtk.kotlintest.view_model
 
 import androidx.lifecycle.viewModelScope
 import com.qtk.kotlintest.base.base.BaseViewModel
-import com.qtk.kotlintest.paging.CommonRepository
+import com.qtk.kotlintest.repository.CommonRepository
 import com.qtk.kotlintest.retrofit.data.ApiResult
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.retrofit.data.getId

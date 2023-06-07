@@ -2,64 +2,53 @@ package com.qtk.kotlintest.view_model
 
 import androidx.lifecycle.viewModelScope
 import com.qtk.kotlintest.base.base.BaseViewModel
-import com.qtk.kotlintest.paging.CommonRepository
-import com.qtk.kotlintest.retrofit.data.ApiResult
-import com.qtk.kotlintest.retrofit.data.ChatBean
-import com.qtk.kotlintest.room.ChatGPTDao
+import com.qtk.kotlintest.domain.usercase.GetHistoryMessageUserCase
+import com.qtk.kotlintest.domain.usercase.SaveUserMessageUserCase
+import com.qtk.kotlintest.domain.usercase.SendMessageAndSaveUserCase
+import com.qtk.kotlintest.repository.ChatGPTRepository
 import com.qtk.kotlintest.room.entity.ChatMessageBean
-import com.qtk.kotlintest.room.entity.Role
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatGPTViewModel @Inject constructor(
-    private val commonRepository: CommonRepository
+    private val chatGPTRepository: ChatGPTRepository,
+    private val getHistoryMessageUserCase: GetHistoryMessageUserCase,
+    private val sendMessageAndSaveUserCase: SendMessageAndSaveUserCase,
+    private val saveUserMessageUserCase: SaveUserMessageUserCase
 ) : BaseViewModel() {
     val message = MutableStateFlow<Any?>(null)
 
     val historyMessage = MutableStateFlow<List<Any>>(emptyList())
 
-    fun sendMessageToChatGPT(content: String) = viewModelScope.launch {
-        commonRepository.sendMessageToChatGPT(content)
+    fun sendMessageToChatGPT(messageList: List<Any>) = viewModelScope.launch {
+        sendMessageAndSaveUserCase(messageList)
             .baseLoading()
             .collect {
-                if (it is ApiResult.Success) {
-                    it.data?.let { chatBean ->
-                        var receiveContent = ""
-                        var role = ""
-                        if (chatBean.choices.isNotEmpty()) {
-                            receiveContent = chatBean.choices.first().message.content
-                            role = chatBean.choices.first().message.role
-                        }
-                        val messageBean = ChatMessageBean(chatBean.id, receiveContent, role)
-                        message.value = messageBean
-                        insertMessage(messageBean)
-                    }
-                }
+                message.value = it
             }
     }
 
     fun getMessageFromRoom() = viewModelScope.launch {
-        commonRepository.getMessageFromRoom()
+        getHistoryMessageUserCase()
             .baseLoading()
             .collect {
                 historyMessage.value = it
             }
     }
 
-    fun insertMessage(messageBean: ChatMessageBean) = viewModelScope.launch(Dispatchers.IO) {
-        commonRepository.insertMessage(messageBean)
+    fun saveUserMessage(content: String) = viewModelScope.launch {
+        message.value = saveUserMessageUserCase(content).first()
     }
 
     fun deleteAllMessages() = viewModelScope.launch {
-        commonRepository.deleteAllMessages()
+        chatGPTRepository.deleteAllMessages()
     }
 
     fun deleteMessage(vararg messages: ChatMessageBean) = viewModelScope.launch {
-        commonRepository.deleteMessages(*messages)
+        chatGPTRepository.deleteMessages(*messages)
     }
 }
