@@ -97,7 +97,7 @@
             android:windowSoftInputMode="adjustResize"
             android:taskAffinity=".chatgpt"/>
 
-        <activity-alias
+        <!--<activity-alias
             android:name=".activities.ChatGPTLauncherActivity"
             android:targetActivity=".activities.ChatGPTActivity"
             android:icon="@drawable/ic_chatgpt"
@@ -112,7 +112,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity-alias>
+        </activity-alias>-->
 
         <receiver android:name=".widget.TestAppWidgetProvider"
             android:exported="false">

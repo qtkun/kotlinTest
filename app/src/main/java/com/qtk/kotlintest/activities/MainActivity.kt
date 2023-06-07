@@ -37,7 +37,6 @@ import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex

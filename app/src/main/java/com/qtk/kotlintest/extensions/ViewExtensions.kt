@@ -180,32 +180,30 @@ fun RecyclerView.setOnItemClickListener(listener: (View, Int) -> Unit) {
     addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
         //'构造手势探测器，用于解析单击事件'
         val gestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
-            override fun onShowPress(e: MotionEvent?) {
+            override fun onShowPress(e: MotionEvent) {
             }
 
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 //'当单击事件发生时，寻找单击坐标下的子控件，并回调监听器'
-                e?.let {
-                    findChildViewUnder(it.x, it.y)?.let { child ->
-                        listener(child, getChildAdapterPosition(child))
-                    }
+                findChildViewUnder(e.x, e.y)?.let { child ->
+                    listener(child, getChildAdapterPosition(child))
                 }
                 return false
             }
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 return false
             }
 
-            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+            override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                 return false
             }
 
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+            override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
                 return false
             }
 
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
             }
         })
 

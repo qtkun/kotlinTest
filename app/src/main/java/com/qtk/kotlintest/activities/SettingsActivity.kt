@@ -40,7 +40,6 @@ import com.qtk.kotlintest.widget.showBottom
 import com.qtk.kotlintest.widget.showLeft
 import com.qtk.kotlintest.widget.showRight
 import com.qtk.kotlintest.widget.showTop
-import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.jetbrains.anko.toast
@@ -118,7 +117,7 @@ class SettingsActivity : AppCompatActivity() {
             Log.i("qtkun", spanStr.toHtml())
             cityTitle.text = spanStr
 
-            city_title.singleClick {
+            cityTitle.singleClick {
                 popBinding.tc.showTop(popupWindow, it)
             }
             heart1.setOnClickListener {
@@ -186,7 +185,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             .flowOn(Dispatchers.IO)
             .launchAndCollectIn(this, Lifecycle.State.STARTED) {
-                cityCode.setText(it.toString())
+                binding.cityCode.setText(it.toString())
                 if (binding.button.isPressed) {
                     etState.value += 1L
                 }

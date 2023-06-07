@@ -102,6 +102,8 @@ open class DcVideoPlayer : GSYVideoPlayer, LifecycleEventObserver {
             Lifecycle.Event.ON_DESTROY -> {
 
             }
+
+            else -> {}
         }
     }
 

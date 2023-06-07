@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -14,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.R
-import kotlinx.android.synthetic.main.activity_camera.*
+import com.qtk.kotlintest.databinding.ActivityCameraBinding
 import org.jetbrains.anko.toast
 import java.io.File
 import java.nio.ByteBuffer
@@ -22,9 +21,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
+    private val binding by lazy { ActivityCameraBinding.inflate(layoutInflater) }
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -56,8 +55,8 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-        cameraCaptureButton.setOnClickListener { takePhoto() }
-        btnStartVideo.setOnClickListener {
+        binding.cameraCaptureButton.setOnClickListener { takePhoto() }
+        binding.btnStartVideo.setOnClickListener {
             if (record) {
                 //结束录像
                 videoCapture?.stopRecording()//停止录制
@@ -67,7 +66,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             }
             record = !record
         }
-        btnSwitch.setOnClickListener {
+        binding.btnSwitch.setOnClickListener {
             cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
             } else {
@@ -75,7 +74,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             }
             startCamera()
         }
-        btnFlash.setOnClickListener {
+        binding.btnFlash.setOnClickListener {
             camera?.let {
                 flash = !flash
                 it.cameraControl.enableTorch(flash)
@@ -99,6 +98,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun startCamera() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -106,7 +106,7 @@ class CameraActivity : AppCompatActivity(R.layout.activity_camera) {
             cameraProvider = cameraProviderFuture.get()//获取相机信息
             //预览配置
             preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(viewFinder.surfaceProvider)
+                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
             }
             imageCapture = ImageCapture.Builder().
                 setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
