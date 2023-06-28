@@ -1,15 +1,25 @@
 package com.qtk.kotlintest.activities
 
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.qtk.flowbus.post.postEvent
 import com.qtk.kotlintest.R
-import com.qtk.kotlintest.adapter.ViewPagerAdapter
 import com.qtk.kotlintest.databinding.ActivityCoordinatorBinding
-import com.qtk.kotlintest.databinding.HomeTabLayoutBinding
-import com.qtk.kotlintest.extensions.drawable
-import com.qtk.kotlintest.extensions.inflate
+import com.qtk.kotlintest.extensions.*
+import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import com.zackratos.ultimatebarx.ultimatebarx.statusBar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +31,51 @@ class CoordinatorLayoutActivity: AppCompatActivity(R.layout.activity_coordinator
         super.onCreate(savedInstanceState)
         statusBar {
             transparent()
-            light = true
+        }
+        with(binding) {
+            UltimateBarX.addStatusBarTopPadding(topBar)
+            Glide.with(this@CoordinatorLayoutActivity)
+                .load("https://img0.baidu.com/it/u=3957758939,1600769248&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800")
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        resource?.let {
+                            detectBitmapColor(it.toBitmap(), topBar.width, topBar.height)
+                        }
+                        return false
+                    }
+                })
+                .into(ivBackground)
+
+            tbBtn.singleClick {
+                postEvent("platform", "淘宝")
+            }
+            jdBtn.singleClick {
+                postEvent("platform", "京东")
+            }
+            mtBtn.singleClick {
+                postEvent("platform", "美团")
+            }
+            elmBtn.singleClick {
+                postEvent("platform", "饿了么")
+            }
+            noobBtn.singleClick {
+                postEvent("platform", "新手攻略")
+            }
         }
         /*binding.homeViewpager.adapter = ViewPagerAdapter(this)
         with(binding) {
@@ -50,5 +104,32 @@ class CoordinatorLayoutActivity: AppCompatActivity(R.layout.activity_coordinator
             }.attach()
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }*/
+    }
+
+    private fun detectBitmapColor(bitmap: Bitmap, right: Int, bottom: Int) {
+        val colorCount = 5
+        Palette.from(bitmap)
+            .setRegion(0, 0, right, bottom)
+            .maximumColorCount(colorCount)
+            .generate {
+                it?.let { palette ->
+                    var mostPopularSwatch: Palette.Swatch? = null
+                    for (swatch in palette.swatches) {
+                        if (mostPopularSwatch == null || swatch.population > mostPopularSwatch.population) {
+                            mostPopularSwatch = swatch
+                        }
+                    }
+                    mostPopularSwatch?.let { swatch ->
+                        Log.e("CoordinatorLayoutActivity", swatch.toString())
+                        val luminance = ColorUtils.calculateLuminance(swatch.rgb)
+                        statusBar {
+                            transparent()
+                            light = luminance > 0.5
+                        }
+                        binding.ivBack.imageTintList = ColorStateList.valueOf(swatch.bodyTextColor)
+                        binding.tvTitle.setTextColor(swatch.bodyTextColor)
+                    }
+                }
+            }
     }
 }

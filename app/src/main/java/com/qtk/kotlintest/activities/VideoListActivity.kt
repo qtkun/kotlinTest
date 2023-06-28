@@ -8,10 +8,12 @@ import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.VideoAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
 import com.qtk.kotlintest.base.base.MultiAdapter
+import com.qtk.kotlintest.base.base.MultiTypeListAdapter
 import com.qtk.kotlintest.databinding.ActivityVideoListBinding
 import com.qtk.kotlintest.utils.onScrollPlayVideo
 import com.qtk.kotlintest.utils.onScrollReleaseAllVideos
 import com.qtk.kotlintest.view_model.VideoListViewModel
+import com.qtk.kotlintest.widget.SpringEdgeEffect
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 
 class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewModel>(), ToolbarManager {
@@ -21,10 +23,11 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
     override fun ActivityVideoListBinding.initViewBinding() {
         initToolbar()
         videoRv.apply {
-            adapter = MultiAdapter(mutableListOf(VideoAdapterProxy())).apply {
-                setData(viewModel.videoList)
+            adapter = MultiTypeListAdapter(mutableListOf(VideoAdapterProxy())).apply {
+                submitList(viewModel.videoList)
             }
             layoutManager = LinearLayoutManager(this@VideoListActivity)
+            edgeEffectFactory = SpringEdgeEffect()
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)

@@ -33,6 +33,7 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
         pokemonBean.like = !pokemonBean.like
         adapter.notifyItemChanged(pokemonBean.id.toInt() - 1)
         AnimatorSet().apply {
+            duration = 200L
             val scalex = ObjectAnimator.ofFloat(binding.like,"ScaleX", 1f, 0.6f)
             val scaley = ObjectAnimator.ofFloat(binding.like,"ScaleY", 1f, 0.6f)
             val scalex2 = ObjectAnimator.ofFloat(binding.like,"ScaleX", 0.6f, 1f)

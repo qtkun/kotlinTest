@@ -45,6 +45,8 @@
         <attr name="radius" format="dimension" />
         <!--进度条宽度-->
         <attr name="strokeWidth" format="dimension" />
+        <!--阴影宽度-->
+        <attr name="shadowRadius" format="dimension" />
         <!--进度条背景颜色-->
         <attr name="progressbarBackgroundColor" format="color|reference" />
         <!--进度条进度颜色-->

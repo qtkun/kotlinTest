@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.gson.Gson
+import com.qtk.flowbus.observe.observeEvent
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.ForecastDiffCallBack
@@ -30,8 +31,10 @@ import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
+import com.qtk.kotlintest.test.TestBean
 //import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.view_model.MainViewModel
+import com.qtk.kotlintest.widget.SpringEdgeEffect
 import com.qtk.kotlintest.widget.TimeLineDecoration
 import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
@@ -123,6 +126,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         binding.forecastList.addItemDecoration(
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
+        binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
             startActivity<ChatGPTActivity>()
         }
@@ -148,6 +152,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
     }
 
     private fun business() {
+        val testBean = TestBean(false)
+        println("testBean: ${testBean.unselected}")
+        observeEvent<String>("platform") {
+            toast(it)
+        }
         testLiveData.observe(this, Observer {
             if (it) {
                 println("testLiveData: $it")

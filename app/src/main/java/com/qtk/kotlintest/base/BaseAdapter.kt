@@ -1,5 +1,6 @@
 package com.qtk.kotlintest.base
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -61,10 +62,10 @@ open class DiffUtilHelper<T> : DiffUtil.ItemCallback<T>() {
         fun <T> create(): DiffUtilHelper<T> = DiffUtilHelper()
     }
 
-    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean = oldItem === newItem
+    override fun areItemsTheSame(oldItem: T & Any, newItem: T & Any): Boolean = oldItem === newItem
 
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean =
-        oldItem.toString() == newItem.toString()
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: T & Any, newItem: T & Any): Boolean = oldItem == newItem
 
 }
 

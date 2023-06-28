@@ -16,6 +16,7 @@ import com.qtk.kotlintest.extensions.getScreenWidth
 import com.qtk.kotlintest.extensions.setOnItemClickListener
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.AnimTestViewModel
+import com.qtk.kotlintest.widget.SpringEdgeEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
@@ -120,6 +121,7 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
             setOnItemClickListener { view, i ->
                 selectItem(i)
             }
+            edgeEffectFactory = SpringEdgeEffect()
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)

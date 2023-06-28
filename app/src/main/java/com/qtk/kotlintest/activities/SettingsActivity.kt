@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.qtk.flowbus.observe.observeEvent
 import com.qtk.kotlintest.App
 import com.qtk.kotlintest.adapter.CalendarPagerAdapter
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
@@ -175,6 +176,9 @@ class SettingsActivity : AppCompatActivity() {
             setTarget(binding.heart1)
             start()
         }*/
+        observeEvent<String>("platform", true) {
+            toast(it)
+        }
         etState
             .sample(100L)
             .filter {

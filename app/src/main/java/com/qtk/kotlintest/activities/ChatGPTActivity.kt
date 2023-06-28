@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qtk.flowbus.observe.observeEvent
 import com.qtk.kotlintest.adapter.ChatGPTAdapterProxy
 import com.qtk.kotlintest.adapter.MyMessageAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
@@ -96,6 +97,9 @@ class ChatGPTActivity: BaseActivity<ActivityChatBinding, ChatGPTViewModel>() {
     }
 
     override fun ChatGPTViewModel.initViewModel() {
+        observeEvent<String>("platform") {
+            toast(it)
+        }
         launchOnState(Lifecycle.State.STARTED) {
             message.filter { it != null }
                 .collect {

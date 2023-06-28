@@ -58,6 +58,7 @@ interface ToolbarManager {
                         IntentMethod.RequestCode,
                         "engine" to "test3"
                     )*/
+                    toolbar.ctx.startActivity<AnimTestActivity>()
                 }
                 R.id.action_pokemon -> toolbar.ctx.startActivity<MotionActivity>()
                 R.id.action_viewpager -> toolbar.ctx.startActivity<ViewPagerActivity>()

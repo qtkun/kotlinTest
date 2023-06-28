@@ -2,12 +2,12 @@ package com.qtk.kotlintest.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.ctx
 
 fun Context.color(res : Int) : Int = ContextCompat.getColor(this, res)
 
@@ -45,7 +44,7 @@ fun Activity.getScreenHeight(): Int {
 
 inline fun LifecycleOwner.launchOnState(state: Lifecycle.State, crossinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch {
-        lifecycle.repeatOnLifecycle(state) {
+        repeatOnLifecycle(state) {
             block()
         }
     }
@@ -69,6 +68,17 @@ inline fun Fragment.launchAndRepeatWithViewLifecycle(
 ) {
     viewLifecycleOwner.lifecycleScope.launch {
         viewLifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
+            block()
+        }
+    }
+}
+
+inline fun FragmentActivity.launchAndRepeatWithLifecycle(
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+    crossinline block: suspend CoroutineScope.() -> Unit
+) {
+    lifecycleScope.launch {
+        lifecycle.repeatOnLifecycle(minActiveState) {
             block()
         }
     }

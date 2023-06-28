@@ -8,3 +8,10 @@ class Solution {
         return nums
     }
 }
+
+data class TestBean(
+    val selected: Boolean
+) {
+    val unselected1 get() = !selected
+    val unselected = !selected
+}

@@ -12,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -22,11 +23,13 @@ import java.util.UUID
 @InstallIn(ViewModelComponent::class)
 object UserCaseModule {
     @Provides
+    @ViewModelScoped
     fun providerGetHistoryMessageUserCase(chatGPTRepository: ChatGPTRepository) = GetHistoryMessageUserCase {
         chatGPTRepository.getMessageFromRoom()
     }
 
     @Provides
+    @ViewModelScoped
     fun providerSendMessageAndSaveUserCase(chatGPTRepository: ChatGPTRepository) = SendMessageAndSaveUserCase { content ->
         chatGPTRepository.sendMessageToChatGPT(content)
             .map {
@@ -47,6 +50,7 @@ object UserCaseModule {
     }
 
     @Provides
+    @ViewModelScoped
     fun providerSaveUserMessageUserCase(chatGPTRepository: ChatGPTRepository) = SaveUserMessageUserCase { content ->
         flow {
             val message = UserMessageBean(UUID.randomUUID().toString(), content, Role.USER)

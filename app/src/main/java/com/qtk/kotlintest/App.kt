@@ -19,6 +19,7 @@ import android.util.Log
 import androidx.datastore.preferences.preferencesDataStore
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.qtk.flowbus.FlowBus
 import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.room.PokemonDao
@@ -117,6 +118,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        FlowBus.init(this)
         if (isMainProcess) {
             AMapLocationClient.updatePrivacyAgree(this, true)
             AMapLocationClient.updatePrivacyShow(this, true, true)
