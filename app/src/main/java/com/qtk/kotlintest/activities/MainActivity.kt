@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
     @Inject
     lateinit var gson: Gson
 
-    val binding by inflate<ActivityMainBinding>()
+    val binding by viewBinding<ActivityMainBinding>()
 
 
     private val etState = MutableStateFlow(10L)

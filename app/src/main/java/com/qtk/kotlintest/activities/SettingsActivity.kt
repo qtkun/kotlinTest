@@ -6,24 +6,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Outline
-import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.*
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -55,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var popupWindow: PopupWindow
     private val popBinding: PopLayoutBinding by lazy { PopLayoutBinding.inflate(layoutInflater) }
 
-    private val binding by inflate<ActivitySettingsBinding>()
+    private val binding by viewBinding<ActivitySettingsBinding>()
     private val etState = MutableStateFlow(0L)
 
     private val permission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {

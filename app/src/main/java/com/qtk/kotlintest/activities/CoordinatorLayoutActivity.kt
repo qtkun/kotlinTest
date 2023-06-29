@@ -2,7 +2,6 @@ package com.qtk.kotlintest.activities
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CoordinatorLayoutActivity: AppCompatActivity(R.layout.activity_coordinator) {
-    val binding by inflate<ActivityCoordinatorBinding>()
+    val binding by viewBinding<ActivityCoordinatorBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

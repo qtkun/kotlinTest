@@ -2,18 +2,15 @@ package com.qtk.kotlintest.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph
-import androidx.navigation.findNavController
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.ActivityNavTestBinding
-import com.qtk.kotlintest.extensions.inflate
+import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.extensions.singleClick
 import com.qtk.kotlintest.fragment.NavMainOneFragment
 import com.qtk.kotlintest.fragment.NavMainTwoFragment
 
 class NavTestActivity: AppCompatActivity() {
-    private val viewBinding by inflate<ActivityNavTestBinding>()
+    private val viewBinding by viewBinding<ActivityNavTestBinding>()
 
 
     private var oneFragment: NavMainOneFragment? = null

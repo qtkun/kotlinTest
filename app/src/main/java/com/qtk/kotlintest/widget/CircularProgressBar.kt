@@ -2,7 +2,6 @@ package com.qtk.kotlintest.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -28,6 +27,8 @@ class CircularProgressBar @JvmOverloads constructor(
     private var mStrokeWidth by Delegates.notNull<Int>()
 
     private var mShadowRadius by Delegates.notNull<Int>()
+
+    private var mShadowColor by Delegates.notNull<Int>()
 
     private var mProgressBarBgColor by Delegates.notNull<Int>()
 
@@ -69,15 +70,13 @@ class CircularProgressBar @JvmOverloads constructor(
         context.obtainStyledAttributes(attrs, R.styleable.CircularProgressBar).use { ta ->
             mRadius = ta.getDimensionPixelSize(R.styleable.CircularProgressBar_radius, 60.dp)
             mStrokeWidth = ta.getDimensionPixelSize(R.styleable.CircularProgressBar_strokeWidth, 10.dp)
-            mShadowRadius = ta.getDimensionPixelSize(R.styleable.CircularProgressBar_shadowRadius, 10.dp)
+            mShadowRadius = ta.getDimensionPixelSize(R.styleable.CircularProgressBar_shadowRadius, 5.dp)
+            mShadowColor = ta.getColor(
+                R.styleable.CircularProgressBar_shadowColor, Color.parseColor("#4D000000"))
             mProgressBarBgColor = ta.getColor(
-                R.styleable.CircularProgressBar_progressbarBackgroundColor,
-                context.color(R.color.gray)
-            )
+                R.styleable.CircularProgressBar_progressbarBackgroundColor, Color.parseColor("#e5e5e5"))
             mProgressColor = ta.getColor(
-                R.styleable.CircularProgressBar_progressbarColor,
-                context.color(R.color.main)
-            )
+                R.styleable.CircularProgressBar_progressbarColor, Color.parseColor("#4E6DFB"))
             mMaxProgress = ta.getInt(R.styleable.CircularProgressBar_maxProgress, 100).toFloat()
             mCurrentProgress = ta.getInteger(R.styleable.CircularProgressBar_progress, 0).toFloat()
             mShowText = ta.getBoolean(R.styleable.CircularProgressBar_showText, true)
@@ -134,7 +133,7 @@ class CircularProgressBar @JvmOverloads constructor(
         canvas?.drawCircle(centerX, centerX, mRadius.toFloat(), mPaint)
         mPaint.color = mProgressColor
         mPaint.strokeWidth = mStrokeWidth * 3f
-        mPaint.setShadowLayer(mShadowRadius.toFloat(), 0f, 0f, Color.parseColor("#8A000000"))
+        mPaint.setShadowLayer(mShadowRadius.toFloat(), 0f, 0f, mShadowColor)
         mSwipeAngle = mEndAngle * (mCurrentProgress / mMaxProgress)
         canvas?.drawArc(mRectF, mStartAngle, mSwipeAngle, false, mPaint)
         if (mShowText) {
@@ -172,6 +171,16 @@ class CircularProgressBar @JvmOverloads constructor(
             mCurrentProgress = progress
             invalidate()
         }
+    }
+
+    fun setShadowRadius(shadowRadius: Int) {
+        mShadowRadius = shadowRadius
+        invalidate()
+    }
+
+    fun setShadowColor(@ColorInt shadowColor: Int) {
+        mShadowColor = shadowColor
+        invalidate()
     }
 
     fun setTextSize(textSize: Int) {

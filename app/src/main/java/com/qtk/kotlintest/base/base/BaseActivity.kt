@@ -20,6 +20,7 @@ import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.LoadingDialogBinding
 import com.qtk.kotlintest.extensions.color
 import com.qtk.kotlintest.extensions.launchAndCollectIn
+import com.qtk.kotlintest.extensions.viewBinding
 import com.zackratos.ultimatebarx.ultimatebarx.addStatusBarTopPadding
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import com.zackratos.ultimatebarx.ultimatebarx.statusBarOnly
@@ -32,18 +33,12 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel>: AppCompatActivi
     lateinit var binding: VB
     lateinit var viewModel: VM
 
-    private val dialogBinding: LoadingDialogBinding by lazy {
-        LoadingDialogBinding.inflate(layoutInflater).apply {
-            progressCircular.indeterminateDrawable.setTint(color(R.color.main))
-        }
-    }
+    private val dialogBinding by viewBinding<LoadingDialogBinding>(false)
     private val dialog: Dialog by lazy {
         Dialog(this).apply {
+            dialogBinding.progressCircular.indeterminateDrawable.setTint(color(R.color.main))
             setContentView(dialogBinding.root)
             setCanceledOnTouchOutside(false)
-            setOnShowListener {
-
-            }
             window?.apply {
                 setDimAmount(0f)
                 clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
