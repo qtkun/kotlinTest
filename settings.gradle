@@ -1,11 +1,10 @@
 rootProject.name='kotlinTest'
 include ':app'
 include ':LeonidsLib'
-setBinding(new Binding([gradle: this]))
+/*setBinding(new Binding([gradle: this]))
 evaluate(new File(
   settingsDir,
   'flutter_module/.android/include_flutter.groovy'
 ))
 
-include ':flutter_module'
-include ':flowbus'
+include ':flutter_module'*/

@@ -103,8 +103,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-//    implementation project(path: ':flowbus')
-    implementation 'io.github.qtkun:flowbus:1.0.2'
+    implementation 'io.github.qtkun:flowbus:1.0.3'
 //    implementation project(path: ':flutter')
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"

@@ -13,9 +13,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/LeonidsLib" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/flowbus" />
-            <option value="$PROJECT_DIR$/flutter_module" />
-            <option value="$PROJECT_DIR$/flutter_module/.android/Flutter" />
           </set>
         </option>
       </GradleProjectSettings>
