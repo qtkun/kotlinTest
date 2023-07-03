@@ -24,10 +24,6 @@ import com.qtk.kotlintest.contant.DATA_STORE_NAME
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.room.entity.Location
-import com.qtk.kotlintest.utils.CalendarBean
-import com.qtk.kotlintest.utils.getMonthDate
-import com.qtk.kotlintest.utils.monthCount
-import com.qtk.kotlintest.utils.positionToDate
 import com.squareup.moshi.Moshi
 import com.tencent.soter.wrapper.SoterWrapperApi
 import com.tencent.soter.wrapper.wrap_task.InitializeParam
@@ -74,7 +70,6 @@ class App : Application() {
     @Inject
     lateinit var pokemonDao: PokemonDao
     val coroutineScope = CoroutineScope(Dispatchers.IO)
-    val months = hashMapOf<Int, List<CalendarBean>>()
     @Inject
     lateinit var moshi: Moshi
 
@@ -124,12 +119,6 @@ class App : Application() {
             AMapLocationClient.updatePrivacyShow(this, true, true)
             initFE()
 //            ToastMethod.registerWith(this)
-
-            coroutineScope.launch {
-                for (i in 0 until monthCount()) {
-                    months[i] = getMonthDate(positionToDate(i))
-                }
-            }
             val params = InitializeParam.InitializeParamBuilder()
                 .setScenes(0)
                 .build()

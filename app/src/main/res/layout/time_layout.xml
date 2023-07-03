@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.qtk.kotlintest.widget.scroll_picker.view.ScrollPickerView
+        android:id="@+id/hour_pv"
+        android:layout_width="wrap_content"
+        android:layout_height="288dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/minute_pv"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <com.qtk.kotlintest.widget.scroll_picker.view.ScrollPickerView
+        android:id="@+id/minute_pv"
+        android:layout_width="wrap_content"
+        android:layout_height="288dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/hour_pv"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

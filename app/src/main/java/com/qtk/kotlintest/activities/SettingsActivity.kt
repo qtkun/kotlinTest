@@ -15,28 +15,42 @@ import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.*
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
+import androidx.core.text.italic
+import androidx.core.text.scale
+import androidx.core.text.superscript
+import androidx.core.text.toHtml
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.qtk.flowbus.observe.observeEvent
 import com.qtk.kotlintest.App
-import com.qtk.kotlintest.adapter.CalendarPagerAdapter
+import com.qtk.kotlintest.calender.getToday
+import com.qtk.kotlintest.calender.initDateBottomSheet
 import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivitySettingsBinding
 import com.qtk.kotlintest.databinding.PopLayoutBinding
-import com.qtk.kotlintest.extensions.*
-import com.qtk.kotlintest.utils.dateToPosition
+import com.qtk.kotlintest.extensions.DelegatesExt
+import com.qtk.kotlintest.extensions.getData
+import com.qtk.kotlintest.extensions.launchAndCollectIn
+import com.qtk.kotlintest.extensions.limitDecimal
+import com.qtk.kotlintest.extensions.putData
+import com.qtk.kotlintest.extensions.singleClick
+import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.widget.showBottom
 import com.qtk.kotlintest.widget.showLeft
 import com.qtk.kotlintest.widget.showRight
 import com.qtk.kotlintest.widget.showTop
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.sample
 import org.jetbrains.anko.toast
 import java.io.BufferedOutputStream
 import java.io.File
@@ -59,6 +73,18 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
     private var progress = 0f
+
+    private val date = MutableStateFlow(getToday())
+
+    private val datePickerDialog by lazy {
+        initDateBottomSheet(
+            "${date.value} 00:00:00" ,
+            onConfirm = {
+                date.value = it
+            },
+            true
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,26 +156,11 @@ class SettingsActivity : AppCompatActivity() {
             /*cityCode.addTextChangedListener {
                 etState.value = (it ?: "").toString()
             }*/
-            PagerSnapHelper().attachToRecyclerView(calendarPager)
-            val calendarPagerAdapter = CalendarPagerAdapter(calendarPager)
-            calendarPager.adapter = calendarPagerAdapter
-            calendarPager.layoutManager = LinearLayoutManager(this@SettingsActivity)
-            calendarPager.scrollToPosition(dateToPosition())
-            calendarPager.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    val firstIndex =
-                        (calendarPager.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    calendarPagerAdapter.months[firstIndex]?.let {
-                        for (day in it) {
-                            if (day.type == 1) {
-                                date.text = "${day.year}年${day.month}月"
-                                break
-                            }
-                        }
-                    }
-                }
-            })
+
+            tvDay.singleClick {
+                datePickerDialog.show()
+            }
+
             cityCode.limitDecimal(5, 1)
             button.setOnLongClickListener {
                 etState.value += 1L
@@ -188,6 +199,9 @@ class SettingsActivity : AppCompatActivity() {
                     etState.value += 1L
                 }
             }
+        date.launchAndCollectIn(this, Lifecycle.State.RESUMED) {
+            binding.tvDay.text = it
+        }
     }
 
     fun getGifFirstFrame(context: Context, url: String?) {

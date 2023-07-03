@@ -1,24 +1,34 @@
-package com.qtk.kotlintest.adapter
+package com.qtk.kotlintest.calender.adapter
 
 import android.text.TextUtils
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.util.forEach
+import androidx.core.util.set
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.qtk.kotlintest.base.update
+import com.qtk.kotlintest.calender.CalendarBean
+import com.qtk.kotlintest.calender.MonthType
+import com.qtk.kotlintest.calender.adapter.DayAdapter
+import com.qtk.kotlintest.calender.earlierThanToday
+import com.qtk.kotlintest.calender.getMonthDate
+import com.qtk.kotlintest.calender.monthCount
+import com.qtk.kotlintest.calender.positionToDate
 import com.qtk.kotlintest.databinding.CalendarPageBinding
-import com.qtk.kotlintest.utils.CalendarBean
-import com.qtk.kotlintest.utils.getMonthDate
-import com.qtk.kotlintest.utils.monthCount
-import com.qtk.kotlintest.utils.positionToDate
 import com.qtk.kotlintest.widget.smoothScroll
+import org.jetbrains.anko.toast
 
-class CalendarPagerAdapter(
-    private val recyclerView: RecyclerView,
-): RecyclerView.Adapter<CalendarPagerAdapter.ViewHolder>() {
-    private val _adapters = hashMapOf<Int, DayAdapter>()
-    private val _months = hashMapOf<Int, List<CalendarBean>>()
+class CalendarAdapter(
+        private val initialDate: IntArray,
+        private val recyclerView: RecyclerView,
+        private val canSelectBeforeToday: Boolean,
+        private val onSelect: (CalendarBean) -> Unit
+): RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+    private val _adapters = SparseArray<DayAdapter>()
+    private val _months = SparseArray<List<CalendarBean>>()
+
     val months get() = _months
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,7 +37,7 @@ class CalendarPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (_months[position] == null) _months[position] = getMonthDate(positionToDate(position))
+        if (_months[position] == null) _months[position] = getMonthDate(positionToDate(position), initialDate)
         holder.bindView(position)
     }
 
@@ -38,29 +48,41 @@ class CalendarPagerAdapter(
             with(binding.monthRv) {
                 if (_adapters[position] == null) {
                     _months[position]?.let { days ->
-                        val dayAdapter = DayAdapter(days) {item, _ ->
-                            _months.forEach { (key, value) ->
+                        val dayAdapter = DayAdapter(days) { item ->
+                            if (!canSelectBeforeToday) {
+                                if (item.dateString.earlierThanToday()) {
+                                    binding.root.post {
+                                        context.toast("只能选择今天及以后")
+                                    }
+                                    return@DayAdapter
+                                }
+                            }
+                            _months.forEach { key, value ->
                                 when(item.type) {
-                                    0 -> {
+                                    MonthType.PREVIOUS -> {
                                         notCurrent(key, value, item, position, -1)
                                     }
-                                    1 -> {
+                                    MonthType.CURRENT -> {
                                         if (key == position) {
                                             value.forEach { day ->
-                                                day.select = TextUtils.equals(day.dateString, item.dateString)
+                                                day.select = day.dateString == item.dateString
                                             }
                                         } else {
+                                            for (calendarBean in value) {
+
+                                            }
                                             value.forEach { day ->
                                                 day.select = false
                                             }
                                         }
                                     }
-                                    2 -> {
+                                    MonthType.NEXT -> {
                                         notCurrent(key, value, item, position, 1)
                                     }
                                 }
                                 _adapters[key]?.update(value)
                             }
+                            onSelect(item)
                         }
                         _adapters[position] = dayAdapter
                     }
@@ -83,8 +105,8 @@ class CalendarPagerAdapter(
                     day.select = false
                 }
             }
-            if (exit.not()) {
-                _months[position + offset] = getMonthDate(positionToDate(position + offset)).apply {
+            if (!exit) {
+                _months[position + offset] = getMonthDate(positionToDate(position + offset), initialDate).apply {
                     forEach { day ->
                         day.select = TextUtils.equals(day.dateString, item.dateString)
                     }
