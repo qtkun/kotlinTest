@@ -5,14 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#A4ACBE">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
+    <com.qtk.kotlintest.widget.HorStickyNavLayout
+        android:id="@+id/stick_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="56dp"/>
+        android:layout_marginTop="56dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.qtk.kotlintest.widget.HorStickyNavLayout>
 
     <com.qtk.kotlintest.widget.TriangleContainer
         android:id="@+id/tc"
@@ -21,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv"
+        app:layout_constraintTop_toBottomOf="@+id/stick_layout"
         android:layout_marginTop="18dp"
         app:trv_radius="16dp"
         app:trv_color="#F4F5FA"

@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         )
         binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
-            startActivity<ChatGPTActivity>()
+            startActivity<PhysicsActivity>()
         }
         binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
@@ -157,21 +157,21 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         observeEvent<String>("platform") {
             toast(it)
         }
-        testLiveData.observe(this, Observer {
+        testLiveData.observe(this) {
             if (it) {
                 println("testLiveData: $it")
                 testLiveData.value = false
             }
-        })
+        }
         lifecycleScope.launchWhenCreated {
             mViewModel.forecastList.observe(this@MainActivity, observer())
-            mViewModel.loading.observe(this@MainActivity, Observer {
+            mViewModel.loading.observe(this@MainActivity) {
                 if (it) {
                     dialog.show()
                 } else {
                     if (dialog.isShowing) dialog.dismiss()
                 }
-            })
+            }
             /*WorkManager.getInstance(this@MainActivity)
                 .getWorkInfoByIdLiveData(saveImageWorkRequest.id)
                 .observe(this@MainActivity, Observer {

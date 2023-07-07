@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.jawnnypoo.physicslayout.PhysicsLinearLayout
+        android:id="@+id/physics_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:fling="true">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_restitution="0.5"
+            app:layout_shape="circle"
+            app:layout_circleRadius="25dp"
+            android:src="@drawable/ic_place_holder"/>
+
+    </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
+
+</FrameLayout>

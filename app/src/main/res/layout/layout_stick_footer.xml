@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="RelativeLayout">
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_gray"
+        android:textSize="12sp"
+        android:text="更多"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"/>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_toStartOf="@+id/tv_tips"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_arrow_forward"
+        android:tint="@color/text_gray"/>
+
+</merge>

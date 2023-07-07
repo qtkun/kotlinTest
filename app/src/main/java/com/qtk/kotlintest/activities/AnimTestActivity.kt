@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.startActivity
 
 @AndroidEntryPoint
 class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>() {
@@ -115,6 +116,9 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
     }
 
     override fun ActivityAnimTestBinding.initViewBinding() {
+        stickLayout.setStartActivity {
+            startActivity<MotionActivity>()
+        }
         rv.apply {
             adapter = this@AnimTestActivity.adapter
             layoutManager = this@AnimTestActivity.layoutManager

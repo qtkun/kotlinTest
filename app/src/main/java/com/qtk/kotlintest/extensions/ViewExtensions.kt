@@ -25,6 +25,9 @@ import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.qtk.kotlintest.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -285,3 +288,21 @@ fun TextView.setSelectionMenu(textMenuItemOnClickListener: TextMenuItemOnClickLi
 interface TextMenuItemOnClickListener {
     fun onMessageDelete()
 }
+
+fun ViewPager2.setPageMargin(startMargin: Int, endMargin: Int, pageMargin: Int): CompositePageTransformer {
+    val compositePageTransformer = CompositePageTransformer()
+    compositePageTransformer.addTransformer(MarginPageTransformer(pageMargin))
+    setPageTransformer(compositePageTransformer)
+    (getChildAt(0) as RecyclerView).let { recyclerView ->
+        if (orientation == ViewPager2.ORIENTATION_HORIZONTAL) {
+            recyclerView.setPadding(startMargin, paddingTop, endMargin, paddingBottom)
+        } else {
+            recyclerView.setPadding(paddingStart, startMargin, paddingEnd, endMargin)
+        }
+        recyclerView.clipToPadding = false
+    }
+    return compositePageTransformer
+}
+
+fun ViewPager2.setPageMargin(margin: Int, pageMargin: Int): CompositePageTransformer =
+    setPageMargin(margin, margin, pageMargin)

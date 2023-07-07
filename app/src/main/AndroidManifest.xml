@@ -97,6 +97,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:taskAffinity=".chatgpt"/>
+        <activity android:name=".activities.PhysicsActivity" />
 
         <!--<activity-alias
             android:name=".activities.ChatGPTLauncherActivity"
