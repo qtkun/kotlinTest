@@ -54,6 +54,7 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
 //            detailViewModel.getDetail(lifecycle, intent.getLongExtra(ID, -1))
             detailViewModel.id.value = intent.getLongExtra(ID, -1)
 //            bindForecast(loadLots())
+            detailViewModel.test()
         }
     }
 

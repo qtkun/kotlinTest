@@ -39,6 +39,8 @@ class MultiAdapter(
 
     val data: List<Any> get() = items
 
+    fun getItem(position: Int): Any? = if(items.isNotEmpty()) items[position] else null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == TYPE_EMPTY) {
             object : RecyclerView.ViewHolder(emptyView ?: LayoutInflater.from(parent.context).inflate(
