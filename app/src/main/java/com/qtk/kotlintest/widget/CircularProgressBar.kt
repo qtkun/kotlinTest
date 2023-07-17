@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.content.res.use
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.extensions.color
 import com.qtk.kotlintest.extensions.dp

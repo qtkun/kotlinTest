@@ -25,7 +25,7 @@ class RequestForecastCommand(private val zipCode: Long,
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun execute2(): Flow<ForecastList> = flow {
+    override fun execute2(): Flow<ForecastList> = flow {
         emit(forecastProvider.requestByZipCode(zipCode, DAYS))
     }.flowOn(Dispatchers.IO)
 

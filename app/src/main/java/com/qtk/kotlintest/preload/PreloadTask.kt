@@ -63,8 +63,6 @@ class PreloadTask(
                 if (cacheFile.exists()) {
                     cacheFile.delete()
                 }
-            } else {
-                Log.i(TAG, "结束预加载：$mPosition")
             }
         } catch (e: Exception) {
             e.printStackTrace()

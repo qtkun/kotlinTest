@@ -19,7 +19,7 @@ class PreloadManager (private val context: Context) {
         /**
          * 预加载的大小
          */
-        const val PRELOAD_LENGTH = 1024 * 1024 * 512
+        const val PRELOAD_LENGTH = 512 * 1024
     }
 
     private var mIsStartPreload = true

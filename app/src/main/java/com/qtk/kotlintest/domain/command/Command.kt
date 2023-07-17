@@ -10,5 +10,5 @@ on 2020-06-15.
 interface Command<T> {
     suspend fun execute() : T
 
-    suspend fun execute2() : Flow<T>
+    fun execute2() : Flow<T>
 }

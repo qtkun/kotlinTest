@@ -280,3 +280,13 @@ suspend inline fun<reified T> DataStore<Preferences>.getDataAwait(scope: Corouti
         }
     }
 }
+
+suspend fun <T> Flow<T>.collectAwait(scope: CoroutineScope): T = suspendCoroutine { continuation ->
+    scope.launch {
+        catch {
+            continuation.resumeWithException(it)
+        }.collect {
+            continuation.resume(it)
+        }
+    }
+}
