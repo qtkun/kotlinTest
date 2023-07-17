@@ -34,7 +34,7 @@ fun onScrollReleaseAllVideos(recyclerView: RecyclerView, tag: String, percent: F
                 }
                 val currentView = recyclerView.getChildAt(position - firstVisibleItem)
                 if (getViewVisiblePercent(currentView) < percent) {
-                    GSYVideoManager.releaseAllVideos()
+                    GSYVideoManager.onPause()
                     recyclerView.adapter?.notifyItemChanged(position)
                 }
             }
