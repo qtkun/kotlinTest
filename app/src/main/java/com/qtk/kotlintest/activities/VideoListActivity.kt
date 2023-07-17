@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.activities
 
 import android.widget.ImageView
+import androidx.activity.addCallback
 import com.qtk.kotlintest.adapter.VideoListAdapterProxy
 import com.qtk.kotlintest.base.base.BaseActivity
 import com.qtk.kotlintest.base.base.BaseViewHolder
@@ -17,7 +18,7 @@ import com.shuyu.gsyvideoplayer.utils.GSYVideoHelper
 
 class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewModel>() {
 
-    val adapter by lazy { MultiAdapter(mutableListOf(VideoListAdapterProxy()), viewModel.videoList) }
+    val adapter by lazy { MultiAdapter(mutableListOf(VideoListAdapterProxy())) }
     private val viewPagerLayoutManager by lazy {
         ViewPagerLayoutManager(this).apply {
             offscreenPageLimit = 3
@@ -50,6 +51,12 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
     private lateinit var gsySmallVideoHelperBuilder: GSYVideoHelper.GSYVideoHelperBuilder
 
     override fun ActivityVideoListBinding.initViewBinding() {
+        onBackPressedDispatcher.addCallback(this@VideoListActivity) {
+            if (GSYVideoManager.backFromWindowFull(this@VideoListActivity)) {
+                return@addCallback
+            }
+            finish()
+        }
         smallVideoHelper = GSYVideoHelper(this@VideoListActivity, EmptyControlVideo(this@VideoListActivity))
 
         gsySmallVideoHelperBuilder = GSYVideoHelper.GSYVideoHelperBuilder()
@@ -67,6 +74,7 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
             adapter = this@VideoListActivity.adapter
             layoutManager = viewPagerLayoutManager
         }
+        adapter.setData(viewModel.videoList)
         /*videoRv.apply {
             adapter = MultiAdapter(mutableListOf(VideoAdapterProxy()), viewModel.videoList)
             layoutManager = LinearLayoutManager(this@VideoListActivity)
@@ -100,18 +108,15 @@ class VideoListActivity: BaseActivity<ActivityVideoListBinding, VideoListViewMod
         if (position == smallVideoHelper.playPosition) return
         (binding.videoRv.findViewHolderForLayoutPosition(position) as? BaseViewHolder<ItemListVideoBinding>)?.let { holder ->
             smallVideoHelper.setPlayPositionAndTag(position, VideoListAdapterProxy.TAG)
-            smallVideoHelper.addVideoPlayer(position, ImageView(this), VideoListAdapterProxy.TAG, holder.binding.flContainer, holder.binding.playBtn)
-            gsySmallVideoHelperBuilder.url = adapter.getItem(position) as? String
-            smallVideoHelper.startPlay()
+            smallVideoHelper.addVideoPlayer(position, ImageView(this),
+                VideoListAdapterProxy.TAG, holder.binding.flContainer, holder.binding.playBtn)
+            (adapter.getItem(position) as? String)?.let { url ->
+                val proxyUrl = PreloadManager.instance.getPlayUrl(url)
+                gsySmallVideoHelperBuilder.url = proxyUrl
+                smallVideoHelper.startPlay()
+            }
         }
 
-    }
-
-    override fun onBackPressed() {
-        if (GSYVideoManager.backFromWindowFull(this)) {
-            return
-        }
-        super.onBackPressed()
     }
 
     override fun onPause() {
