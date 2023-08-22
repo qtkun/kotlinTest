@@ -16,6 +16,7 @@ import com.qtk.kotlintest.extensions.getScreenWidth
 import com.qtk.kotlintest.extensions.setOnItemClickListener
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.AnimTestViewModel
+import com.qtk.kotlintest.widget.NoticeManager
 import com.qtk.kotlintest.widget.SpringEdgeEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -123,6 +124,7 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
             adapter = this@AnimTestActivity.adapter
             layoutManager = this@AnimTestActivity.layoutManager
             setOnItemClickListener { view, i ->
+                NoticeManager.instance.addNotice("测试\n测试")
                 selectItem(i)
             }
             edgeEffectFactory = SpringEdgeEffect()

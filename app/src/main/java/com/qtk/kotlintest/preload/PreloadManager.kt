@@ -26,7 +26,7 @@ class PreloadManager (private val context: Context) {
 
     private val mHttpProxyCacheServer = ProxyCacheManager.getProxy(context, null)
 
-    private val mExecutorService = Executors.newFixedThreadPool(4)
+    private val mExecutorService = Executors.newFixedThreadPool(8)
 
     private val mPreloadTasks = LinkedHashMap<String, PreloadTask>()
 
@@ -60,7 +60,7 @@ class PreloadManager (private val context: Context) {
         val task = PreloadTask(rawUrl, position, mHttpProxyCacheServer)
         Log.i(TAG, "addPreloadTask: $position")
         mPreloadTasks[rawUrl] = task
-        if (mIsStartPreload) {
+        if (mIsStartPreload && !isPreloaded(rawUrl)) {
             //开始预加载
             task.execute(mExecutorService)
         }

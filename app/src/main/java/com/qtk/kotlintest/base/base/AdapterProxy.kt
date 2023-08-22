@@ -37,7 +37,9 @@ abstract class AdapterProxy<T, in VB: ViewBinding>: DiffUtil.ItemCallback<T>() {
     abstract fun onBindViewHolder(holder: BaseViewHolder<VB>, item: T, position: Int)
 
     open fun onBindViewHolder(holder: BaseViewHolder<VB>, item: T, position: Int, payloads: MutableList<Any>) {
-        onBindViewHolder(holder, item, position)
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, item, position)
+        }
     }
 
     open fun onViewRecycled(holder: BaseViewHolder<VB>) = Unit

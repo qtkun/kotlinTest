@@ -55,6 +55,9 @@ class DetailActivity :BaseActivity<ActivityDetailBinding>(R.layout.activity_deta
             detailViewModel.id.value = intent.getLongExtra(ID, -1)
 //            bindForecast(loadLots())
             detailViewModel.test()
+            supervisorScope {
+
+            }
         }
     }
 

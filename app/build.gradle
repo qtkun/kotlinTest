@@ -182,6 +182,7 @@ dependencies {
     implementation 'com.github.Tencent.soter:soter-wrapper:2.0.7'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.jawnnypoo:physicslayout:3.0.1'
+    implementation 'com.blankj:utilcodex:1.31.1'
 }
 
 kapt {

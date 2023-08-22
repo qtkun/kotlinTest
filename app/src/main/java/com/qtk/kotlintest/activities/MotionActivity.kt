@@ -15,8 +15,10 @@ import com.qtk.kotlintest.adapter.PokemonAdapter
 import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
+import com.qtk.kotlintest.extensions.color
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
+import com.qtk.kotlintest.widget.GroupDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
@@ -64,14 +66,11 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
             })
             pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
             pokemonList.itemAnimator = null
-            /*pokemonList.addItemDecoration(
-                StickyDecoration (backgroundColor = this@MotionActivity.color(R.color.colorAccent)) {
-                    return@StickyDecoration "${it / 3 + 1}"
+            pokemonList.addItemDecoration(
+                GroupDecoration (backgroundColor = this@MotionActivity.color(R.color.colorAccent)) {
+                    return@GroupDecoration "${it / 3 + 1}"
                 }
             )
-            pokemonList.addItemDecoration(
-                TimeLineDecoration(this@MotionActivity.color(R.color.colorAccent))
-            )*/
 
             lifecycleScope.launchWhenCreated {
                 adapter.addLoadStateListener {

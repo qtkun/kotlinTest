@@ -4,12 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.PopupWindow
@@ -34,10 +36,13 @@ import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivitySettingsBinding
 import com.qtk.kotlintest.databinding.PopLayoutBinding
 import com.qtk.kotlintest.extensions.DelegatesExt
+import com.qtk.kotlintest.extensions.allCornerShape
+import com.qtk.kotlintest.extensions.cornerShape
 import com.qtk.kotlintest.extensions.getData
 import com.qtk.kotlintest.extensions.launchAndCollectIn
 import com.qtk.kotlintest.extensions.limitDecimal
 import com.qtk.kotlintest.extensions.putData
+import com.qtk.kotlintest.extensions.shadowCornerShape
 import com.qtk.kotlintest.extensions.singleClick
 import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.widget.showBottom
@@ -134,6 +139,37 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             }
+            clTest.allCornerShape(
+                26,
+                Color.parseColor("#34D092"),
+                Color.parseColor("#179664"),
+                Color.parseColor("#DFE2E4"),
+            )
+            clTest.setOnTouchListener { v, event ->
+                when(event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        test.shadowCornerShape(
+                            26,
+                            shadowColor = Color.parseColor("#179664"),
+                            shadowRadius = 46, shadowVerticalOffset = 14
+                        )
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        test.shadowCornerShape(
+                            26,
+                            shadowColor = Color.parseColor("#34D092"),
+                            shadowRadius = 46, shadowVerticalOffset = 14
+                        )
+                    }
+                }
+                false
+            }
+            test.shadowCornerShape(
+                26,
+                shadowColor = Color.parseColor("#34D092"),
+                shadowRadius = 46, shadowVerticalOffset = 14
+            )
+            clTest.setOnClickListener {  }
 
             Log.i("qtkun", spanStr.toHtml())
             cityTitle.text = spanStr
