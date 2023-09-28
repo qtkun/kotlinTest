@@ -39,14 +39,16 @@ class GlobalDialogManager {
     private fun loop() {
         scope.launch {
             while (true) {
+                val dialogBean = dialogQueue.receive()
                 (ActivityUtils.getTopActivity() as? ComponentActivity)?.let { activity ->
                     mutex.withLock {
                         if (!isShowing && activity.lifecycle.currentState > Lifecycle.State.STARTED) {
-                            val dialogBean = dialogQueue.receive()
-                            getDialog(activity, dialogBean) ?.let { dialog ->
-                                if (dialog.handleDialog(dialogBean)) {
-                                    isShowing = true
-                                    showDialog(dialogBean, dialog)
+                            scope.launch(Dispatchers.Main) {
+                                getDialog(activity, dialogBean)?.let { dialog ->
+                                    if (dialog.handleDialog(dialogBean)) {
+                                        isShowing = true
+                                        dialog.showDialog(dialogBean)
+                                    }
                                 }
                             }
                         }
@@ -62,12 +64,6 @@ class GlobalDialogManager {
 
         }
         return dialog
-    }
-
-    private fun showDialog(dialogBean: GlobalDialogBean, dialog: IGlobalDialog) {
-        scope.launch(Dispatchers.Main) {
-            dialog.showDialog(dialogBean)
-        }
     }
 
     fun dismissDialog() {

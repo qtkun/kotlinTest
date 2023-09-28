@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -128,7 +130,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         )
         binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
-            startActivity<PhysicsActivity>()
+//            startActivity<PhysicsActivity>()
+            val intent = Intent(MediaStore.ACTION_PICK_IMAGES).apply {
+                type = "video/*"
+            }
+            startActivityForResult(intent, 0x01)
         }
         binding.fab1.setOnClickListener {
             startActivity<CoordinatorLayoutActivity>()
@@ -266,6 +272,10 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
                         }
                     }
                 }
+                PICK_VIDEO -> {
+                    val currentUri: Uri? = data?.data
+                    currentUri
+                }
             }
 
         }
@@ -309,5 +319,6 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
     companion object {
         const val PICK_FILE = 0x99
         const val PICK_PICTURE = 0x101
+        const val PICK_VIDEO = 0x102
     }
 }

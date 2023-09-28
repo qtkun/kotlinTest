@@ -136,10 +136,10 @@ class NoticeManager {
         scope.launch {
             while (true) {
                 Log.i(TAG, "loop")
+                val notice = noticeQueue.receive()
                 (ActivityUtils.getTopActivity() as? ComponentActivity)?.let { activity ->
                     mutex.withLock {
                         if (!isShowing && activity.lifecycle.currentState > Lifecycle.State.STARTED) {
-                            val notice = noticeQueue.receive()
                             isShowing = true
                             showNotice(activity, notice)
                         }
