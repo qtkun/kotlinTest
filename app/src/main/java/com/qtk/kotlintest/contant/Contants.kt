@@ -10,6 +10,9 @@ const val URL = "https://api.openweathermap.org/data/2.5/" +
         "forecast/daily?mode=json&units=metric&cnt=7"
 const val COMPLETE_URL = "$URL&APPID=$APP_ID&q="
 
+const val TELE_API_ID = 25871469
+const val TELE_API_HASH = "d00cb7011c1c31872d5b4aaa0c2cf12f"
+
 const val RONG_IM_URL = "https://api-cn.ronghub.com/"
 
 const val OPEN_AI_API_KEY = "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"

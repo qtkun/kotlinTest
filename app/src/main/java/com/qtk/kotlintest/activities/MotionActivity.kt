@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.adapter.LoadMoreAdapter
 import com.qtk.kotlintest.adapter.PokemonAdapter
@@ -64,7 +65,7 @@ class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_mot
             pokemonList.adapter = adapter.withLoadStateFooter(LoadMoreAdapter {
                 adapter.retry()
             })
-            pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity)
+            pokemonList.layoutManager = LinearLayoutManager(this@MotionActivity, RecyclerView.VERTICAL, false)
             pokemonList.itemAnimator = null
             pokemonList.addItemDecoration(
                 GroupDecoration (backgroundColor = this@MotionActivity.color(R.color.colorAccent)) {

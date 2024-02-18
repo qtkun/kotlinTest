@@ -7,6 +7,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
     id 'com.google.devtools.ksp' version '1.8.0-1.0.9'
+    id "com.google.protobuf" version "0.9.4"
 }
 
 def keystorePropertiesFile = rootProject.file("key.properties")
@@ -16,6 +17,18 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     namespace 'com.qtk.kotlintest'
     compileSdk 33
+
+    sourceSets {
+        main {
+            //实际测试指不指定无所谓，不影响 Java 文件生成
+            proto {
+                srcDir 'src/main/proto'
+            }
+            java {
+                srcDirs 'src/main/java'
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.qtk.kotlintest"
@@ -90,6 +103,24 @@ android {
     }
 }
 
+protobuf {
+    //配置 protoc 编译器
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.0'
+    }
+    //配置生成目录，编译后会在 build 的目录下生成对应的java文件
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.builtins {
+                java {}
+            }
+        }
+    }
+}
+
 /*allprojects {
     configurations.all {
         resolutionStrategy {
@@ -109,7 +140,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
-    implementation 'org.ligboy.retrofit2:converter-fastjson:2.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.google.android.material:material:1.6.1'
@@ -117,6 +147,8 @@ dependencies {
     implementation files('libs/jsch-0.1.55.jar')
     //room
     implementation "androidx.room:room-runtime:$room_version"
+    implementation project(path: ':im_lib')
+    implementation project(path: ':libtd')
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-testing:$room_version"
@@ -183,6 +215,7 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.jawnnypoo:physicslayout:3.0.1'
     implementation 'com.blankj:utilcodex:1.31.1'
+    implementation 'com.google.protobuf:protobuf-java:3.25.0'
 }
 
 kapt {

@@ -1,7 +1,12 @@
 package com.qtk.kotlintest.widget
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Shader
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View

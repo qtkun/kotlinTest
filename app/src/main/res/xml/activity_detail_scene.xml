@@ -96,7 +96,7 @@
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
         app:duration="5000"
-        app:motionInterpolator="bounce">
+        app:motionInterpolator="linear">
 
         <OnSwipe
             app:targetId="@+id/toolbar"

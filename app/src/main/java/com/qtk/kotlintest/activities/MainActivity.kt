@@ -1,5 +1,7 @@
 package com.qtk.kotlintest.activities
 
+//import com.qtk.kotlintest.method.IntentMethod
+import Example
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -33,8 +35,8 @@ import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.*
+import com.qtk.kotlintest.retrofit.data.MessageBean
 import com.qtk.kotlintest.test.TestBean
-//import com.qtk.kotlintest.method.IntentMethod
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.widget.SpringEdgeEffect
 import com.qtk.kotlintest.widget.TimeLineDecoration
@@ -46,6 +48,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.drinkless.td.libcore.telegram.Client
 import org.jetbrains.anko.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -100,6 +103,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         }
     }
 
+    private val test = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+
     private val coarseLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         if (it[Manifest.permission.ACCESS_COARSE_LOCATION] == true &&
             it[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
@@ -137,11 +142,27 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
             startActivityForResult(intent, 0x01)
         }
         binding.fab1.setOnClickListener {
-            startActivity<CoordinatorLayoutActivity>()
+//            startActivity<CoordinatorLayoutActivity>()
+//            Example.sendMessage(12345, "test")
+            Example.getMainChatList(20)
         }
 //        coarseLocation.launch(locationPermission)
         multiCoroutine()
         business()
+        Example.client = Client.create(Example.UpdateHandler(), null, null)
+        /*client.send(SetTdlibParameters(TdApi.TdlibParameters(true, "${filesDir.absolutePath}/",
+            "${getExternalFilesDir(null)?.absolutePath}/", true, true,
+            true, false, TELE_API_ID, TELE_API_HASH, "zh", "Android",
+            null, AppUtils.getAppVersionName(), true, true))) { result ->
+            LogUtils.e(result.toString())
+        }*/
+        /*client.send(CheckDatabaseEncryptionKey()) { result ->
+            LogUtils.e(result.toString())
+        }
+        client.send(CreatePrivateChat(12345, false)) { result ->
+            LogUtils.e(result.toString())
+        }*/
+
     }
 
     private val mutex = Mutex()
@@ -206,6 +227,14 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
             Log.i("qtkun", code.toString())
             Log.i("qtkun", "finish")
         }
+
+        val message = MessageBean.Msg.newBuilder()
+            .setHead(MessageBean.Head.newBuilder().build())
+            .setBody("sdfosdfs")
+            .build()
+        val byteArray = message.toByteArray()
+        val parseMessage = MessageBean.Msg.parseFrom(byteArray)
+        Log.i("qtkun", "message = ${message.body}, parseMessage = ${parseMessage.body}")
         /*lifecycleScope.launch {
             delay(5000L)
             (0..99).asFlow().collect {

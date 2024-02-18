@@ -185,7 +185,7 @@ fun random(): String {
 /**
  * dataStore取数据需设置默认值
  */
-fun<T> DataStore<Preferences>.getData(name: String, default: T): Flow<T> {
+fun<T> DataStore<Preferences>.getData(name: String, default: T? = null): Flow<T> {
     return this.data
         .catch {
             if (it is IOException) {

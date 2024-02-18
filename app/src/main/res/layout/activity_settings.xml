@@ -37,8 +37,8 @@
             app:vertical_spacing="10dp">
             <com.qtk.kotlintest.widget.HeartView
                 android:id="@+id/heart1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="18dp"
+                android:layout_height="18dp"/>
 
             <com.qtk.kotlintest.widget.HeartView
                 android:id="@+id/heart2"

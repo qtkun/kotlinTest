@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_package = "com.qtk.kotlintest.retrofit.data";
+option java_outer_classname = "MessageBean";
+
+message Msg {
+  Head head = 1;
+  string body = 2;
+}
+
+message Head{
+  string msgId = 1;
+  int32 msgType = 2;
+  int32 msgContentType = 3;
+  string fromId = 4;
+  string toId = 5;
+  int64 timestamp = 6;
+  int32 statusReport = 7;
+  string extend = 8;
+}

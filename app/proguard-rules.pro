@@ -229,3 +229,5 @@
     public android.widget.OverScroller$SplineOverScroller mScrollerY;
 }
 -keep class androidx.viewpager2.widget.ViewPager2 {*;}
+
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
