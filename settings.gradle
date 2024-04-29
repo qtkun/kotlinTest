@@ -8,5 +8,3 @@ evaluate(new File(
 ))
 
 include ':flutter_module'*/
-include ':im_lib'
-include ':libtd'

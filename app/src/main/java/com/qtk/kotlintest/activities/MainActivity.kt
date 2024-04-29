@@ -1,7 +1,6 @@
 package com.qtk.kotlintest.activities
 
 //import com.qtk.kotlintest.method.IntentMethod
-import Example
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -17,10 +16,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkRequest
+import androidx.work.workDataOf
 import com.google.gson.Gson
 import com.qtk.flowbus.observe.observeEvent
 import com.qtk.kotlintest.App
@@ -34,7 +42,11 @@ import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
 import com.qtk.kotlintest.domain.model.ForecastList
-import com.qtk.kotlintest.extensions.*
+import com.qtk.kotlintest.extensions.DelegatesExt
+import com.qtk.kotlintest.extensions.color
+import com.qtk.kotlintest.extensions.getDataAwait
+import com.qtk.kotlintest.extensions.toPx
+import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.retrofit.data.MessageBean
 import com.qtk.kotlintest.test.TestBean
 import com.qtk.kotlintest.view_model.MainViewModel
@@ -44,13 +56,18 @@ import com.qtk.kotlintest.work.LocationWorker
 import com.qtk.kotlintest.work.SaveImageWorker
 import com.qtk.kotlintest.work.TestWork
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.drinkless.td.libcore.telegram.Client
-import org.jetbrains.anko.*
-import java.util.*
+import kotlinx.coroutines.withContext
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -135,34 +152,18 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         )
         binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
-//            startActivity<PhysicsActivity>()
-            val intent = Intent(MediaStore.ACTION_PICK_IMAGES).apply {
-                type = "video/*"
-            }
-            startActivityForResult(intent, 0x01)
+            startActivity<AnimTestActivity>()
+//            val intent = Intent(MediaStore.ACTION_PICK_IMAGES).apply {
+//                type = "video/*"
+//            }
+//            startActivityForResult(intent, 0x01)
         }
         binding.fab1.setOnClickListener {
-//            startActivity<CoordinatorLayoutActivity>()
-//            Example.sendMessage(12345, "test")
-            Example.getMainChatList(20)
+            startActivity<CoordinatorLayoutActivity>()
         }
 //        coarseLocation.launch(locationPermission)
         multiCoroutine()
         business()
-        Example.client = Client.create(Example.UpdateHandler(), null, null)
-        /*client.send(SetTdlibParameters(TdApi.TdlibParameters(true, "${filesDir.absolutePath}/",
-            "${getExternalFilesDir(null)?.absolutePath}/", true, true,
-            true, false, TELE_API_ID, TELE_API_HASH, "zh", "Android",
-            null, AppUtils.getAppVersionName(), true, true))) { result ->
-            LogUtils.e(result.toString())
-        }*/
-        /*client.send(CheckDatabaseEncryptionKey()) { result ->
-            LogUtils.e(result.toString())
-        }
-        client.send(CreatePrivateChat(12345, false)) { result ->
-            LogUtils.e(result.toString())
-        }*/
-
     }
 
     private val mutex = Mutex()

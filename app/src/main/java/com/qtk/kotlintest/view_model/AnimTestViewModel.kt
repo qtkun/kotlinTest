@@ -8,6 +8,7 @@ import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.retrofit.data.getId
 import com.qtk.kotlintest.retrofit.data.getImageUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -25,7 +26,9 @@ class AnimTestViewModel @Inject constructor(private val commonRepository: Common
         _list.value = list
     }
 
-    fun getPokemon(limit: Int, offset: Int) = viewModelScope.launch {
+    fun getPokemon(limit: Int, offset: Int) = viewModelScope.launch(CoroutineExceptionHandler {msg, e ->
+        e.printStackTrace()
+    }) {
         commonRepository
             .getPokemon(limit, offset)
             .baseLoading()
