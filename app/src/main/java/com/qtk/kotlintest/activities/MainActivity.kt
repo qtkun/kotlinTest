@@ -6,21 +6,27 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
+import android.print.PrintAttributes
+import android.print.PrintManager
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.liveData
+import androidx.print.PrintHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -48,6 +54,7 @@ import com.qtk.kotlintest.extensions.getDataAwait
 import com.qtk.kotlintest.extensions.toPx
 import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.retrofit.data.MessageBean
+import com.qtk.kotlintest.test.PrintPdfAdapter
 import com.qtk.kotlintest.test.TestBean
 import com.qtk.kotlintest.view_model.MainViewModel
 import com.qtk.kotlintest.widget.SpringEdgeEffect
@@ -68,6 +75,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -120,6 +128,33 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         }
     }
 
+    private val read = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        if (it == true) {
+            printPdf()
+        }
+    }
+
+    private fun printPdf() {
+        val printManager = getSystemService<PrintManager>()
+        val printPdfAdapter =
+            PrintPdfAdapter(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).absolutePath + "/record.pdf")
+        val attrs = PrintAttributes.Builder()
+            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+            .build()
+        printManager?.print(UUID.randomUUID().toString(), printPdfAdapter, attrs)
+    }
+
+    private fun printBitmap() {
+        val printHelper = PrintHelper(this).apply {
+            scaleMode = PrintHelper.SCALE_MODE_FIT
+        }
+        val bitmap =
+            BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + "/assessUser1.png")
+        printHelper.printBitmap(UUID.randomUUID().toString(), bitmap)
+    }
+
     private val test = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
     private val coarseLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -152,7 +187,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         )
         binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
-            startActivity<AnimTestActivity>()
+            printPdf()
+//            startActivity<AnimTestActivity>()
 //            val intent = Intent(MediaStore.ACTION_PICK_IMAGES).apply {
 //                type = "video/*"
 //            }
@@ -164,6 +200,10 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
 //        coarseLocation.launch(locationPermission)
         multiCoroutine()
         business()
+
+        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+        intent.setData(Uri.parse("package:" + this.packageName))
+        startActivity(intent)
     }
 
     private val mutex = Mutex()
