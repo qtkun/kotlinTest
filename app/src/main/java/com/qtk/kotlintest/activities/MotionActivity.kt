@@ -17,12 +17,12 @@ import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.databinding.ActivityMotionBinding
 import com.qtk.kotlintest.databinding.ItemPokemonBinding
 import com.qtk.kotlintest.extensions.color
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.retrofit.data.PokemonBean
 import com.qtk.kotlintest.view_model.PokemonViewModel
 import com.qtk.kotlintest.widget.GroupDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.toast
 
 @AndroidEntryPoint
 class MotionActivity : BaseActivity<ActivityMotionBinding>(R.layout.activity_motion) {

@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.drawToBitmap
 import com.amap.api.maps.MapView
-import org.jetbrains.anko.toast
+import com.qtk.kotlintest.extensions.toast
 
 
 /**

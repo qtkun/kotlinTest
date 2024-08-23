@@ -17,8 +17,8 @@ import com.qtk.kotlintest.calender.getMonthDate
 import com.qtk.kotlintest.calender.monthCount
 import com.qtk.kotlintest.calender.positionToDate
 import com.qtk.kotlintest.databinding.CalendarPageBinding
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.widget.smoothScroll
-import org.jetbrains.anko.toast
 
 class CalendarAdapter(
         private val initialDate: IntArray,

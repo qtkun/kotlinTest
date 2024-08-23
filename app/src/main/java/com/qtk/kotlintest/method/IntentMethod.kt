@@ -8,8 +8,6 @@ import com.qtk.kotlintest.App
 import com.qtk.kotlintest.activities.SettingsActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
 
 
 class IntentMethod(private val activity: Activity) : MethodChannel.MethodCallHandler {

@@ -42,6 +42,7 @@ import com.qtk.kotlintest.extensions.limitDecimal
 import com.qtk.kotlintest.extensions.putData
 import com.qtk.kotlintest.extensions.shadowCornerShape
 import com.qtk.kotlintest.extensions.singleClick
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.widget.showBottom
 import com.qtk.kotlintest.widget.showLeft
@@ -54,7 +55,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.sample
-import org.jetbrains.anko.toast
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream

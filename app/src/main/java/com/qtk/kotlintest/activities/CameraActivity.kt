@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.databinding.ActivityCameraBinding
-import org.jetbrains.anko.toast
+import com.qtk.kotlintest.extensions.toast
 import java.io.File
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat

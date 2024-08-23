@@ -52,6 +52,7 @@ import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.extensions.color
 import com.qtk.kotlintest.extensions.getDataAwait
 import com.qtk.kotlintest.extensions.toPx
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.extensions.viewBinding
 import com.qtk.kotlintest.retrofit.data.MessageBean
 import com.qtk.kotlintest.test.PrintPdfAdapter
@@ -73,8 +74,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -87,10 +86,10 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
     var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
     private val adapter: ForecastListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ForecastListAdapter(mViewModel.forecastList.value?.dailyForecast) { forecast, _ ->
-            this.startActivity<DetailActivity>(
-                DetailActivity.ID to forecast.id,
-                DetailActivity.CITY_NAME to city
-            )
+            startActivity(Intent(this, DetailActivity::class.java).apply {
+                putExtra(DetailActivity.ID, forecast.id)
+                putExtra(DetailActivity.CITY_NAME, city)
+            })
         }
     }
     lateinit var city: String
@@ -195,15 +194,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
 //            startActivityForResult(intent, 0x01)
         }
         binding.fab1.setOnClickListener {
-            startActivity<CoordinatorLayoutActivity>()
+            startActivity(Intent(this, CoordinatorLayoutActivity::class.java))
         }
 //        coarseLocation.launch(locationPermission)
         multiCoroutine()
         business()
-
-        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-        intent.setData(Uri.parse("package:" + this.packageName))
-        startActivity(intent)
     }
 
     private val mutex = Mutex()

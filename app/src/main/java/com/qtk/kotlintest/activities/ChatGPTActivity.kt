@@ -17,13 +17,13 @@ import com.qtk.kotlintest.databinding.ActivityChatBinding
 import com.qtk.kotlintest.extensions.hideKeyboard
 import com.qtk.kotlintest.extensions.launchOnState
 import com.qtk.kotlintest.extensions.singleClick
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.room.entity.ChatMessageBean
 import com.qtk.kotlintest.room.entity.UserMessageBean
 import com.qtk.kotlintest.view_model.ChatGPTViewModel
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filter
-import org.jetbrains.anko.toast
 import kotlin.math.abs
 
 @AndroidEntryPoint

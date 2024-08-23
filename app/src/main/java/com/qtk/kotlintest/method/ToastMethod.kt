@@ -5,7 +5,6 @@ import android.content.Context
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import org.jetbrains.anko.toast
 
 class ToastMethod (private val context: Context) : MethodChannel.MethodCallHandler {
     companion object{

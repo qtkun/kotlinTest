@@ -2,9 +2,9 @@ package com.qtk.kotlintest.base.base
 
 import androidx.lifecycle.ViewModel
 import com.qtk.kotlintest.App
+import com.qtk.kotlintest.extensions.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import org.jetbrains.anko.toast
 
 open class BaseViewModel: ViewModel(){
     private val mutableLoading = MutableStateFlow(false)

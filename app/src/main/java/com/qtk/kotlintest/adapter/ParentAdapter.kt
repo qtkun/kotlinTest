@@ -15,7 +15,7 @@ import com.qtk.kotlintest.extensions.bindItemView
 import com.qtk.kotlintest.extensions.asDp
 import com.qtk.kotlintest.extensions.drawable
 import com.qtk.kotlintest.extensions.getScreenWidth
-import org.jetbrains.anko.toast
+import com.qtk.kotlintest.extensions.toast
 
 class ParentAdapter(val activity: AppCompatActivity): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

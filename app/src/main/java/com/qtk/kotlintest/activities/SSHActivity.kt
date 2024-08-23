@@ -15,10 +15,10 @@ import com.qtk.kotlintest.App
 import com.qtk.kotlintest.R
 import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.databinding.ActivitySshBinding
+import com.qtk.kotlintest.extensions.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.toast
 import java.util.*
 import java.util.concurrent.Executors
 import java.io.*

@@ -1,6 +1,7 @@
 package com.qtk.kotlintest.activities
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.animation.doOnEnd
@@ -22,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.startActivity
 
 @AndroidEntryPoint
 class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>() {
@@ -118,7 +118,7 @@ class AnimTestActivity: BaseActivity<ActivityAnimTestBinding, AnimTestViewModel>
 
     override fun ActivityAnimTestBinding.initViewBinding() {
         stickLayout.setStartActivity {
-            startActivity<MotionActivity>()
+            startActivity(Intent(this@AnimTestActivity, MotionActivity::class.java))
         }
         rv.apply {
             adapter = this@AnimTestActivity.adapter

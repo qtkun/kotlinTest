@@ -15,12 +15,12 @@ import com.qtk.kotlintest.base.BaseActivity
 import com.qtk.kotlintest.contant.locationPermission
 import com.qtk.kotlintest.databinding.ActivityMapBinding
 import com.qtk.kotlintest.extensions.asDp
+import com.qtk.kotlintest.extensions.toast
 import com.qtk.kotlintest.room.PokemonDao
 import com.qtk.kotlintest.utils.map.PathSmoothTool
 import com.qtk.kotlintest.utils.map.saveScreenShot
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 @AndroidEntryPoint

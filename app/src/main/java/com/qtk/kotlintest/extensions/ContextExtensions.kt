@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.util.LayoutDirection
 import android.view.Window
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.text.TextUtilsCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStateAtLeast
+import com.blankj.utilcode.util.ThreadUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -112,3 +114,19 @@ inline fun <T> Flow<T>.collectWithStateAtLeast(
 
 fun Context.isRTL(): Boolean =
     TextUtilsCompat.getLayoutDirectionFromLocale(resources.configuration.locales[0]) == LayoutDirection.RTL
+
+fun Context.toast(message: CharSequence) {
+    ThreadUtils.runOnUiThread {
+        Toast.makeText(this@toast, message, Toast.LENGTH_SHORT).apply {
+            show()
+        }
+    }
+}
+
+fun Context.longToast(message: CharSequence) {
+    ThreadUtils.runOnUiThread {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).apply {
+            show()
+        }
+    }
+}
