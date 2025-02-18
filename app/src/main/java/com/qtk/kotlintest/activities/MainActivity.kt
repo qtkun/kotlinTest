@@ -47,6 +47,7 @@ import com.qtk.kotlintest.contant.DEFAULT_ZIP
 import com.qtk.kotlintest.contant.ZIP_CODE
 import com.qtk.kotlintest.databinding.ActivityMainBinding
 import com.qtk.kotlintest.domain.command.RequestForecastCommand
+import com.qtk.kotlintest.domain.model.Forecast
 import com.qtk.kotlintest.domain.model.ForecastList
 import com.qtk.kotlintest.extensions.DelegatesExt
 import com.qtk.kotlintest.extensions.color
@@ -184,9 +185,9 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
         binding.forecastList.addItemDecoration(
             TimeLineDecoration(this.color(R.color.colorAccent))
         )
-        binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
+//        binding.forecastList.edgeEffectFactory = SpringEdgeEffect()
         binding.fab.setOnClickListener {
-            printPdf()
+            startActivity(Intent(this, BluetoothActivity::class.java))
 //            startActivity<AnimTestActivity>()
 //            val intent = Intent(MediaStore.ACTION_PICK_IMAGES).apply {
 //                type = "video/*"
@@ -310,7 +311,10 @@ class MainActivity : AppCompatActivity(), ToolbarManager{
 
     private fun observer(): Observer<ForecastList> = Observer { result ->
         city = result.city
-        adapter.update(result.dailyForecast, ForecastDiffCallBack(adapter.items ?: emptyList(), result.dailyForecast))
+        adapter.update(mutableListOf<Forecast>().apply {
+            addAll(result.dailyForecast)
+            addAll(result.dailyForecast)
+        }, ForecastDiffCallBack(adapter.items ?: emptyList(), result.dailyForecast))
         toolbarTitle = "${result.city} (${result.country})"
     }
 

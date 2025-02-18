@@ -58,7 +58,7 @@ class HeartView @JvmOverloads constructor(
     }
     private val path = Path()
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         paintLine.shader = getShader()
         if (measuredWidth >= measuredHeight) {
@@ -84,7 +84,7 @@ class HeartView @JvmOverloads constructor(
                 measuredHeight / 2f, 180f, 180f, true
             )
             path.close()
-            canvas?.drawPath(path, paintLine)
+            canvas.drawPath(path, paintLine)
         } else {
             path.arcTo(
                 0f, measuredHeight / 2f - measuredWidth / 2f,
@@ -108,7 +108,7 @@ class HeartView @JvmOverloads constructor(
                 measuredHeight / 2f, 180f, 180f, true
             )
             path.close()
-            canvas?.drawPath(path, paintLine)
+            canvas.drawPath(path, paintLine)
         }
     }
 

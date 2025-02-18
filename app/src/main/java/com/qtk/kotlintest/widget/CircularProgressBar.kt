@@ -120,7 +120,7 @@ class CircularProgressBar @JvmOverloads constructor(
         setMeasuredDimension(width, width)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val centerX = (width / 2).toFloat()
         mRectF.apply {
@@ -131,16 +131,16 @@ class CircularProgressBar @JvmOverloads constructor(
         }
         mPaint.color = mProgressBarBgColor
         mPaint.strokeWidth = mStrokeWidth.toFloat()
-        canvas?.drawCircle(centerX, centerX, mRadius.toFloat(), mPaint)
+        canvas.drawCircle(centerX, centerX, mRadius.toFloat(), mPaint)
         mPaint.color = mProgressColor
         mPaint.strokeWidth = mStrokeWidth * 3f
         mPaint.setShadowLayer(mShadowRadius.toFloat(), 0f, 0f, mShadowColor)
         mSwipeAngle = mEndAngle * (mCurrentProgress / mMaxProgress)
-        canvas?.drawArc(mRectF, mStartAngle, mSwipeAngle, false, mPaint)
+        canvas.drawArc(mRectF, mStartAngle, mSwipeAngle, false, mPaint)
         if (mShowText) {
             mText = "${(mCurrentProgress / mMaxProgress * mMaxProgress).toInt()}%"
             mTextPaint.getTextBounds(mText, 0, mText.length, mTextBounds)
-            canvas?.drawText(
+            canvas.drawText(
                 mText,
                 centerX - mTextBounds.width() / 2f,
                 mTextBounds.height() / 2f + height / 2f,

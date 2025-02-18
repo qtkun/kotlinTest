@@ -194,7 +194,7 @@ class TriangleContainer@JvmOverloads constructor(
             invalidate()
         }
 
-    override fun dispatchDraw(canvas: Canvas?) {
+    override fun dispatchDraw(canvas: Canvas) {
         mPath.reset()
         when(mDirection) {
             TOP -> {
@@ -226,8 +226,8 @@ class TriangleContainer@JvmOverloads constructor(
                     width - mShadowWidth - mTrvHeight, height - mShadowWidth, mRadius, mRadius, Path.Direction.CW)
             }
         }
-        canvas?.drawPath(mPath, mBgPaint)
-        canvas?.drawPath(mPath, mPaint)
+        canvas.drawPath(mPath, mBgPaint)
+        canvas.drawPath(mPath, mPaint)
         super.dispatchDraw(canvas)
     }
 

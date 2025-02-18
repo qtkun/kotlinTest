@@ -29,7 +29,7 @@ buildscript {
                 // your github name
                 username = 'qtkun'
                 // your github generate new token
-                password = ''
+                password = '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'
             }
         }
         maven { url 'https://jitpack.io' }
@@ -59,7 +59,7 @@ allprojects {
                 // your github name
                 username = 'qtkun'
                 // your github generate new token
-                password = ''
+                password = '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'
             }
         }
         maven { url 'https://jitpack.io' }
