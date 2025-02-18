@@ -16,7 +16,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     namespace 'com.qtk.kotlintest'
-    compileSdk 33
+    compileSdk 35
 
     sourceSets {
         main {
@@ -37,6 +37,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -44,6 +46,10 @@ android {
                 arguments += ["room.schemaLocation":
                                      "$projectDir/schemas".toString()]
             }
+        }
+        ndk {
+            //设置支持的SO库架构
+            abiFilters "arm64-v8a"
         }
     }
 
@@ -82,11 +88,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     android.applicationVariants.all { variant ->
@@ -131,6 +137,7 @@ protobuf {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -199,10 +206,9 @@ dependencies {
 
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
 
-    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:$gsy_version"
-    implementation "com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-exo2:$gsy_version"
-    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-arm64:$gsy_version"
-    implementation "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-x64:$gsy_version"
+    implementation "com.shuyu:gsyvideoplayer-java:$gsy_version"
+    implementation "com.shuyu:gsyvideoplayer-exo2:$gsy_version"
+    implementation "com.shuyu:gsyvideoplayer-arm64:$gsy_version"
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -211,6 +217,7 @@ dependencies {
     implementation 'com.jawnnypoo:physicslayout:3.0.1'
     implementation 'com.blankj:utilcodex:1.31.1'
     implementation 'com.google.protobuf:protobuf-java:3.25.0'
+    implementation 'androidx.bluetooth:bluetooth:1.0.0-alpha02'
 }
 
 kapt {

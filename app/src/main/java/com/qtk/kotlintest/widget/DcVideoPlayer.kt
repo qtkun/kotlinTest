@@ -182,15 +182,17 @@ open class DcVideoPlayer : GSYVideoPlayer, LifecycleEventObserver {
         builder.create().show()
     }
 
+
+
     /**
      * 触摸显示滑动进度dialog，如需要自定义继承重写即可，记得重写dismissProgressDialog
      */
     override fun showProgressDialog(
         deltaX: Float,
-        seekTime: String,
-        seekTimePosition: Int,
-        totalTime: String,
-        totalTimeDuration: Int
+        seekTime: String?,
+        seekTimePosition: Long,
+        totalTime: String?,
+        totalTimeDuration: Long
     ) {
         if (mProgressDialog == null) {
             val localView = LayoutInflater.from(activityContext).inflate(
@@ -250,7 +252,7 @@ open class DcVideoPlayer : GSYVideoPlayer, LifecycleEventObserver {
             mDialogTotalTime!!.text = " / $totalTime"
         }
         if (totalTimeDuration > 0) if (mDialogProgressBar != null) {
-            mDialogProgressBar!!.progress = seekTimePosition * 100 / totalTimeDuration
+            mDialogProgressBar!!.progress = (seekTimePosition * 100 / totalTimeDuration).toInt()
         }
         if (deltaX > 0) {
             if (mDialogIcon != null) {

@@ -8,6 +8,7 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.ContentUris
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -17,6 +18,7 @@ import android.os.Process.myPid
 import android.provider.MediaStore
 import android.util.Log
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.multidex.MultiDex
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.qtk.flowbus.FlowBus
@@ -107,6 +109,11 @@ class App : Application() {
             val shortcutManager = getSystemService(ShortcutManager::class.java)
 
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
 //    val catalogue = getExternalFilesDir("file")

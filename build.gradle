@@ -6,11 +6,11 @@ buildscript {
     ext.hilt_version = "2.44"
     ext.room_version = "2.5.1"
     ext.moshi_version = "1.14.0"
-    ext.work_manager_version = "2.7.1"
+    ext.work_manager_version = "2.10.0"
     ext.retrofit_version = "2.9.0"
     ext.lifecycle_version = "2.6.1"
     ext.camera2_version = "1.1.0-beta02"
-    ext.gsy_version = "v8.1.9-release-jitpack"
+    ext.gsy_version = "10.0.0"
     ext.appcompat_version = "1.7.0-alpha02"
     ext.kotlinx_coroutines_version = "1.7.1"
     ext.core_ktx_version = "1.10.1"
@@ -20,10 +20,22 @@ buildscript {
         gradlePluginPortal()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven { url "https://maven.aliyun.com/repository/public" }
+        maven {
+            url 'https://maven.pkg.github.com/CarGuo/GSYVideoPlayer'
+
+            // You can also use your own GitHub account and token
+            // For convenience, I have provided a token for an infrequently used account here
+            credentials {
+                // your github name
+                username = 'qtkun'
+                // your github generate new token
+                password = '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'
+            }
+        }
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:8.8.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         // NOTE: Do not place your application dependencies here; they belong
@@ -38,6 +50,18 @@ allprojects {
         gradlePluginPortal()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven { url "https://maven.aliyun.com/repository/public" }
+        maven {
+            url 'https://maven.pkg.github.com/CarGuo/GSYVideoPlayer'
+
+            // You can also use your own GitHub account and token
+            // For convenience, I have provided a token for an infrequently used account here
+            credentials {
+                // your github name
+                username = 'qtkun'
+                // your github generate new token
+                password = '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'
+            }
+        }
         maven { url 'https://jitpack.io' }
     }
 }
